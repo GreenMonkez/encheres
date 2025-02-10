@@ -1,4 +1,4 @@
-package fr.eni.tp.encheres.security;
+package fr.eni.tp.encheres.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
