@@ -2,27 +2,24 @@ package fr.eni.tp.encheres.bo;
 
 import java.util.List;
 
-
-
 public class Utilisateur {
-	
-	
-	public String pseudo;
-	public String nom;
-	public String prenom;
-	public String email;
-	public String telephone;
-	public String rue;
-	public String codePostal;
-	public String ville;
-	public String motDePasse;
-	public int credit;
-	public boolean administrateur = false;
-	public int noUtilisateur;
 
-	public List<ArticleVendu> achats;
-	public List<ArticleVendu> vendus;
-	public List<Enchère> encheres;
+	private String pseudo;
+	private String nom;
+	private String prenom;
+	private String email;
+	private String telephone;
+	private String rue;
+	private String codePostal;
+	private String ville;
+	private String motDePasse;
+	private int credit;
+	private boolean administrateur;
+	private int noUtilisateur;
+
+	List<ArticleVendu> achats;
+	List<ArticleVendu> vendus;
+	List<Enchère> encheres;
 
 	public Utilisateur() {
 
@@ -109,7 +106,6 @@ public class Utilisateur {
 		this.rue = rue;
 	}
 
-
 	public String getCodePostal() {
 		return codePostal;
 	}
@@ -135,7 +131,6 @@ public class Utilisateur {
 		this.motDePasse = motDePasse;
 	}
 
-
 	public int getCredit() {
 		return credit;
 	}
@@ -153,8 +148,7 @@ public class Utilisateur {
 		this.administrateur = administrateur;
 	}
 
-
-	public int isNoUtilisateur() {
+	public int getNoUtilisateur() {
 		return noUtilisateur;
 	}
 
@@ -184,10 +178,6 @@ public class Utilisateur {
 
 	public void setEncheres(List<Enchère> encheres) {
 		this.encheres = encheres;
-	}
-
-	public int getNoUtilisateur() {
-		return noUtilisateur;
 	}
 
 }

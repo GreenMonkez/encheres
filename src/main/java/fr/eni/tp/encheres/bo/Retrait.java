@@ -1,9 +1,9 @@
 package fr.eni.tp.encheres.bo;
 
 public class Retrait {
-	public String rue;
-	public String code_postal;
-	public String ville;
+	private String rue;
+	private String code_postal;
+	private String ville;
 	ArticleVendu acticleVendu;
 
 	public Retrait() {
