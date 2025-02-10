@@ -2,8 +2,11 @@ package fr.eni.tp.encheres.bo;
 
 import java.util.List;
 
-public class Utilisateur {
 
+
+public class Utilisateur {
+	
+	
 	public String pseudo;
 	public String nom;
 	public String prenom;
@@ -14,7 +17,7 @@ public class Utilisateur {
 	public String ville;
 	public String motDePasse;
 	public int credit;
-	public boolean administrateur;
+	public boolean administrateur = false;
 	public int noUtilisateur;
 
 	public List<ArticleVendu> achats;

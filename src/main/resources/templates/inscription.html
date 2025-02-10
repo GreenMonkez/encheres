@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Enchères</title>
+</head>
+<body>
+<header>
+<h1>ENI-Enchères</h1>
+</header>
+
+<main>
+	
+	
+	
+	<form th:action="@{/inscription}"  method="POST">
+		<h1>Mon profil</h1>
+		
+		<ul>
+		
+			<li>
+				<label for="idPseudo">Pseudo : </label>
+				<input id="idPseudo" type="text" name="pseudo"/>
+			</li>
+			<li>
+				<label for="idPrenom">Prénom : </label>
+				<input id="idPrenom" type="text" name="prenom"/>
+			</li>
+			<li>
+				<label for="idNom">Nom : </label>
+				<input id="idNom" type="text" name="nom"/>
+			</li>
+			<li>
+				<label for="idEmail">Email : </label>
+				<input id="idEmail" type="text" name="email"/>
+			</li>
+			<li>
+				<label for="idTelephone">Téléphone : </label>
+				<input id="idTelephone" type="text" name="telephone"/>
+			</li>
+			<li>
+				<label for="idRue">Rue : </label>
+				<input id="idRue" type="text" name="rue"/>
+			</li>
+			<li>
+				<label for="idPostal">Code Postal : </label>
+				<input id="idPostal" type="text" name="codePostal"/>
+			</li>
+			<li>
+				<label for="idVille">Ville : </label>
+				<input id="idVille" type="text" name="ville"/>
+			</li>
+			<li>
+				<label for="idMotDePasse">Mot de passe : </label>
+				<input id="idMotDePasse" type="password" name="motDePasse"/>
+			</li>
+			<li>
+				<label for="idMotDePasseConfirm">Confirmation : </label>
+				<input id="idMotDePasseConfirm" type="password" name="motDePasse"/>
+			</li>
+			<li>
+				<button type="submit">Créer</button>
+			</li>
+			<li>
+				<button type="reset">Annuler</button>
+			</li>
+		
+		
+		
+		
+		
+		
+		
+		
+		</ul>
+		
+	
+	
+	</form>
+</main>
+
+<footer>
+
+
+</footer>
+</body>
+</html>
