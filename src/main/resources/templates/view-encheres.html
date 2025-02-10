@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Demo Spring Boot Web</title>
+
+<link rel="stylesheet" th:href="@{/css/general.css}" />
+<link rel="stylesheet" th:href="@{/css/tp-table.css}" />
+
+</head>
+<body>
+
+<header th:replace="~{fragments/fragment-entete :: entete}">
+</header>
+
+<main >
+	<h1>Liste des enchères</h1>
+	
+	<form action="">
+		<label for="filtre">Filtres :</label>
+		<input type="text" placeholder="Le nom de l'article contient" name="filtre"/>
+		<br />
+		<label for="categorie">Catégorie</label>
+		<select name="categorie" id="">
+			<option value="">Toutes</option>
+		</select>
+		<button type="submit">Rechercher</button>
+	</form>
+	
+	<table>
+		<thead>
+			<tr>
+				<th>Nom</th>
+				<th>Prix</th>
+				<th>Fin de l'enchère</th>
+				<th>Vendeur</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="a : ${articles}">
+				<td th:text="${a.nomArticle}"></td>
+				<td th:text="${a.prixVente}"></td>
+				<td th:text="${a.dateFinEncheres}"></td>
+				<td th:text="${a.vendeur.pseudo}"></td>
+			</tr>
+		</tbody>
+
+	</table>
+</main>
+
+
+
+<footer th:replace="~{fragments/fragment-footer :: footer}">
+</footer>
+
+
+</body>
+</html>
