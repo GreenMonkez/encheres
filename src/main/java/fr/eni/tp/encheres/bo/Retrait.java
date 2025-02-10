@@ -1,0 +1,58 @@
+package fr.eni.tp.encheres.bo;
+
+public class Retrait {
+	public String rue;
+	public String code_postal;
+	public String ville;
+	ArticleVendu acticleVendu;
+
+	public Retrait() {
+
+	}
+
+	public Retrait(String rue, String code_postal, String ville, ArticleVendu acticleVendu) {
+		this.rue = rue;
+		this.code_postal = code_postal;
+		this.ville = ville;
+		this.acticleVendu = acticleVendu;
+	}
+
+	@Override
+	public String toString() {
+		return "Retrait [rue=" + rue + ", code_postal=" + code_postal + ", ville=" + ville + ", acticleVendu="
+				+ acticleVendu + "]";
+	}
+
+	public String getRue() {
+		return rue;
+	}
+
+	public void setRue(String rue) {
+		this.rue = rue;
+	}
+
+	public String getCode_postal() {
+		return code_postal;
+	}
+
+	public void setCode_postal(String code_postal) {
+		this.code_postal = code_postal;
+	}
+
+	public String getVille() {
+		return ville;
+	}
+
+	public void setVille(String ville) {
+		this.ville = ville;
+	}
+
+	public ArticleVendu getActicleVendu() {
+		return acticleVendu;
+	}
+
+	public void setActicleVendu(ArticleVendu acticleVendu) {
+		this.acticleVendu = acticleVendu;
+	}
+
+}
