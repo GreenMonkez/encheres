@@ -1,5 +1,7 @@
 package fr.eni.tp.encheres.bo;
 
+import java.util.List;
+
 public class Utilisateur {
 	
 	public String pseudo;
@@ -8,21 +10,32 @@ public class Utilisateur {
 	public String email;
 	public String telephone;
 	public String rue;
-	public long codePostal;
+	public String codePostal;
 	public String ville;
 	public String motDePasse;
-	public long credit;
+	public int credit;
 	public boolean administrateur;
-	public boolean noUtilisateur;
+	public int noUtilisateur;
 	
+	public List<ArticleVendu> achats;
+	public List<ArticleVendu> vendus;
+	public List<Enchere> encheres;
+	
+	
+
+
+
 
 	public Utilisateur() {
 		
 	}
 	
 	
+	
 	public Utilisateur(String pseudo, String nom, String prenom, String email, String telephone, String rue,
-			long codePostal, String ville, String motDePasse) {
+			String codePostal, String ville, String motDePasse, int credit, int noUtilisateur,
+			List<ArticleVendu> achats, List<ArticleVendu> vendus, List<Enchere> encheres) {
+		
 		this.pseudo = pseudo;
 		this.nom = nom;
 		this.prenom = prenom;
@@ -32,7 +45,15 @@ public class Utilisateur {
 		this.codePostal = codePostal;
 		this.ville = ville;
 		this.motDePasse = motDePasse;
+		this.credit = credit;
+		this.noUtilisateur = noUtilisateur;
+		this.achats = achats;
+		this.vendus = vendus;
+		this.encheres = encheres;
 	}
+
+
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -79,10 +100,10 @@ public class Utilisateur {
 	public void setRue(String rue) {
 		this.rue = rue;
 	}
-	public long getCodePostal() {
+	public String getCodePostal() {
 		return codePostal;
 	}
-	public void setCodePostal(long codePostal) {
+	public void setCodePostal(String codePostal) {
 		this.codePostal = codePostal;
 	}
 	public String getVille() {
@@ -97,10 +118,10 @@ public class Utilisateur {
 	public void setMotDePasse(String motDePasse) {
 		this.motDePasse = motDePasse;
 	}
-	public long getCredit() {
+	public int getCredit() {
 		return credit;
 	}
-	public void setCredit(long credit) {
+	public void setCredit(int credit) {
 		this.credit = credit;
 	}
 	public boolean isAdministrateur() {
@@ -109,14 +130,46 @@ public class Utilisateur {
 	public void setAdministrateur(boolean administrateur) {
 		this.administrateur = administrateur;
 	}
-	public boolean isNoUtilisateur() {
+	public int isNoUtilisateur() {
 		return noUtilisateur;
 	}
-	public void setNoUtilisateur(boolean noUtilisateur) {
+	public void setNoUtilisateur(int noUtilisateur) {
 		this.noUtilisateur = noUtilisateur;
 	}
 	
-	
+	public List<ArticleVendu> getAchats() {
+		return achats;
+	}
+
+
+	public void setAchats(List<ArticleVendu> achats) {
+		this.achats = achats;
+	}
+
+
+	public List<ArticleVendu> getVendus() {
+		return vendus;
+	}
+
+
+	public void setVendus(List<ArticleVendu> vendus) {
+		this.vendus = vendus;
+	}
+
+
+	public List<Enchere> getEncheres() {
+		return encheres;
+	}
+
+
+	public void setEncheres(List<Enchere> encheres) {
+		this.encheres = encheres;
+	}
+
+
+	public int getNoUtilisateur() {
+		return noUtilisateur;
+	}
 	
 
 }
