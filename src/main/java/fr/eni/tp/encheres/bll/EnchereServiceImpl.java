@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import fr.eni.tp.encheres.bo.ArticleVendu;
+import fr.eni.tp.encheres.bo.Categorie;
 import fr.eni.tp.encheres.dal.ArticleVenduDAO;
 import fr.eni.tp.encheres.dal.CategorieDAO;
 import fr.eni.tp.encheres.dal.EnchèreDAO;
@@ -38,6 +39,11 @@ public class EnchereServiceImpl implements EnchereService {
 					categorieDAO.getCategorie(articleVendu.getCategorieArticle().getNoCategorie()));
 		}
 		return articles;
+	}
+
+	@Override
+	public List<Categorie> getCategories() {
+		return categorieDAO.getCategories();
 	}
 
 }

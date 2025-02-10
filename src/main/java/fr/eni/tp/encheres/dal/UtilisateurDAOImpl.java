@@ -1,11 +1,11 @@
 package fr.eni.tp.encheres.dal;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import fr.eni.tp.encheres.bo.Utilisateur;
+import fr.eni.tp.encheres.dal.rowmapper.UtilisateurRowMapper;
 
 @Repository
 public class UtilisateurDAOImpl implements UtilisateurDAO {
@@ -22,8 +22,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 	public Utilisateur getUtilisateur(int noUtilisateur) {
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		namedParameters.addValue("idUtilisateur", noUtilisateur);
-		return namedParameterJdbcTemplate.queryForObject(SELECT_BY_ID, namedParameters,
-				new BeanPropertyRowMapper<>(Utilisateur.class));
+		return namedParameterJdbcTemplate.queryForObject(SELECT_BY_ID, namedParameters, new UtilisateurRowMapper());
 	}
 
 }

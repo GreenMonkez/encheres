@@ -7,9 +7,10 @@ import org.springframework.ui.Model;
 
 import fr.eni.tp.encheres.bll.EnchereService;
 import fr.eni.tp.encheres.bo.ArticleVendu;
+import fr.eni.tp.encheres.bo.Categorie;
+import fr.eni.tp.encheres.bo.Retrait;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 public class EnchereController {
@@ -32,6 +33,24 @@ public class EnchereController {
 		model.addAttribute("articles", articles);
 
 		return "view-encheres";
+	}
+
+	@GetMapping("/encheres/nouvelleVente")
+	public String getNouvelleVente(Model model) {
+		ArticleVendu article = new ArticleVendu();
+		Retrait retrait = new Retrait();
+		List<Categorie> categories = enchereService.getCategories();
+
+		retrait.setRue("Rue des mouettes");
+		retrait.setCode_postal("44800");
+		retrait.setVille("Saint Herblain");
+
+		article.setLieuRetrait(retrait);
+
+		model.addAttribute("categories", categories);
+		model.addAttribute("article", article);
+
+		return "view-nouvelle-vente";
 	}
 
 }
