@@ -3,7 +3,6 @@ package fr.eni.tp.encheres.bo;
 import java.time.LocalDate;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 
 public class Enchère {
 

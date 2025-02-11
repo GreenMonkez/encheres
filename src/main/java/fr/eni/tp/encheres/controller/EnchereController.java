@@ -8,14 +8,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import fr.eni.tp.encheres.bll.EnchereService;
 import fr.eni.tp.encheres.bo.ArticleVendu;
 import fr.eni.tp.encheres.bo.Categorie;
-import fr.eni.tp.encheres.bo.Retrait;
+import fr.eni.tp.encheres.bo.Utilisateur;
 import jakarta.validation.Valid;
 
 @Controller
+@SessionAttributes({ "userEnSession" })
 public class EnchereController {
 
 	private EnchereService enchereService;
@@ -39,15 +41,10 @@ public class EnchereController {
 	}
 
 	@GetMapping("/encheres/nouvelleVente")
-	public String getNouvelleVente(Model model) {
+	public String getNouvelleVente(Model model, @ModelAttribute("userEnSession") Utilisateur userSession) {
 		ArticleVendu article = new ArticleVendu();
-		Retrait retrait = new Retrait();
 
-		retrait.setRue("Rue des mouettes");
-		retrait.setCode_postal("44800");
-		retrait.setVille("Saint Herblain");
-
-		article.setLieuRetrait(retrait);
+		article.setVendeur(userSession);
 
 		model.addAttribute("article", article);
 
@@ -59,15 +56,27 @@ public class EnchereController {
 
 	@PostMapping("/encheres/nouvelleVente")
 	public String postNouvelleVente(@Valid @ModelAttribute("article") ArticleVendu article, BindingResult bindingResult,
-			Model model) {
+			Model model, @ModelAttribute("userEnSession") Utilisateur userSession) {
 
 		if (bindingResult.hasErrors()) {
 			List<Categorie> categories = enchereService.getCategories();
 			model.addAttribute("categories", categories);
 			return "view-nouvelle-vente";
 		} else {
+			article.setVendeur(userSession);
+			enchereService.createNouvelleVente(article);
 			return "redirect:/encheres";
 		}
+	}
+
+	@ModelAttribute("userEnSession")
+	public Utilisateur addUtilisateurEnSession() {
+		Utilisateur user = new Utilisateur();
+		user.setNoUtilisateur(1);
+		user.setRue("Rue du feur");
+		user.setCodePostal("44800");
+		user.setVille("Nantes");
+		return user;
 	}
 
 }
