@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import fr.eni.tp.encheres.bll.LoginService;
 import fr.eni.tp.encheres.bo.Utilisateur;
@@ -17,6 +18,7 @@ import fr.eni.tp.encheres.exception.BusinessException;
 import jakarta.validation.Valid;
 
 @Controller
+@SessionAttributes({ "userSession" })
 public class LoginController {
 
 	private LoginService loginService;
@@ -97,7 +99,7 @@ public class LoginController {
 			userSession.setRue(utilisateur.getRue());
 			userSession.setCodePostal(utilisateur.getCodePostal());
 			userSession.setVille(utilisateur.getVille());
-			userSession.setAdministrateur(utilisateur.administrateur);
+			userSession.setAdministrateur(utilisateur.isAdministrateur());
 		} else {
 			userSession.setNoUtilisateur(0);
 			userSession.setPseudo(null);

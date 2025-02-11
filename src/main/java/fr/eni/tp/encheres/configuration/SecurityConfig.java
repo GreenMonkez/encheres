@@ -21,20 +21,34 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.authorizeHttpRequests(auth -> {
-			// permettre à tout le monde d'accéder à l'URL racine
-			auth.requestMatchers("/login", "/css/**", "/js/**").permitAll().anyRequest().permitAll();
+		http.authorizeHttpRequests(auth -> { auth
+			.requestMatchers("/*").permitAll()
+			.requestMatchers("/").permitAll()
+			.requestMatchers("/css/*").permitAll()
+			.requestMatchers("/images/*").permitAll()
+			.requestMatchers("/js/*").permitAll()
+			.requestMatchers("/login").permitAll()
+			.requestMatchers("/login/session").permitAll()
+			.requestMatchers("/inscription").permitAll()
+			.requestMatchers("/encheres").permitAll()
+			.requestMatchers("/encheres/nouvelleVente").hasRole("USER")
+			.anyRequest().denyAll();
 		});
+		
 		// Customiser le formulaire
-		http.formLogin(form -> {
-			form.usernameParameter("pseudo").passwordParameter("mot_de_passe").loginPage("/login").permitAll();
-			form.defaultSuccessUrl("/login/session").permitAll();
+		http.formLogin(form -> {form
+			.usernameParameter("pseudo")
+			.passwordParameter("mot_de_passe")
+			.loginPage("/login")
+			.defaultSuccessUrl("/login/session");
 
 		});
 
 		// /logout --> vider la session
-		http.logout(logout -> logout.invalidateHttpSession(true)
-				.logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET")).logoutSuccessUrl("/"));
+		http.logout(logout -> logout
+				.invalidateHttpSession(true)
+				.logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+				.logoutSuccessUrl("/"));
 
 		return http.build();
 
@@ -46,13 +60,6 @@ public class SecurityConfig {
 		jdbcUserDetailsManager.setUsersByUsernameQuery(SELECT_USER);
 		jdbcUserDetailsManager.setAuthoritiesByUsernameQuery(SELECT_ROLES);
 		return jdbcUserDetailsManager;
-	}
-
-	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.authorizeHttpRequests((authorize) -> authorize.anyRequest().permitAll());
-
-		return http.build();
 	}
 
 }

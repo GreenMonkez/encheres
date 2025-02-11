@@ -17,7 +17,7 @@ import fr.eni.tp.encheres.bo.Utilisateur;
 import jakarta.validation.Valid;
 
 @Controller
-@SessionAttributes({ "userEnSession" })
+@SessionAttributes({ "userSession" })
 public class EnchereController {
 
 	private EnchereService enchereService;
@@ -41,7 +41,7 @@ public class EnchereController {
 	}
 
 	@GetMapping("/encheres/nouvelleVente")
-	public String getNouvelleVente(Model model, @ModelAttribute("userEnSession") Utilisateur userSession) {
+	public String getNouvelleVente(Model model, @ModelAttribute("userSession") Utilisateur userSession) {
 		ArticleVendu article = new ArticleVendu();
 
 		article.setVendeur(userSession);
@@ -56,7 +56,7 @@ public class EnchereController {
 
 	@PostMapping("/encheres/nouvelleVente")
 	public String postNouvelleVente(@Valid @ModelAttribute("article") ArticleVendu article, BindingResult bindingResult,
-			Model model, @ModelAttribute("userEnSession") Utilisateur userSession) {
+			Model model, @ModelAttribute("userSession") Utilisateur userSession) {
 
 		if (bindingResult.hasErrors()) {
 			List<Categorie> categories = enchereService.getCategories();
@@ -67,16 +67,6 @@ public class EnchereController {
 			enchereService.createNouvelleVente(article);
 			return "redirect:/encheres";
 		}
-	}
-
-	@ModelAttribute("userEnSession")
-	public Utilisateur addUtilisateurEnSession() {
-		Utilisateur user = new Utilisateur();
-		user.setNoUtilisateur(1);
-		user.setRue("Rue du feur");
-		user.setCodePostal("44800");
-		user.setVille("Nantes");
-		return user;
 	}
 
 }
