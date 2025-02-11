@@ -51,5 +51,8 @@ public class LoginController {
 		return "inscription" ;
 	}}
 	
-	
+	@GetMapping("/login")
+	public String login() {
+		return "login";
+	}
 }

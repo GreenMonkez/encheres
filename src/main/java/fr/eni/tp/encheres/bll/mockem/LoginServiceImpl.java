@@ -2,6 +2,7 @@ package fr.eni.tp.encheres.bll.mockem;
 
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import fr.eni.tp.encheres.bll.LoginService;
@@ -13,12 +14,13 @@ import fr.eni.tp.encheres.exception.BusinessException;
 public class LoginServiceImpl implements LoginService{
 
 
+	
 	private UtilisateurDAO utilisateurDAO;
 	private PasswordEncoder passwordEncoder;
 	
 	
 	
-	public LoginServiceImpl(UtilisateurDAO utilisateurDAO, PasswordEncoder passwordEncoder) {
+	public LoginServiceImpl(UtilisateurDAO utilisateurDAO/*, PasswordEncoder passwordEncoder*/) {
 		this.utilisateurDAO = utilisateurDAO;
 		this.passwordEncoder = passwordEncoder;
 	}
@@ -28,7 +30,8 @@ public class LoginServiceImpl implements LoginService{
 	@Override
 	public void creerUtilisateur(Utilisateur user) throws BusinessException{
 		BusinessException be = new BusinessException();
-		String mdpEncode = passwordEncoder.encode(user.getMotDePasse());
+		
+		String mdpEncode = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.getMotDePasse());
 		user.setMotDePasse(mdpEncode);
 		
 		boolean valide = validerUtilisateurPseudo(user.getPseudo(), be);
@@ -45,7 +48,7 @@ public class LoginServiceImpl implements LoginService{
 			be.addErreur("erreur.utilisateur.creation");
 		}
 		
-		
+	
 	}
 	
 	
@@ -74,5 +77,9 @@ public boolean validerUtilisateurEmail(String email, BusinessException be) {
 		return valide;
 		
 	}
+
+
+
+
 
 }
