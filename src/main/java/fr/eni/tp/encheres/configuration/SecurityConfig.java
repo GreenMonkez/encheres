@@ -28,8 +28,8 @@ public class SecurityConfig {
 		// Customiser le formulaire
 		http.formLogin(form -> {
 
-			/*form.usernameParameter("pseudo")
-			.passwordParameter("mot_de_passe")*/
+			form.usernameParameter("pseudo")
+			.passwordParameter("mot_de_passe");
 			form.loginPage("/login").permitAll()
 			.failureUrl("/login?error=true")
 			.defaultSuccessUrl("/").permitAll();			

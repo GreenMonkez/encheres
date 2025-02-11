@@ -31,16 +31,14 @@ public class LoginServiceImpl implements LoginService{
 	public void creerUtilisateur(Utilisateur user, String mdpConfirm) throws BusinessException{
 		BusinessException be = new BusinessException();
 		
-
-
 		String mdpEncode = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.getMotDePasse());
-		user.setMotDePasse(mdpEncode);
+		
 
 		
 		boolean valide = validerUtilisateurPseudo(user.getPseudo(), be);
 		valide &= validerUtilisateurEmail(user.getEmail(), be);
 		valide &= validerConfirmMdp(mdpConfirm, user.getMotDePasse(), be);
-		
+		user.setMotDePasse(mdpEncode);
 		try {
 			if (valide) {
 				utilisateurDAO.creerUtilisateur(user);
@@ -95,7 +93,7 @@ public Utilisateur consulterUtilisateur(int id) {
 public boolean validerConfirmMdp(String mdp, String mdpConfirm, BusinessException be) {
 	
 	boolean valide = true;
-	if (mdp != mdpConfirm) {
+	if (!mdp.equals(mdpConfirm) ) {
 		valide = false;
 		be.addErreur("erreur.password.confirm");
 	}

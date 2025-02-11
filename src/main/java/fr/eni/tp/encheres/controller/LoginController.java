@@ -35,9 +35,8 @@ public class LoginController {
 	}
 
 	@PostMapping("/inscription")
-
 	public String creerUtilisateur(
-			 @RequestParam("PasswordConfirm")@Valid @ModelAttribute("utilisateur") String mdpConfirm, Utilisateur user,
+			 @RequestParam("PasswordConfirm")String mdpConfirm, @Valid @ModelAttribute("utilisateur")  Utilisateur user,
 			BindingResult bindingResult) {
 
 		if (!bindingResult.hasErrors()) {
