@@ -33,7 +33,7 @@ public class SecurityConfig {
 			form.usernameParameter("pseudo")
 			.passwordParameter("mot_de_passe")
 			.loginPage("/login").permitAll();
-			form.defaultSuccessUrl("/").permitAll();			
+			form.defaultSuccessUrl("/login/session").permitAll();			
 		});
 		
 		// /logout --> vider la session
