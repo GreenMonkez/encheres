@@ -4,7 +4,6 @@ import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -32,9 +31,10 @@ public class SecurityConfig {
 		});
 		//Customiser le formulaire
 		http.formLogin(form -> {
-			form.usernameParameter("pseudo")
-			.passwordParameter("mot_de_passe")
-			.loginPage("/login").permitAll()
+			/*form.usernameParameter("pseudo")
+			.passwordParameter("mot_de_passe")*/
+			form.loginPage("/login").permitAll()
+			.failureUrl("/login?error=true")
 			.defaultSuccessUrl("/").permitAll();			
 		});
 		
