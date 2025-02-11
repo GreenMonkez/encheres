@@ -34,8 +34,8 @@ public class SecurityConfig {
 		http.formLogin(form -> {
 			form.usernameParameter("pseudo")
 			.passwordParameter("mot_de_passe")
-			.loginPage("/login").permitAll();
-			form.defaultSuccessUrl("/").permitAll();			
+			.loginPage("/login").permitAll()
+			.defaultSuccessUrl("/").permitAll();			
 		});
 		
 		// /logout --> vider la session
