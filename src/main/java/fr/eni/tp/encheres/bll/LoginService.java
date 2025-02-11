@@ -5,6 +5,8 @@ import fr.eni.tp.encheres.exception.BusinessException;
 
 public interface LoginService {
 
-	void creerUtilisateur(Utilisateur user) throws BusinessException;
+	void creerUtilisateur(Utilisateur user, String mdpConfirm) throws BusinessException;
+	
+	Utilisateur consulterUtilisateur(int id);
 	
 }

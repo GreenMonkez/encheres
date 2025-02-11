@@ -41,7 +41,7 @@
 				<td th:text="${a.nomArticle}"></td>
 				<td th:text="${a.prixVente}"></td>
 				<td th:text="${a.dateFinEncheres}"></td>
-				<td th:text="${a.vendeur.pseudo}"></td>
+				<td th:text="${a.vendeur.pseudo}"><a th:href="@{/profil(id=${a.vendeur.noUtilisateur})}"></a></td>
 			</tr>
 		</tbody>
 

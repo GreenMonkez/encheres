@@ -7,8 +7,10 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import fr.eni.tp.encheres.bll.mockem.LoginServiceImpl;
+import fr.eni.tp.encheres.bll.LoginService;
+import fr.eni.tp.encheres.bll.LoginServiceImpl;
 import fr.eni.tp.encheres.bo.Utilisateur;
 import fr.eni.tp.encheres.exception.BusinessException;
 import jakarta.validation.Valid;
@@ -16,12 +18,12 @@ import jakarta.validation.Valid;
 @Controller
 public class LoginController {
 	
-	private LoginServiceImpl enchereService;
+	private LoginService loginService;
 	
 	
 
-	public LoginController(LoginServiceImpl enchereService) {
-		this.enchereService = enchereService;
+	public LoginController(LoginServiceImpl loginService) {
+		this.loginService = loginService;
 	}
 
 	@GetMapping("/inscription")
@@ -33,12 +35,12 @@ public class LoginController {
 	}
 	
 	@PostMapping("/inscription")
-	public String creerUtilisateur(@Valid @ModelAttribute("utilisateur")Utilisateur user, BindingResult bindingResult) {
+	public String creerUtilisateur(@Valid @RequestParam("PasswordConfirm") @ModelAttribute("utilisateur")String mdpConfirm, Utilisateur user, BindingResult bindingResult) {
 		
 		if (!bindingResult.hasErrors()) {
 			try {
-				this.enchereService.creerUtilisateur(user);
-				return "index";
+				this.loginService.creerUtilisateur(user, mdpConfirm);
+				return "redirect:/encheres";
 			} catch (BusinessException e) {
 				e.printStackTrace();
 				e.getClesErreurs().forEach(cle->{
@@ -47,9 +49,18 @@ public class LoginController {
 				});
 			}
 		return "inscription" ;
-	}else {
+
+		}else {
 		return "inscription" ;
 	}}
+	
+	@GetMapping("/profil")
+	public String afficherProfil(@RequestParam("id")int id, Model model) {
+		Utilisateur user = this.loginService.consulterUtilisateur(id);
+		model.addAttribute("utilisateur", user);
+		
+		return "profil";
+	}
 	
 	
 }

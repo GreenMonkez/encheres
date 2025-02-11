@@ -3,6 +3,7 @@ package fr.eni.tp.encheres.bo;
 import java.util.List;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 
@@ -20,6 +21,9 @@ public class Utilisateur {
 	public String prenom;
 	@NotBlank
 	@Size(max = 40)
+	@NotBlank
+	@Size(max = 40)
+	@Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "L'adresse email est invalide.")
 	public String email;
 	@Size(max = 15)
 	public String telephone;
