@@ -105,4 +105,12 @@ public boolean validerConfirmMdp(String mdp, String mdpConfirm, BusinessExceptio
 }
 
 
+
+@Override
+public Utilisateur charger(String pseudo) {
+	return this.utilisateurDAO.getUtilisateur(pseudo);
+	
+}
+
+
 }

@@ -5,10 +5,7 @@ package fr.eni.tp.encheres.dal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-
 import fr.eni.tp.encheres.bo.Utilisateur;
 import fr.eni.tp.encheres.dal.rowmapper.UtilisateurRowMapper;
 
@@ -42,14 +39,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 		map.addValue("credit", user.getCredit());
 		map.addValue("administrateur", user.isAdministrateur());
 
-		KeyHolder keyHolder = new GeneratedKeyHolder();
-		jdbcTemplate.update(INSERT, map, keyHolder);
+		jdbcTemplate.update(INSERT, map);
 
-		if (keyHolder != null && keyHolder.getKey() != null) {
-
-			user.setNoUtilisateur(keyHolder.getKey().intValue());
-		}
 	}
+	
 
 	@Override
 	public int validerPseudo(String pseudo) {
@@ -68,6 +61,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 	@Override
 	public Utilisateur getUtilisateur(int noUtilisateur) {
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+		System.out.println(noUtilisateur);
 		namedParameters.addValue("idUtilisateur", noUtilisateur);
 		return jdbcTemplate.queryForObject(SELECT_BY_ID, namedParameters, new UtilisateurRowMapper());
 	}
