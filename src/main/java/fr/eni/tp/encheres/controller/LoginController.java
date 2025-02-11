@@ -53,7 +53,7 @@ public class LoginController {
 		}else {
 		return "inscription" ;
 	}}
-	
+
 	@GetMapping("/profil")
 	public String afficherProfil(@RequestParam("id")int id, Model model) {
 		Utilisateur user = this.loginService.consulterUtilisateur(id);
@@ -62,5 +62,9 @@ public class LoginController {
 		return "profil";
 	}
 	
-	
+	@GetMapping("/login")
+	public String login() {
+		return "login";
+	}
+
 }

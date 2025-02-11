@@ -11,5 +11,7 @@ public interface UtilisateurDAO {
 	
 	int validerEmail(String email);
 	Utilisateur getUtilisateur(int noUtilisateur);
+	
+	Utilisateur getUtilisateur(String pseudo);
 
 }

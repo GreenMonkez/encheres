@@ -2,6 +2,7 @@ package fr.eni.tp.encheres.bll;
 
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,15 +13,16 @@ import fr.eni.tp.encheres.exception.BusinessException;
 @Service
 public class LoginServiceImpl implements LoginService{
 
-
 	private UtilisateurDAO utilisateurDAO;
-	//private PasswordEncoder passwordEncoder;
 	
 	
 	
+	
+
 	public LoginServiceImpl(UtilisateurDAO utilisateurDAO) {
+
 		this.utilisateurDAO = utilisateurDAO;
-		//this.passwordEncoder = passwordEncoder;
+		
 	}
 
 
@@ -29,13 +31,16 @@ public class LoginServiceImpl implements LoginService{
 	public void creerUtilisateur(Utilisateur user, String mdpConfirm) throws BusinessException{
 		BusinessException be = new BusinessException();
 		
+
+
+		String mdpEncode = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.getMotDePasse());
+		user.setMotDePasse(mdpEncode);
+
 		
 		boolean valide = validerUtilisateurPseudo(user.getPseudo(), be);
 		valide &= validerUtilisateurEmail(user.getEmail(), be);
 		valide &= validerConfirmMdp(mdpConfirm, user.getMotDePasse(), be);
 		
-		/*String mdpEncode = passwordEncoder.encode(user.getMotDePasse());
-		user.setMotDePasse(mdpEncode);*/
 		try {
 			if (valide) {
 				utilisateurDAO.creerUtilisateur(user);
@@ -48,7 +53,7 @@ public class LoginServiceImpl implements LoginService{
 			throw be;
 		}
 		
-		
+	
 	}
 	
 	
@@ -80,6 +85,7 @@ public boolean validerUtilisateurEmail(String email, BusinessException be) {
 
 
 
+
 @Override
 public Utilisateur consulterUtilisateur(int id) {
 	Utilisateur user = utilisateurDAO.getUtilisateur(id);
@@ -97,5 +103,6 @@ public boolean validerConfirmMdp(String mdp, String mdpConfirm, BusinessExceptio
 	return valide;
 	
 }
+
 
 }
