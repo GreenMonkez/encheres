@@ -1,8 +1,7 @@
 package fr.eni.tp.encheres.dal;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -18,8 +17,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 	private static final String SELECT_BY_ID = "select no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, credit, administrateur from utilisateurs where no_utilisateur = :idUtilisateur";
 
 	private static final String FIND_BY_PSEUDO = "select no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, credit, administrateur from utilisateurs where pseudo = :pseudo";
-	
-	
 
 	@Autowired
 	private NamedParameterJdbcTemplate jdbcTemplate;
@@ -42,7 +39,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 		jdbcTemplate.update(INSERT, map);
 
 	}
-	
 
 	@Override
 	public int validerPseudo(String pseudo) {
@@ -66,13 +62,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 		return jdbcTemplate.queryForObject(SELECT_BY_ID, namedParameters, new UtilisateurRowMapper());
 	}
 
-
-
-		@Override
-		public Utilisateur getUtilisateur(String pseudo) {
-			MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-			mapSqlParameterSource.addValue("pseudo", pseudo);		
-			return jdbcTemplate.queryForObject(FIND_BY_PSEUDO, mapSqlParameterSource, new UtilisateurRowMapper());
-		}
+	@Override
+	public Utilisateur getUtilisateur(String pseudo) {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("pseudo", pseudo);
+		return jdbcTemplate.queryForObject(FIND_BY_PSEUDO, mapSqlParameterSource, new UtilisateurRowMapper());
+	}
 }
-	

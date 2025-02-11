@@ -54,18 +54,18 @@
 			</li>
 			<li>
 				<label for="rue">Rue</label>
-				<textarea id="rue" th:field="*{lieuRetrait.rue}"></textarea>
-				<p class="cards" th:errors="*{lieuRetrait.rue}"></p>
+				<textarea id="rue" th:field="*{vendeur.rue}"></textarea>
+				<p class="cards" th:errors="*{vendeur.rue}"></p>
 			</li>
 			<li>
-				<label for="codepostal">Description</label>
-				<textarea id="codepostal" th:field="*{lieuRetrait.code_postal}"></textarea>
-				<p class="cards" th:errors="*{lieuRetrait.code_postal}"></p>
+				<label for="codepostal">Code Postal</label>
+				<textarea id="codepostal" th:field="*{vendeur.codePostal}"></textarea>
+				<p class="cards" th:errors="*{vendeur.codePostal}"></p>
 			</li>
 			<li>
-				<label for="ville">Description</label>
-				<textarea id="ville" th:field="*{lieuRetrait.ville}"></textarea>
-				<p class="cards" th:errors="*{lieuRetrait.ville}"></p>
+				<label for="ville">Ville</label>
+				<textarea id="ville" th:field="*{vendeur.ville}"></textarea>
+				<p class="cards" th:errors="*{vendeur.ville}"></p>
 			</li>
 			<li>
 				<button type="submit">Enregistrer</button>
