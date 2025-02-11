@@ -2,9 +2,16 @@ package fr.eni.tp.encheres.bo;
 
 import java.time.LocalDate;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+
 public class Enchère {
+
 	private LocalDate dateEnchère;
+
+	@Min(value = 0)
 	private int montant_enchere;
+
 	ArticleVendu artcicleVendu;
 	Utilisateur utilisateur;
 

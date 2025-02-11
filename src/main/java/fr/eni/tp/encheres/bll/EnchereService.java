@@ -10,4 +10,6 @@ public interface EnchereService {
 	List<ArticleVendu> getEncheres();
 
 	List<Categorie> getCategories();
+
+	Categorie getCategorie(int idCategorie);
 }

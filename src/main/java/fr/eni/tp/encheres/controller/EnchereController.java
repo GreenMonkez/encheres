@@ -58,10 +58,16 @@ public class EnchereController {
 	}
 
 	@PostMapping("/encheres/nouvelleVente")
-	public String postNouvelleVente(@Valid @ModelAttribute("article") ArticleVendu article,
-			BindingResult bindingResult) {
+	public String postNouvelleVente(@Valid @ModelAttribute("article") ArticleVendu article, BindingResult bindingResult,
+			Model model) {
 
-		return "redirect:/encheres";
+		if (bindingResult.hasErrors()) {
+			List<Categorie> categories = enchereService.getCategories();
+			model.addAttribute("categories", categories);
+			return "view-nouvelle-vente";
+		} else {
+			return "redirect:/encheres";
+		}
 	}
 
 }

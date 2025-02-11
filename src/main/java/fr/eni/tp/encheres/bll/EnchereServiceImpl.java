@@ -46,4 +46,9 @@ public class EnchereServiceImpl implements EnchereService {
 		return categorieDAO.getCategories();
 	}
 
+	@Override
+	public Categorie getCategorie(int idCategorie) {
+		return categorieDAO.getCategorie(idCategorie);
+	}
+
 }

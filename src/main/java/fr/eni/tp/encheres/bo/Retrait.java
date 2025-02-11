@@ -1,9 +1,22 @@
 package fr.eni.tp.encheres.bo;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class Retrait {
+
+	@NotBlank
+	@Size(max = 30)
 	private String rue;
+
+	@NotBlank
+	@Size(max = 10)
 	private String code_postal;
+
+	@NotBlank
+	@Size(max = 30)
 	private String ville;
+
 	ArticleVendu acticleVendu;
 
 	public Retrait() {

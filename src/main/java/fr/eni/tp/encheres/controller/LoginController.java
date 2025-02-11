@@ -15,10 +15,8 @@ import jakarta.validation.Valid;
 
 @Controller
 public class LoginController {
-	
+
 	private LoginServiceImpl enchereService;
-	
-	
 
 	public LoginController(LoginServiceImpl enchereService) {
 		this.enchereService = enchereService;
@@ -26,30 +24,31 @@ public class LoginController {
 
 	@GetMapping("/inscription")
 	public String afficherInscription(Model model) {
-		
+
 		model.addAttribute("utilisateur", new Utilisateur());
-		
+
 		return "inscription";
 	}
-	
+
 	@PostMapping("/inscription")
-	public String creerUtilisateur(@Valid @ModelAttribute("utilisateur")Utilisateur user, BindingResult bindingResult) {
-		
+	public String creerUtilisateur(@Valid @ModelAttribute("utilisateur") Utilisateur user,
+			BindingResult bindingResult) {
+
 		if (!bindingResult.hasErrors()) {
 			try {
 				this.enchereService.creerUtilisateur(user);
 				return "index";
 			} catch (BusinessException e) {
 				e.printStackTrace();
-				e.getClesErreurs().forEach(cle->{
+				e.getClesErreurs().forEach(cle -> {
 					ObjectError error = new ObjectError("globalError", cle);
 					bindingResult.addError(error);
 				});
 			}
-		return "inscription" ;
-	}else {
-		return "inscription" ;
-	}}
-	
-	
+			return "inscription";
+		} else {
+			return "inscription";
+		}
+	}
+
 }
