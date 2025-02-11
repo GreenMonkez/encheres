@@ -8,4 +8,6 @@ public interface ArticleVenduDAO {
 
 	List<ArticleVendu> getArticles();
 
+	void create(ArticleVendu article);
+
 }

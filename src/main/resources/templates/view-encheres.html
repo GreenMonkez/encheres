@@ -38,10 +38,13 @@
 		</thead>
 		<tbody>
 			<tr th:each="a : ${articles}">
-				<td th:text="${a.nomArticle}"></td>
-				<td th:text="${a.prixVente}"></td>
+				<td >
+					<a th:text="${a.nomArticle}" th:href="@{/encheres/detail(id=${a.noArticle})}"></a>
+				</td>
+				<td th:if="${a.prixVente} != 0" th:text="${a.prixVente}"></td>
+				<td th:if="${a.prixVente} == 0" th:text="${a.miseAPrix}"></td>
 				<td th:text="${a.dateFinEncheres}"></td>
-				<td th:text="${a.vendeur.pseudo}"></td>
+				<td th:text="${a.vendeur.pseudo}"><a th:href="@{/profil(id=${a.vendeur.noUtilisateur})}"></a></td>
 			</tr>
 		</tbody>
 
