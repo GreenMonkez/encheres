@@ -1,22 +1,46 @@
 package fr.eni.tp.encheres.bo;
 
 import java.util.List;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+
 
 public class Utilisateur {
+	
+	@NotBlank
+	@Size(max = 30)
+	public String pseudo;
+	@NotBlank
+	@Size(max = 30)
+	public String nom;
+	@NotBlank
+	@Size(max = 30)
+	public String prenom;
+	@NotBlank
+	@Size(max = 40)
+	public String email;
+	@Size(max = 15)
+	public String telephone;
+	@NotBlank
+	@Size(max = 30)
+	public String rue;
+	@NotBlank
+	@Size(max = 5)
+	public String codePostal;
+	@NotBlank
+	@Size(max = 30)
+	public String ville;
+	@NotBlank
+	public String motDePasse;
+	@NotNull
+	public int credit = 0;
+	public boolean administrateur = false;
+	@NotNull
+	public int noUtilisateur;
 
-	private String pseudo;
-	private String nom;
-	private String prenom;
-	private String email;
-	private String telephone;
-	private String rue;
-	private String codePostal;
-	private String ville;
-	private String motDePasse;
-	private int credit;
-	private boolean administrateur;
-	private int noUtilisateur;
-
+	
 	List<ArticleVendu> achats;
 	List<ArticleVendu> vendus;
 	List<Enchère> encheres;

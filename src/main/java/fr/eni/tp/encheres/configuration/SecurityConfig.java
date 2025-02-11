@@ -18,27 +18,23 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig {
 	
-	private final String SELECT_USER = "select pseudo, mot_de_passe, from UTILISATEURS where pseudo=?";
-	private final String SELECT_ADMIN = "select pseudo, administrateur from UTILISATEUR  where pseudo = ?";
+	private final String SELECT_USER = "select pseudo, mot_de_passe, 'true' as enable from UTILISATEURS where pseudo=?";
+	private final String  SELECT_ROLES = "select u.pseudo, r.role from UTILISATEURS u inner join ROLES r on r.IS_ADMIN = u.administrateur where u.pseudo = ?";
+	
 	
 	@Bean
-	UserDetailsManager userDetailsManager(DataSource dataSource) {
-		JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-		jdbcUserDetailsManager.setUsersByUsernameQuery(SELECT_USER);
-		jdbcUserDetailsManager.setAuthoritiesByUsernameQuery(SELECT_ADMIN);
-		return jdbcUserDetailsManager;
-		}
-	
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(auth -> {
 			//permettre à tout le monde d'accéder à l'URL racine
 			auth
-			
+			.requestMatchers("/login", "/css/**", "/js/**").permitAll()
 				.anyRequest().permitAll();
 		});
 		//Customiser le formulaire
 		http.formLogin(form -> {
-			form.loginPage("/login").permitAll();
+			form.usernameParameter("pseudo")
+			.passwordParameter("mot_de_passe")
+			.loginPage("/login").permitAll();
 			form.defaultSuccessUrl("/").permitAll();			
 		});
 		
@@ -55,6 +51,14 @@ public class SecurityConfig {
 	}
 
 	@Bean
+	UserDetailsManager userDetailsManager(DataSource dataSource) {
+		JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
+		jdbcUserDetailsManager.setUsersByUsernameQuery(SELECT_USER);
+		jdbcUserDetailsManager.setAuthoritiesByUsernameQuery(SELECT_ROLES);
+		return jdbcUserDetailsManager;
+		}
+	
+	//@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 		
