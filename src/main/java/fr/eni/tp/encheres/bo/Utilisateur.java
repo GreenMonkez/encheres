@@ -1,15 +1,16 @@
 package fr.eni.tp.encheres.bo;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-
-
 public class Utilisateur {
-	
+
 	@NotBlank
 	@Size(max = 30)
 	private String pseudo;
@@ -42,12 +43,11 @@ public class Utilisateur {
 	private int credit = 0;
 	private boolean administrateur = false;
 	@NotNull
-	public int noUtilisateur;
+	private int noUtilisateur;
 
-	
-	List<ArticleVendu> achats;
-	List<ArticleVendu> vendus;
-	List<Enchère> encheres;
+	List<ArticleVendu> achats = new ArrayList<ArticleVendu>();
+	List<ArticleVendu> vendus = new ArrayList<ArticleVendu>();
+	List<Enchère> encheres = new ArrayList<Enchère>();
 
 	public Utilisateur() {
 

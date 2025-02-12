@@ -1,8 +1,7 @@
 package fr.eni.tp.encheres.dal;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -18,10 +17,12 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 	private static final String SELECT_BY_ID = "select no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, credit, administrateur from utilisateurs where no_utilisateur = :idUtilisateur";
 
 	private static final String FIND_BY_PSEUDO = "select no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, credit, administrateur from utilisateurs where pseudo = :pseudo";
+
 	private static final String FIND_UNIQUE_PASSWORD = "SELECT count(mot_de_passe) FROM UTILISATEURS WHERE mot_de_passe like :mot_de_passe";
 	
 	private static final String UPDATE = "UPDATE UTILISATEURS SET pseudo = :pseudo, nom = :nom, prenom = :prenom, email = :email, telephone = :telephone, rue = :rue, code_postal = :code_postal, ville = :ville, " +
 										"mot_de_passe = :motDePasse WHERE no_utilisateur = :no_utilisateur";
+
 
 	@Autowired
 	private NamedParameterJdbcTemplate jdbcTemplate;
@@ -44,7 +45,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 		jdbcTemplate.update(INSERT, map);
 
 	}
-	
 
 	@Override
 	public int validerPseudo(String pseudo) {
@@ -67,23 +67,20 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 		namedParameters.addValue("idUtilisateur", noUtilisateur);
 		return jdbcTemplate.queryForObject(SELECT_BY_ID, namedParameters, new UtilisateurRowMapper());
 	}
-
-
-
-		@Override
-		public Utilisateur getUtilisateur(String pseudo) {
+	@Override
+	public Utilisateur getUtilisateurByPseudo(String pseudo) {
 			MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 			mapSqlParameterSource.addValue("pseudo", pseudo);		
 			return jdbcTemplate.queryForObject(FIND_BY_PSEUDO, mapSqlParameterSource, new UtilisateurRowMapper());
-		}
+	}
 
 
-		@Override
-		public int validerMdp(String mdp) {
+	@Override
+	public int validerMdp(String mdp) {
 			MapSqlParameterSource map = new MapSqlParameterSource();
 			map.addValue("mot_de_passe", mdp );
 			return jdbcTemplate.queryForObject(FIND_UNIQUE_PASSWORD, map, Integer.class);
-		}
+	}
 
 
 		@Override
@@ -114,4 +111,4 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 			    
 		}}
 
-	
+

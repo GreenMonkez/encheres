@@ -16,13 +16,14 @@
 <main >
 	<h1>Liste des enchères</h1>
 	
-	<form action="">
+	<form th:action="@{/encheres/search}">
 		<label for="filtre">Filtres :</label>
 		<input type="text" placeholder="Le nom de l'article contient" name="filtre"/>
 		<br />
 		<label for="categorie">Catégorie</label>
-		<select name="categorie" id="">
-			<option value="">Toutes</option>
+		<select name="categorie" id="categorie">
+			<option value="0">Toutes</option>
+			<option th:each="c : ${categories}" th:text="${c.libelle}" th:value="${c.noCategorie}"></option>
 		</select>
 		<button type="submit">Rechercher</button>
 	</form>
@@ -38,13 +39,15 @@
 		</thead>
 		<tbody>
 			<tr th:each="a : ${articles}">
-				<td th:text="${a.nomArticle}"></td>
-				<td th:text="${a.prixVente}"></td>
+				<td >
+					<a th:text="${a.nomArticle}" th:href="@{/encheres/detail(id=${a.noArticle})}"></a>
+				</td>
+				<td th:if="${a.prixVente} != 0" th:text="${a.prixVente}"></td>
+				<td th:if="${a.prixVente} == 0" th:text="${a.miseAPrix}"></td>
 				<td th:text="${a.dateFinEncheres}"></td>
 				<td th:text="${a.vendeur.pseudo}"><a th:href="@{/profil(id=${a.vendeur.noUtilisateur})}"></a></td>
 			</tr>
 		</tbody>
-
 	</table>
 </main>
 

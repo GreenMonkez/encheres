@@ -1,22 +1,46 @@
 package fr.eni.tp.encheres.bo;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public class ArticleVendu {
 	private int noArticle;
+
+	@NotBlank
+	@Size(max = 30)
 	private String nomArticle;
+
+	@NotBlank
+	@Size(max = 300)
 	private String description;
+
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime dateDebutEncheres;
+
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime dateFinEncheres;
+
+	@Min(value = 0)
 	private int miseAPrix;
+
+	@Min(value = 0)
 	private int prixVente;
 	private String etatVente;
+
+	@Valid
 	Retrait lieuRetrait;
 	Utilisateur acheteur;
 	Utilisateur vendeur;
 	Categorie categorieArticle;
-	List<Enchère> encheres;
+	List<Enchère> encheres = new ArrayList<Enchère>();
 
 	public ArticleVendu() {
 

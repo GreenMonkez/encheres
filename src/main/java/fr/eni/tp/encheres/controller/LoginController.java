@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import fr.eni.tp.encheres.bll.LoginService;
@@ -21,10 +20,9 @@ import jakarta.validation.Valid;
 @Controller
 @SessionAttributes({"userSession"})
 public class LoginController {
-	
+
+
 	private LoginService loginService;
-	
-	
 
 	public LoginController(LoginService loginService) {
 		this.loginService = loginService;
@@ -32,12 +30,12 @@ public class LoginController {
 
 	@GetMapping("/inscription")
 	public String afficherInscription(Model model) {
-		
+
 		model.addAttribute("utilisateur", new Utilisateur());
-		
+
 		return "inscription";
 	}
-	
+
 	@PostMapping("/inscription")
 	public String creerUtilisateur(@RequestParam("PasswordConfirm")String mdpConfirm, @Valid @ModelAttribute("utilisateur") Utilisateur user, BindingResult bindingResult) {
 		
@@ -47,12 +45,13 @@ public class LoginController {
 				return "redirect:/encheres";
 			} catch (BusinessException e) {
 				e.printStackTrace();
-				e.getClesErreurs().forEach(cle->{
+				e.getClesErreurs().forEach(cle -> {
 					ObjectError error = new ObjectError("globalError", cle);
 					bindingResult.addError(error);
 				});
 			}
-		return "inscription" ;
+			return "inscription";
+
 
 		}else {
 		return "inscription" ;
@@ -106,35 +105,45 @@ public class LoginController {
 					ObjectError error = new ObjectError("globalError", cle);
 					bindingResult.addError(error);
 				});
-			}	
+				}	
 			return "modifier-profil";
 		}else {
 			return "modifier-profil";
 		}
+
 	}
 	
+
+	@GetMapping("/profil")
+	public String afficherProfil(@RequestParam("id") int id, Model model) {
+		Utilisateur user = this.loginService.consulterUtilisateur(id);
+		model.addAttribute("utilisateur", user);
+
+		return "profil";
+
+	}
+
 	@GetMapping("/login")
 	public String login() {
 		return "login";
 	}
-	
+
 	@ModelAttribute("userSession")
 	public Utilisateur addUserSession() {
 		return new Utilisateur();
 	}
-	
+
 	@GetMapping("/login/session")
-	public String connexion(@ModelAttribute("userSession")Utilisateur userSession, Principal principal) {
-		
+	public String connexion(@ModelAttribute("userSession") Utilisateur userSession, Principal principal) {
+
 		if (principal != null) {
 			System.out.println("Utilisateur connecté : " + principal.getName());
-		}else {
+		} else {
 			System.out.println("Utilisateur non connecté");
 		}
-		
+
 		Utilisateur utilisateur = this.loginService.charger(principal.getName());
-		System.out.println(utilisateur);
-		
+
 		if (utilisateur != null) {
 			userSession.setNoUtilisateur(utilisateur.getNoUtilisateur());
 			userSession.setPseudo(utilisateur.getPseudo());
@@ -147,7 +156,9 @@ public class LoginController {
 			userSession.setCodePostal(utilisateur.getCodePostal());
 			userSession.setVille(utilisateur.getVille());
 			userSession.setAdministrateur(utilisateur.isAdministrateur());
-		}else {
+
+		} else {
+
 			userSession.setNoUtilisateur(0);
 			userSession.setPseudo(null);
 			userSession.setNom(null);
@@ -159,15 +170,11 @@ public class LoginController {
 			userSession.setCodePostal(null);
 			userSession.setVille(null);
 			userSession.setAdministrateur(false);
-		
+
 		}
-		
-		
+
 		return "redirect:/encheres";
-		
-		
+
 	}
-	
-	
 
 }

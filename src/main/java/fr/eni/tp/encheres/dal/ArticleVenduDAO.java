@@ -8,4 +8,12 @@ public interface ArticleVenduDAO {
 
 	List<ArticleVendu> getArticles();
 
+	void create(ArticleVendu article);
+
+	List<ArticleVendu> getArticlesFiltresByString(String filtreSql);
+
+	List<ArticleVendu> getArticlesFiltresById(int idCategorie);
+
+	List<ArticleVendu> getArticlesFiltresByStringAndId(String filtreSql, int idCategorie);
+
 }

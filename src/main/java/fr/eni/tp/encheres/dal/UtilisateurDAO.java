@@ -10,9 +10,10 @@ public interface UtilisateurDAO {
 	int validerPseudo(String pseudo);
 	
 	int validerEmail(String email);
+	
 	Utilisateur getUtilisateur(int noUtilisateur);
 	
-	Utilisateur getUtilisateur(String pseudo);
+	Utilisateur getUtilisateurByPseudo(String pseudo);
 	
 	int validerMdp(String mdp);
 	
