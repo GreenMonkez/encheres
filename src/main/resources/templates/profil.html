@@ -12,32 +12,32 @@
 </header>
 
 <main>
-	<form action="@{/profil}" method="POST">
+	<form action="@{/profil}" th:object="${utilisateur}">
 		<ul class="flex-outer">
 		
 			<li>
-				<p th:text ="${user.pseudo}">Pseudo : </p>
+				<p th:field ="*{pseudo}">Pseudo : </p>
 			</li>
 			<li>
-				<p th:text ="${user.nom}">Nom : </p>
+				<p th:field ="*{nom}">Nom : </p>
 			</li>
 			<li>
-				<p th:text ="${user.prenom}">Prénom : </p>
+				<p th:field ="*{prenom}">Prénom : </p>
 			</li>
 			<li>
-				<p th:text ="${user.email}">Email : </p>
+				<p th:field ="*{email}">Email : </p>
 			</li>
 			<li>
-				<p th:text ="${user.telephone}">Téléphone : </p>
+				<p th:field ="*{telephone}">Téléphone : </p>
 			</li>
 			<li>
-				<p th:text ="${user.rue}">Rue : </p>
+				<p th:field ="*{rue}">Rue : </p>
 			</li>
 			<li>
-				<p th:text ="${user.codePostal}">Code postal : </p>
+				<p th:field ="*{codePostal}">Code postal : </p>
 			</li>
 			<li>
-				<p th:text ="${user.ville}">Ville : </p>
+				<p th:field ="*{ville}">Ville : </p>
 			</li>
 			
 		</ul>

@@ -13,5 +13,9 @@ public interface UtilisateurDAO {
 	Utilisateur getUtilisateur(int noUtilisateur);
 	
 	Utilisateur getUtilisateur(String pseudo);
+	
+	int validerMdp(String mdp);
+	
+	void modifierUtilisateur(Utilisateur user);
 
 }

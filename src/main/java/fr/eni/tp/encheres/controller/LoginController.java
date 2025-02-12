@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import fr.eni.tp.encheres.bll.LoginService;
 import fr.eni.tp.encheres.bo.Utilisateur;
@@ -17,6 +19,7 @@ import fr.eni.tp.encheres.exception.BusinessException;
 import jakarta.validation.Valid;
 
 @Controller
+@SessionAttributes({"userSession"})
 public class LoginController {
 	
 	private LoginService loginService;
@@ -36,7 +39,7 @@ public class LoginController {
 	}
 	
 	@PostMapping("/inscription")
-	public String creerUtilisateur(@Valid @RequestParam("PasswordConfirm") @ModelAttribute("utilisateur")String mdpConfirm, Utilisateur user, BindingResult bindingResult) {
+	public String creerUtilisateur(@RequestParam("PasswordConfirm")String mdpConfirm, @Valid @ModelAttribute("utilisateur") Utilisateur user, BindingResult bindingResult) {
 		
 		if (!bindingResult.hasErrors()) {
 			try {
@@ -54,13 +57,60 @@ public class LoginController {
 		}else {
 		return "inscription" ;
 	}}
+	
+	
+		
+	
 
-	@GetMapping("/profil")
-	public String afficherProfil(@RequestParam("id")int id, Model model) {
-		Utilisateur user = this.loginService.consulterUtilisateur(id);
+	@GetMapping("/monProfil")
+	public String afficherProfil( Model model, @ModelAttribute("userSession") Utilisateur userSession) {
+		Utilisateur user = this.loginService.consulterUtilisateur(userSession.getNoUtilisateur());
+		model.addAttribute("utilisateur", user);
+
+		
+		return "mon-profil";
+	}
+	
+	@PostMapping("/monProfil")
+	public String allerModifierProfil(Model model, @ModelAttribute("userSession") Utilisateur userSession) {
+		
+		Utilisateur user = this.loginService.consulterUtilisateur(userSession.getNoUtilisateur());
 		model.addAttribute("utilisateur", user);
 		
-		return "profil";
+		
+		return "modifier-profil";
+	}
+	
+	@GetMapping("/monProfil/modifier")
+	public String  afficherModifierProfil(Model model, @ModelAttribute("userSession") Utilisateur userSession) {
+		
+		Utilisateur user = this.loginService.consulterUtilisateur(userSession.getNoUtilisateur());
+		model.addAttribute("utilisateur", user);
+		
+		
+		return "modifier-profil";
+	}
+	
+	@PostMapping("/monProfil/modifier")
+	public String modifierProfil(@RequestParam("NewMotDePasse")String newMdp, @RequestParam("PasswordConfirm")String mdpConfirm,@ModelAttribute("userSession") Utilisateur userSession, @Valid @ModelAttribute("utilisateur") Utilisateur user, BindingResult bindingResult) {
+		
+		user.setNoUtilisateur(userSession.getNoUtilisateur());
+		if (!bindingResult.hasErrors()) {
+			
+			try {
+			this.loginService.modifierUtilisateur(user, mdpConfirm, newMdp);
+				return "redirect:/monProfil";
+			} catch (BusinessException e) {
+				e.printStackTrace();
+				e.getClesErreurs().forEach(cle->{
+					ObjectError error = new ObjectError("globalError", cle);
+					bindingResult.addError(error);
+				});
+			}	
+			return "modifier-profil";
+		}else {
+			return "modifier-profil";
+		}
 	}
 	
 	@GetMapping("/login")
@@ -70,7 +120,6 @@ public class LoginController {
 	
 	@ModelAttribute("userSession")
 	public Utilisateur addUserSession() {
-		System.out.println("Add user en session");
 		return new Utilisateur();
 	}
 	
@@ -84,6 +133,7 @@ public class LoginController {
 		}
 		
 		Utilisateur utilisateur = this.loginService.charger(principal.getName());
+		System.out.println(utilisateur);
 		
 		if (utilisateur != null) {
 			userSession.setNoUtilisateur(utilisateur.getNoUtilisateur());
@@ -96,7 +146,7 @@ public class LoginController {
 			userSession.setRue(utilisateur.getRue());
 			userSession.setCodePostal(utilisateur.getCodePostal());
 			userSession.setVille(utilisateur.getVille());
-			userSession.setAdministrateur(utilisateur.administrateur);
+			userSession.setAdministrateur(utilisateur.isAdministrateur());
 		}else {
 			userSession.setNoUtilisateur(0);
 			userSession.setPseudo(null);
@@ -111,7 +161,7 @@ public class LoginController {
 			userSession.setAdministrateur(false);
 		
 		}
-		System.out.println(userSession.toString());
+		
 		
 		return "redirect:/encheres";
 		

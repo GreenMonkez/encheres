@@ -12,4 +12,6 @@ public interface LoginService {
 	
 	public Utilisateur charger(String pseudo);
 	
+	void modifierUtilisateur(Utilisateur user, String mdpConfirm, String newMdp) throws BusinessException;
+	
 }

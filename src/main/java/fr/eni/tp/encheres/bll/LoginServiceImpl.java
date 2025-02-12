@@ -30,19 +30,17 @@ public class LoginServiceImpl implements LoginService{
 	@Override
 	public void creerUtilisateur(Utilisateur user, String mdpConfirm) throws BusinessException{
 		BusinessException be = new BusinessException();
-		
-
-
-		String mdpEncode = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.getMotDePasse());
-		user.setMotDePasse(mdpEncode);
-
-		
+	
 		boolean valide = validerUtilisateurPseudo(user.getPseudo(), be);
 		valide &= validerUtilisateurEmail(user.getEmail(), be);
 		valide &= validerConfirmMdp(mdpConfirm, user.getMotDePasse(), be);
 		
+		
+
 		try {
 			if (valide) {
+				String mdpEncode = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(user.getMotDePasse());
+				user.setMotDePasse(mdpEncode);
 				utilisateurDAO.creerUtilisateur(user);
 			}else {
 				throw be;
@@ -54,6 +52,33 @@ public class LoginServiceImpl implements LoginService{
 		}
 		
 	
+	}
+	
+	@Override
+	public void modifierUtilisateur(Utilisateur user, String mdpConfirm, String newMdp) throws BusinessException {
+		BusinessException be = new BusinessException();
+		String mdpActuel = user.getMotDePasse();
+		
+		boolean valide = validerConfirmMdp(mdpConfirm, newMdp, be);
+		valide &= validerMdpActuel(mdpActuel, be);
+
+		try {
+			if (valide) {
+				String mdpEncode = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(newMdp);
+				user.setMotDePasse(mdpEncode);
+				System.out.println(user.getNoUtilisateur());
+				utilisateurDAO.modifierUtilisateur(user);
+				
+				
+			}else {
+				throw be;
+			}
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+			be.addErreur("erreur.utilisateur.modification");
+			throw be;
+		}
+		
 	}
 	
 	
@@ -83,9 +108,6 @@ public boolean validerUtilisateurEmail(String email, BusinessException be) {
 		
 	}
 
-
-
-
 @Override
 public Utilisateur consulterUtilisateur(int id) {
 	Utilisateur user = utilisateurDAO.getUtilisateur(id);
@@ -95,7 +117,7 @@ public Utilisateur consulterUtilisateur(int id) {
 public boolean validerConfirmMdp(String mdp, String mdpConfirm, BusinessException be) {
 	
 	boolean valide = true;
-	if (mdp != mdpConfirm) {
+	if (!mdp.equals(mdpConfirm)) {
 		valide = false;
 		be.addErreur("erreur.password.confirm");
 	}
@@ -104,13 +126,28 @@ public boolean validerConfirmMdp(String mdp, String mdpConfirm, BusinessExceptio
 	
 }
 
+public boolean validerMdpActuel(String mdp, BusinessException be) {
+	boolean valide = true;
+	String mdpEncode = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(mdp);
+	int nbMdp = utilisateurDAO.validerMdp(mdpEncode);
+	if (nbMdp == 1) {
+		valide = false;
+		be.addErreur("erreur.password.actuel");
+	}
 
+	return valide;
+	
+}
 
 @Override
 public Utilisateur charger(String pseudo) {
 	return this.utilisateurDAO.getUtilisateur(pseudo);
 	
 }
+
+
+
+
 
 
 }

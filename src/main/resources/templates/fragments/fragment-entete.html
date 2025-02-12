@@ -5,7 +5,7 @@
 	<nav>
 		<ul>
 			<li sec:authorize="!isAuthenticated()"><a th:href="@{/login}">S'incrire - Se connecter</a></li>
-			<li sec:authorize="isAuthenticated()"><a th:href="@{/profil}">Mon profil</a></li>
+			<li sec:authorize="isAuthenticated()"><a th:href="@{/monProfil}">Mon profil</a></li>
 			<li sec:authorize="isAuthenticated()"><a th:href="@{/logout}">Déconnexion</a></li>
 		</ul>
 		

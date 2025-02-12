@@ -12,35 +12,35 @@ public class Utilisateur {
 	
 	@NotBlank
 	@Size(max = 30)
-	public String pseudo;
+	private String pseudo;
 	@NotBlank
 	@Size(max = 30)
-	public String nom;
+	private String nom;
 	@NotBlank
 	@Size(max = 30)
-	public String prenom;
+	private String prenom;
 	@NotBlank
 	@Size(max = 40)
 	@NotBlank
 	@Size(max = 40)
 	@Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "L'adresse email est invalide.")
-	public String email;
+	private String email;
 	@Size(max = 15)
-	public String telephone;
+	private String telephone;
 	@NotBlank
 	@Size(max = 30)
-	public String rue;
+	private String rue;
 	@NotBlank
 	@Size(max = 5)
-	public String codePostal;
+	private String codePostal;
 	@NotBlank
 	@Size(max = 30)
-	public String ville;
+	private String ville;
 	@NotBlank
-	public String motDePasse;
+	private String motDePasse;
 	@NotNull
-	public int credit = 0;
-	public boolean administrateur = false;
+	private int credit = 0;
+	private boolean administrateur = false;
 	@NotNull
 	public int noUtilisateur;
 
