@@ -32,6 +32,7 @@ public class SecurityConfig {
 			.requestMatchers("/inscription").permitAll()
 			.requestMatchers("/encheres").permitAll()
 			.requestMatchers("/encheres/nouvelleVente").hasRole("USER")
+			.requestMatchers("/encheres/search").permitAll()
 			.anyRequest().denyAll();
 		});
 		

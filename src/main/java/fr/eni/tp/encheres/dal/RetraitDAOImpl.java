@@ -22,9 +22,9 @@ public class RetraitDAOImpl implements RetraitDAO {
 	public void create(ArticleVendu article) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("noArticle", article.getNoArticle());
-		map.addValue("rue", article.getVendeur().getRue());
-		map.addValue("codePostal", article.getVendeur().getCodePostal());
-		map.addValue("ville", article.getVendeur().getVille());
+		map.addValue("rue", article.getLieuRetrait().getRue());
+		map.addValue("codePostal", article.getLieuRetrait().getCode_postal());
+		map.addValue("ville", article.getLieuRetrait().getVille());
 
 		namedParameterJdbcTemplate.update(INSERT, map);
 
