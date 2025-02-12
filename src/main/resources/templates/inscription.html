@@ -12,12 +12,8 @@
 <header th:replace="~{fragments/fragment-entete :: entete}">
 </header>
 
-
-
 <main>
-	
-	
-	
+
 	<form th:action="@{/inscription}" th:object="${utilisateur}" method="POST">
 		<h1>Mon profil</h1>
 		<div class="cards" th:if="${#fields.hasErrors('*')}">
