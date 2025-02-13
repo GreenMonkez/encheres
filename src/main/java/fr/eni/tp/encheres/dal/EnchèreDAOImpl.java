@@ -2,73 +2,65 @@ package fr.eni.tp.encheres.dal;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+
 import fr.eni.tp.encheres.bo.Enchère;
-import fr.eni.tp.encheres.bo.Utilisateur;
-import fr.eni.tp.encheres.dal.rowmapper.EnchereRowMapper;
+
 import fr.eni.tp.encheres.dal.rowmapper.EnchèreRowMapper;
-
-
 
 @Repository
 public class EnchèreDAOImpl implements EnchèreDAO {
-	private static final String INSERT = "INSERT INTO UTILISATEURS (pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur) VALUES (:pseudo, :nom, :prenom, :email, :telephone, :rue, :code_postal, :ville, :motDePasse, :credit, :administrateur)";
+	private static final String COUNT_BY_ID_ARTICLE = "select count(*) from encheres where no_article = :idArticle";
+	private static final String SELECT_ALL_BY_ID = "select no_utilisateur, no_article, date_enchere, montant_enchere from encheres where no_article = :idArticle";
 	private static final String SELECT_USER_BY_PRIX = "SELECT * FROM ENCHERES WHERE no_article = :id_article AND montant_enchere = :prix_vente";
-	private static final String COUNT_ENCHERE  = "SELECT COUNT(*) FROM ENCHERES WHERE no_article = :id_article AND montant_enchere = :prix_vente";
+	private static final String COUNT_ENCHERE = "SELECT COUNT(*) FROM ENCHERES WHERE no_article = :id_article AND montant_enchere = :prix_vente";
 	private static final String FIND_ALL_BY_ID = "SELECT date_enchere FROM ENCHERES WHERE no_utilisateur = :id";
 
-	
-	@Autowired
-	private NamedParameterJdbcTemplate jdbcTemplate;
+	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-	@Override
-	public void creerUtilisateur(Utilisateur user) {
-		MapSqlParameterSource map = new MapSqlParameterSource();
-		map.addValue("pseudo", user.getPseudo());
-		map.addValue("nom", user.getNom());
-		map.addValue("prenom", user.getPrenom());
-		map.addValue("email", user.getEmail());
-		map.addValue("telephone", user.getTelephone());
-		map.addValue("rue", user.getRue());
-		map.addValue("code_postal", user.getCodePostal());
-		map.addValue("ville", user.getVille());
-		map.addValue("motDePasse", user.getMotDePasse());
-		map.addValue("credit", user.getCredit());
-		map.addValue("administrateur", user.isAdministrateur());
-
-		KeyHolder keyHolder = new GeneratedKeyHolder();
-		jdbcTemplate.update(INSERT, map, keyHolder);
-
-		if (keyHolder != null && keyHolder.getKey() != null) {
-
-			user.setNoUtilisateur(keyHolder.getKey().intValue());
-		}
+	public EnchèreDAOImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
 
-	
 	/**
-	 * Méthode permettant de trouver toutes les enchères correspondant à l'id de l'utilisateur
-	 * Return List Enchère
+	 * Méthode retournant le nombre d'enchère en fonction de l'id de l'article
+	 */
+	@Override
+	public int countByIdArticle(int idArticle) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("idArticle", idArticle);
+		return namedParameterJdbcTemplate.queryForObject(COUNT_BY_ID_ARTICLE, map, Integer.class);
+	}
+
+	/**
+	 * Méthode retournant la liste des enchères en fonction de l'id de l'article
+	 */
+	@Override
+	public List<Enchère> getEncheres(int idArticle) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("idArticle", idArticle);
+		return namedParameterJdbcTemplate.query(SELECT_ALL_BY_ID, map, new EnchèreRowMapper());
+	}
+
+	/**
+	 * Méthode permettant de trouver toutes les enchères correspondant à l'id de
+	 * l'utilisateur Return List Enchère
 	 */
 	@Override
 	public List<Enchère> consulterEncheresById(int idUser) {
-		 MapSqlParameterSource map = new MapSqlParameterSource();
-		    map.addValue("id", idUser);
-		    return jdbcTemplate.query(FIND_ALL_BY_ID, map, new EnchèreRowMapper());
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("id", idUser);
+		return namedParameterJdbcTemplate.query(FIND_ALL_BY_ID, map, new EnchèreRowMapper());
 	}
-
 
 	@Override
 	public Enchère getUtilisateurParPrix(int prixVente, int idArticle) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("id_article", idArticle);
 		map.addValue("prix_vente", prixVente);
-		return jdbcTemplate.queryForObject(SELECT_USER_BY_PRIX, map, new EnchereRowMapper());
+		return namedParameterJdbcTemplate.queryForObject(SELECT_USER_BY_PRIX, map, new EnchèreRowMapper());
 	}
 
 	@Override
@@ -76,9 +68,7 @@ public class EnchèreDAOImpl implements EnchèreDAO {
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("id_article", idArticle);
 		map.addValue("prix_vente", prixVente);
-		return jdbcTemplate.queryForObject(COUNT_ENCHERE, map, Integer.class);
+		return namedParameterJdbcTemplate.queryForObject(COUNT_ENCHERE, map, Integer.class);
 	}
-
-
 
 }

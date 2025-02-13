@@ -2,7 +2,6 @@ package fr.eni.tp.encheres.dal;
 
 import java.util.List;
 
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -11,12 +10,9 @@ import org.springframework.stereotype.Repository;
 
 import fr.eni.tp.encheres.bo.ArticleVendu;
 import fr.eni.tp.encheres.dal.rowmapper.ArticleVenduRowMapper;
-import fr.eni.tp.encheres.dal.rowmapper.EnchereRowMapper;
-
 
 @Repository
 public class ArticleVenduDAOImpl implements ArticleVenduDAO {
-
 
 	private static final String SELECT_ALL = "select no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie from articles_vendus";
 	private static final String INSERT = "insert into articles_vendus (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur, no_categorie) values (:nom, :description, :dateDebut, :dateFin, :prixInitial, :idUtilisateur, :idCategorie)";
@@ -25,11 +21,8 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 	private static final String SELECT_BY_STRING_AND_ID_CATEGORIE = "select no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie from articles_vendus where nom_article like :filtreSql and no_categorie = :idCategorie";
 	private static final String CHECK_ARTICLES_VENDUS = "SELECT * FROM ARTICLES_VENDUS a WHERE a.no_utilisateur = :id";
 	private static final String UPDATE = "UPDATE  articles_vendus (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur, no_categorie) values (:nom, :description, :dateDebut, :dateFin, :prixInitial, :idUtilisateur, :idCategorie)";
-	private static final String SELECT_BY_ID ="SELECT  no_categorie, prix_vente, no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur FROM ARTICLES_VENDUS WHERE no_article = :id";
+	private static final String SELECT_BY_ID = "SELECT  no_categorie, prix_vente, no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur FROM ARTICLES_VENDUS WHERE no_article = :id";
 
-
-	
-	
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	public ArticleVenduDAOImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
@@ -42,6 +35,10 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 
 	}
 
+	/**
+	 * Méthode insérant en BDD un nouvel article tout en changeant l'id de cet
+	 * article avec l'id en BDD
+	 */
 	@Override
 	public void create(ArticleVendu article) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
@@ -62,6 +59,9 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 		}
 	}
 
+	/**
+	 * Méthode retournant la liste des articles filtrée par un mot-clé
+	 */
 	@Override
 	public List<ArticleVendu> getArticlesFiltresByString(String filtreSql) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
@@ -69,6 +69,9 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 		return namedParameterJdbcTemplate.query(SELECT_BY_STRING, map, new ArticleVenduRowMapper());
 	}
 
+	/**
+	 * Méthode retournant la liste des articles filtrée par l'id d'une catégorie
+	 */
 	@Override
 	public List<ArticleVendu> getArticlesFiltresById(int idCategorie) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
@@ -76,6 +79,10 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 		return namedParameterJdbcTemplate.query(SELECT_BY_ID_CATEGORIE, map, new ArticleVenduRowMapper());
 	}
 
+	/**
+	 * Méthode retournant la liste des articles filtrée par un mot-clé et par l'id
+	 * d'une catégorie
+	 */
 	@Override
 	public List<ArticleVendu> getArticlesFiltresByStringAndId(String filtreSql, int idCategorie) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
@@ -83,20 +90,20 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 		map.addValue("idCategorie", idCategorie);
 		return namedParameterJdbcTemplate.query(SELECT_BY_STRING_AND_ID_CATEGORIE, map, new ArticleVenduRowMapper());
 	}
-	
+
 	/**
-	 * Méthode permettant de trouver tous les ArticleVendu correspondant à l'id de l'utilisateur
-	 * Return List ArticleVendu
+	 * Méthode permettant de trouver tous les ArticleVendu correspondant à l'id de
+	 * l'utilisateur Return List ArticleVendu
 	 */
 	@Override
 	public List<ArticleVendu> consulterArticlesById(int idUser) {
-	    MapSqlParameterSource map = new MapSqlParameterSource();
-	    map.addValue("id", idUser);
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("id", idUser);
 
-	    return namedParameterJdbcTemplate.query(CHECK_ARTICLES_VENDUS, map, new ArticleVenduRowMapper());
-	     
+		return namedParameterJdbcTemplate.query(CHECK_ARTICLES_VENDUS, map, new ArticleVenduRowMapper());
+
 	}
-	
+
 	/**
 	 * Méthode permettant de modifier un utilisateur en base de donnée
 	 */
@@ -111,7 +118,7 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 			map.addValue("prixInitial", article.getMiseAPrix());
 			map.addValue("idUtilisateur", article.getVendeur().getNoUtilisateur());
 			map.addValue("idCategorie", article.getCategorieArticle().getNoCategorie());
-		
+
 			int rowsAffected = namedParameterJdbcTemplate.update(UPDATE, map);
 			if (rowsAffected == 0) {
 				throw new RuntimeException("Aucune mise à jour effectuée, article introuvable.");
@@ -119,7 +126,7 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 		} catch (Exception e) {
 			throw new RuntimeException("Erreur lors de la mise à jour de l'article : " + e.getMessage(), e);
 		}
-		
+
 	}
 
 	@Override

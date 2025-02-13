@@ -9,7 +9,7 @@ public interface ArticleVenduDAO {
 	List<ArticleVendu> getArticles();
 
 	void create(ArticleVendu article);
-	
+
 	ArticleVendu read(int id);
 
 	List<ArticleVendu> getArticlesFiltresByString(String filtreSql);
@@ -17,9 +17,9 @@ public interface ArticleVenduDAO {
 	List<ArticleVendu> getArticlesFiltresById(int idCategorie);
 
 	List<ArticleVendu> getArticlesFiltresByStringAndId(String filtreSql, int idCategorie);
-	
+
 	List<ArticleVendu> consulterArticlesById(int idUser);
-	
+
 	void modifierArticle(ArticleVendu article);
 
 }

@@ -6,6 +6,6 @@ import fr.eni.tp.encheres.bo.Retrait;
 public interface RetraitDAO {
 
 	void create(ArticleVendu article);
-	
-	Retrait getretraitById(int noArticle);
+
+	Retrait getRetraitById(int noArticle);
 }
