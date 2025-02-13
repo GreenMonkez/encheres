@@ -19,6 +19,7 @@ public class RetraitDAOImpl implements RetraitDAO {
 	
 	// ****************** ATTRIBUT INSTANCES ***********************************
 	
+
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	// ****************** CONSTRUCTEURS***********************************
@@ -30,7 +31,7 @@ public class RetraitDAOImpl implements RetraitDAO {
 	// ****************** METHODES ***********************************
 	
 	/**
-	 * Méthode permettant d'inserer un retrait nouvellement créer dans la base de donnée
+	 * Méthode insérant en BDD un nouvel lieu de retrait lié à un article
 	 */
 	@Override
 	public void create(ArticleVendu article) {
@@ -49,11 +50,10 @@ public class RetraitDAOImpl implements RetraitDAO {
 	 * Return un retrait
 	 */
 	@Override
-	public Retrait getretraitById(int noArticle) {
+	public Retrait getRetraitById(int noArticle) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("no_article", noArticle);
 		return namedParameterJdbcTemplate.queryForObject(SELECT_BY_ID, map, new RetraitRowMapper());
 	}
-	
 
 }

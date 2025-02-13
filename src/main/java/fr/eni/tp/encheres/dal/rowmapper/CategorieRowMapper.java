@@ -9,6 +9,9 @@ import fr.eni.tp.encheres.bo.Categorie;
 
 public class CategorieRowMapper implements RowMapper<Categorie> {
 
+	/**
+	 * Méthode rowmapper de catégorie
+	 */
 	@Override
 	public Categorie mapRow(ResultSet rs, int rowNum) throws SQLException {
 		

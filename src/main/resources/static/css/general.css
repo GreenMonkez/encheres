@@ -1,6 +1,5 @@
 @charset "UTF-8";
 
-
 /* nav ul { */
 /*   display: flex; */
 /*   justify-content: space-between; */
@@ -98,6 +97,6 @@ footer {
 	height: auto;
 }
 
-nav li {	
+nav li {
 	font-size: 1.5em;
 }

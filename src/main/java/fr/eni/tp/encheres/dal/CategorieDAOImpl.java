@@ -28,8 +28,12 @@ public class CategorieDAOImpl implements CategorieDAO {
 		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
 
+
 	// ****************** METHODES ***********************************
-	
+
+	/**
+	 * Méthode retournant une catégorie en fonction de son id
+	 */
 	@Override
 	public Categorie getCategorie(int noCategorie) {
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
@@ -38,6 +42,9 @@ public class CategorieDAOImpl implements CategorieDAO {
 				new BeanPropertyRowMapper<>(Categorie.class));
 	}
 
+	/**
+	 * Méthode retournant la liste des catégories
+	 */
 	@Override
 	public List<Categorie> getCategories() {
 		return namedParameterJdbcTemplate.query(SELECT_ALL, new CategorieRowMapper());

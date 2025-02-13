@@ -11,6 +11,10 @@ import fr.eni.tp.encheres.bo.Utilisateur;
 
 public class ArticleVenduRowMapper implements RowMapper<ArticleVendu> {
 
+	/**
+	 * Méthode rowmapper d'article, ajoutant un utilisateur avec un id et une
+	 * catégorie avec un id
+	 */
 	@Override
 	public ArticleVendu mapRow(ResultSet rs, int rowNum) throws SQLException {
 		

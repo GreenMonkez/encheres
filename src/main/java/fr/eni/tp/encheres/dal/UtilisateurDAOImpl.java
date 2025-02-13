@@ -1,17 +1,13 @@
 package fr.eni.tp.encheres.dal;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
+
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import fr.eni.tp.encheres.bo.ArticleVendu;
-import fr.eni.tp.encheres.bo.Enchère;
 import fr.eni.tp.encheres.bo.Utilisateur;
-import fr.eni.tp.encheres.dal.rowmapper.ArticleVenduRowMapper;
+
 import fr.eni.tp.encheres.dal.rowmapper.UtilisateurRowMapper;
 
 @Repository
@@ -35,7 +31,8 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 	// ****************** METHODES ***********************************
 	
 	/**
-	 * Méthode permettant d'inserer un utilisateur nouvellement créer dans la base de donnée
+	 * Méthode permettant d'inserer un utilisateur nouvellement créer dans la base
+	 * de donnée
 	 */
 	@Override
 	public void creerUtilisateur(Utilisateur user) {
@@ -55,11 +52,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 		jdbcTemplate.update(INSERT, map);
 
 	}
-	
+
 	/**
-	 * Méthode permettant de verifier
-	 * si le pseudo donné par l'user correspond au pseudo en base de donnée
-	 * Return un int
+	 * Méthode permettant de verifier si le pseudo donné par l'user correspond au
+	 * pseudo en base de donnée Return un int
 	 */
 	@Override
 	public int validerPseudo(String pseudo) {
@@ -67,11 +63,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 		map.addValue("pseudo", pseudo);
 		return jdbcTemplate.queryForObject(FIND_UNIQUE_PSEUDO, map, Integer.class);
 	}
-	
+
 	/**
-	 * Méthode permettant de verifier
-	 * si l'email donné par l'user correspond a l'email en base de donnée
-	 * Return un int
+	 * Méthode permettant de verifier si l'email donné par l'user correspond a
+	 * l'email en base de donnée Return un int
 	 */
 	@Override
 	public int validerEmail(String email) {
@@ -91,10 +86,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 		namedParameters.addValue("idUtilisateur", noUtilisateur);
 		return jdbcTemplate.queryForObject(SELECT_BY_ID, namedParameters, new UtilisateurRowMapper());
 	}
-	
+
 	/**
-	 * Méthode permettant de chercher un user en base grâce à son pseudo
-	 * Return un Utilisateur
+	 * Méthode permettant de chercher un user en base grâce à son pseudo Return un
+	 * Utilisateur
 	 */
 	@Override
 	public Utilisateur getUtilisateurByPseudo(String pseudo) {
@@ -102,11 +97,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 		mapSqlParameterSource.addValue("pseudo", pseudo);
 		return jdbcTemplate.queryForObject(FIND_BY_PSEUDO, mapSqlParameterSource, new UtilisateurRowMapper());
 	}
-	
+
 	/**
-	 * Méthode permettant de verifier
-	 * si le mot de passe donné par l'user correspond au mot de passe en base de donnée
-	 * Return un int 
+	 * Méthode permettant de verifier si le mot de passe donné par l'user correspond
+	 * au mot de passe en base de donnée Return un int
 	 */
 	@Override
 	public int validerMdp(String mdp) {
@@ -114,7 +108,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 		map.addValue("mot_de_passe", mdp);
 		return jdbcTemplate.queryForObject(FIND_UNIQUE_PASSWORD, map, Integer.class);
 	}
-	
+
 	/**
 	 * Méthode permettant de modifier un utilisateur en base de donnée
 	 */
