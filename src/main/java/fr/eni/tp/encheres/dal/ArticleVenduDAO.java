@@ -9,6 +9,8 @@ public interface ArticleVenduDAO {
 	List<ArticleVendu> getArticles();
 
 	void create(ArticleVendu article);
+	
+	ArticleVendu read(int id);
 
 	List<ArticleVendu> getArticlesFiltresByString(String filtreSql);
 

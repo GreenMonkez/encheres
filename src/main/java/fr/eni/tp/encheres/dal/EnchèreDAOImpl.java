@@ -7,6 +7,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import fr.eni.tp.encheres.bo.ArticleVendu;
 import fr.eni.tp.encheres.bo.Utilisateur;
 
 @Repository
@@ -39,4 +40,6 @@ public class EnchèreDAOImpl implements EnchèreDAO {
 			user.setNoUtilisateur(keyHolder.getKey().intValue());
 		}
 	}
+
+
 }

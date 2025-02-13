@@ -70,6 +70,7 @@ public class EnchereServiceImpl implements EnchereService {
 
 	}
 
+
 	private boolean dateFinConforme(LocalDateTime dateDebut, LocalDateTime dateFin, BusinessException be) {
 		if (dateFin == null) {
 			be.addErreur("date.fin.null");
@@ -120,4 +121,11 @@ public class EnchereServiceImpl implements EnchereService {
 		}
 		return articles;
 	}
+
+	@Override
+	public ArticleVendu articleById(int noArticle) {
+		ArticleVendu article = this.articleVenduDAO.read(noArticle);
+		return article;
+	}
+
 }

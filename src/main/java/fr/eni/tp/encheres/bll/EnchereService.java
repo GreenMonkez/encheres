@@ -17,4 +17,8 @@ public interface EnchereService {
 	void createNouvelleVente(ArticleVendu article) throws BusinessException;
 
 	List<ArticleVendu> getEncheresFiltrees(String filtre, int idCategorie);
+
+	
+	ArticleVendu articleById(int id);
+
 }

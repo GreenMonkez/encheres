@@ -89,6 +89,13 @@ public class EnchereController {
 		model.addAttribute("categories", categories);
 		return "view-nouvelle-vente";
 	}
+	
+	@GetMapping("/encheres/detail")
+	public String detailArticle(@RequestParam ("id") int id, Model model ) {
+		ArticleVendu article = this.enchereService.articleById(id);
+		model.addAttribute("article",article);
+		return "detail_vente";
+	}
 
 	@GetMapping("/encheres/search")
 	public String postSearch(@RequestParam(name = "filtre") String filtre,

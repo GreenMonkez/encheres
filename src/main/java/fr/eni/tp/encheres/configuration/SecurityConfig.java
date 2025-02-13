@@ -33,6 +33,7 @@ public class SecurityConfig {
 		// Customiser le formulaire
 
 		http.formLogin(form -> {
+
 			form.usernameParameter("pseudo").passwordParameter("mot_de_passe").loginPage("/login")
 					.defaultSuccessUrl("/login/session").failureUrl("/login?error");
 		});
