@@ -22,23 +22,34 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(auth -> {
-			auth.requestMatchers("/*").permitAll().requestMatchers("/").permitAll().requestMatchers("/css/*")
-					.permitAll().requestMatchers("/images/*").permitAll().requestMatchers("/js/*").permitAll()
-					.requestMatchers("/login").permitAll().requestMatchers("/login/session").permitAll()
-					.requestMatchers("/inscription").permitAll().requestMatchers("/encheres").permitAll()
-					.requestMatchers("/encheres/nouvelleVente").hasRole("USER").requestMatchers("/encheres/search")
-					.permitAll()
-					.requestMatchers("/monProfil").hasRole("USER")
-					.requestMatchers("/monProfil/modifier").hasRole("USER")
-					.requestMatchers("/profil").hasRole("USER")
-					.requestMatchers("/monProfil/supprimer").hasRole("USER")
-					.requestMatchers("/profil/vendeur").hasRole("USER")
-					.anyRequest().denyAll();
+			auth.requestMatchers("/*").permitAll()
+			.requestMatchers("/").permitAll()
+			.requestMatchers("/css/*").permitAll()
+			.requestMatchers("/images/*").permitAll()
+			.requestMatchers("/js/*").permitAll()
+			.requestMatchers("/login").permitAll()
+			.requestMatchers("/login/session").permitAll()
+			.requestMatchers("/inscription").permitAll()
+			.requestMatchers("/encheres").permitAll()
+			.requestMatchers("/encheres/nouvelleVente").hasRole("USER")
+			.requestMatchers("/encheres/search").permitAll()
+			.requestMatchers("/encheres/detail").hasRole("USER")
+			.requestMatchers("/monProfil").hasRole("USER")
+			.requestMatchers("/monProfil/modifier").hasRole("USER")
+			.requestMatchers("/profil").hasRole("USER")
+			.requestMatchers("/monProfil/supprimer").hasRole("USER")
+			.requestMatchers("/profil/vendeur").hasRole("USER")
+			.anyRequest().denyAll();
+
+			
+			
+
 		});
 
 		// Customiser le formulaire
 
 		http.formLogin(form -> {
+
 			form.usernameParameter("pseudo").passwordParameter("mot_de_passe").loginPage("/login")
 					.defaultSuccessUrl("/login/session").failureUrl("/login?error");
 		});

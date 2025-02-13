@@ -26,6 +26,7 @@ import jakarta.validation.Valid;
 public class EnchereController {
 
 	private EnchereService enchereService;
+	
 
 	public EnchereController(EnchereService enchereService) {
 		this.enchereService = enchereService;
@@ -88,6 +89,19 @@ public class EnchereController {
 		List<Categorie> categories = enchereService.getCategories();
 		model.addAttribute("categories", categories);
 		return "view-nouvelle-vente";
+	}
+	
+	@GetMapping("/encheres/detail")
+	public String detailArticle(@RequestParam ("id") int id, Model model ) {
+		
+		ArticleVendu article = this.enchereService.articleById(id);
+		String pseudoAcheteur = enchereService.getPseudoAcheteur(article.getPrixVente(), id);
+		Utilisateur acheteur = new Utilisateur();
+		
+		acheteur.setPseudo(pseudoAcheteur);
+		article.setAcheteur(acheteur);
+		model.addAttribute("article",article);
+		return "detail_vente";
 	}
 
 	@GetMapping("/encheres/search")
