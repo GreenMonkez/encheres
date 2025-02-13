@@ -59,6 +59,13 @@ public class SecurityConfig {
 			.invalidateHttpSession(true)
 			.logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
 			.logoutSuccessUrl("/"));
+		
+		// gestion du timeout au bout de 5 minutes avec redirection vers le /login
+		
+		http.sessionManagement(session -> session
+			.invalidSessionUrl("/login?invalid")
+			.maximumSessions(1)
+			.expiredUrl("/login?expired"));
 
 		return http.build();
 

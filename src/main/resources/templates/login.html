@@ -11,6 +11,8 @@
 	<header th:replace="~{fragments/fragment-entete :: entete}"></header>
 		<form th:action="@{/login}" method="POST"  >
 			<p th:if="${param.error}">Mail ou mot de passe invalide</p>
+			<p th:if="${param.invalid}">Session invalide</p>
+			<p th:if="${param.expired}">Session expirée</p>
 			<ul class="flex-outer">
 				<li>
 					<label for="idpseudo">Identifiant :</label>
