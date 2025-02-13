@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Size;
 
 public class Retrait {
 
+	// ****************** ATTRIBUTS D'INSTANCE ***********************************
+	
 	@NotBlank
 	@Size(max = 30)
 	private String rue;
@@ -18,6 +20,8 @@ public class Retrait {
 	private String ville;
 
 	ArticleVendu acticleVendu;
+	
+	// ****************** CONSTRUCTEURS ***********************************
 
 	public Retrait() {
 
@@ -29,6 +33,8 @@ public class Retrait {
 		this.ville = ville;
 		this.acticleVendu = acticleVendu;
 	}
+	
+	///****************** METHODES ***********************************
 
 	@Override
 	public String toString() {
@@ -36,6 +42,8 @@ public class Retrait {
 				+ acticleVendu + "]";
 	}
 
+	// ****************** GETTERS & SETTERS ***********************************
+	
 	public String getRue() {
 		return rue;
 	}

@@ -12,16 +12,24 @@ import fr.eni.tp.encheres.dal.rowmapper.CategorieRowMapper;
 
 @Repository
 public class CategorieDAOImpl implements CategorieDAO {
+	
+	// ****************** CONSTANTES ***********************************
 
 	private static final String SELECT_BY_ID = "select no_categorie, libelle from categories where no_categorie = :idCategorie";
 	private static final String SELECT_ALL = "select no_categorie, libelle from categories";
+	
+	// ****************** ATTRIBUT INSTANCES ***********************************
 
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+	// ****************** CONSTRUCTEURS***********************************
+	
 	public CategorieDAOImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
 		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
 
+	// ****************** METHODES ***********************************
+	
 	@Override
 	public Categorie getCategorie(int noCategorie) {
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();

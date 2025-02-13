@@ -11,6 +11,7 @@ public class EnchèreRowMapper implements RowMapper<Enchère>{
 
 	@Override
 	public Enchère mapRow(ResultSet rs, int rowNum) throws SQLException {
+		
 		Enchère e = new Enchère();
 		e.setDateEnchère(rs.getTimestamp("DATE_ENCHERE").toLocalDateTime());
 		return e;

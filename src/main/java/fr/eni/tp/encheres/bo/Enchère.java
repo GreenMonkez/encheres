@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import jakarta.validation.constraints.Min;
 
 public class Enchère {
+	
+	// ****************** ATTRIBUTS D'INSTANCE ***********************************
 
 	private LocalDateTime dateEnchère;
 
@@ -14,6 +16,8 @@ public class Enchère {
 	ArticleVendu artcicleVendu;
 	Utilisateur utilisateur;
 
+	// ****************** CONSTRUCTEURS ***********************************
+	
 	public Enchère() {
 
 	}
@@ -25,11 +29,15 @@ public class Enchère {
 		this.utilisateur = utilisateur;
 	}
 
+	///****************** METHODES ***********************************
+	
 	@Override
 	public String toString() {
 		return "Enchère [dateEnchère=" + dateEnchère + ", montant_enchere=" + montant_enchere + ", artcicleVendu="
 				+ artcicleVendu + ", utilisateur=" + utilisateur + "]";
 	}
+	
+	// ****************** GETTERS & SETTERS ***********************************
 
 	public LocalDateTime getDateEnchère() {
 		return dateEnchère;

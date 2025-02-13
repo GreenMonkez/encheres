@@ -11,6 +11,8 @@ import jakarta.validation.constraints.Size;
 
 public class Utilisateur {
 
+	// ****************** ATTRIBUTS D'INSTANCE ***********************************
+	
 	@NotBlank
 	@Size(max = 30)
 	private String pseudo;
@@ -49,6 +51,8 @@ public class Utilisateur {
 	List<ArticleVendu> vendus = new ArrayList<ArticleVendu>();
 	List<Enchère> encheres = new ArrayList<Enchère>();
 
+	// /****************** CONSTRUCTEURS ***********************************
+	
 	public Utilisateur() {
 
 	}
@@ -72,6 +76,8 @@ public class Utilisateur {
 		this.vendus = vendus;
 		this.encheres = encheres;
 	}
+	
+	///****************** METHODES ***********************************
 
 	@Override
 	public String toString() {

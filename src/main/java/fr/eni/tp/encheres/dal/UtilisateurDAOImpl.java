@@ -16,21 +16,23 @@ import fr.eni.tp.encheres.dal.rowmapper.UtilisateurRowMapper;
 
 @Repository
 public class UtilisateurDAOImpl implements UtilisateurDAO {
+	
+	// ****************** CONSTANTES ***********************************
 
 	private static final String INSERT = "INSERT INTO UTILISATEURS (pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur) VALUES (:pseudo, :nom, :prenom, :email, :telephone, :rue, :code_postal, :ville, :motDePasse, :credit, :administrateur)";
 	private static final String FIND_UNIQUE_PSEUDO = "SELECT count(pseudo) FROM UTILISATEURS WHERE pseudo like :pseudo";
 	private static final String FIND_UNIQUE_EMAIL = "SELECT count(email) FROM UTILISATEURS WHERE email like :email";
 	private static final String SELECT_BY_ID = "select no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, credit, administrateur from utilisateurs where no_utilisateur = :idUtilisateur";
-
 	private static final String FIND_BY_PSEUDO = "select no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, credit, administrateur from utilisateurs where pseudo = :pseudo";
-
 	private static final String FIND_UNIQUE_PASSWORD = "SELECT count(mot_de_passe) FROM UTILISATEURS WHERE mot_de_passe like :mot_de_passe";
-
-	private static final String UPDATE = "UPDATE UTILISATEURS SET pseudo = :pseudo, nom = :nom, prenom = :prenom, email = :email, telephone = :telephone, rue = :rue, code_postal = :code_postal, ville = :ville, "
-			+ "mot_de_passe = :motDePasse WHERE no_utilisateur = :no_utilisateur";
+	private static final String UPDATE = "UPDATE UTILISATEURS SET pseudo = :pseudo, nom = :nom, prenom = :prenom, email = :email, telephone = :telephone, rue = :rue, code_postal = :code_postal, ville = :ville, mot_de_passe = :motDePasse WHERE no_utilisateur = :no_utilisateur";
+	
+	// ****************** ATTRIBUT INSTANCES ***********************************
+	
 	@Autowired
 	private NamedParameterJdbcTemplate jdbcTemplate;
 	
+	// ****************** METHODES ***********************************
 	
 	/**
 	 * Méthode permettant d'inserer un utilisateur nouvellement créer dans la base de donnée
@@ -78,7 +80,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 		return jdbcTemplate.queryForObject(FIND_UNIQUE_EMAIL, map, Integer.class);
 	}
 	
-	/*
+	/**
 	 * Méthode permettant de chercher un user en base grâce à son id
 	 * Return un utilisateur
 	 */

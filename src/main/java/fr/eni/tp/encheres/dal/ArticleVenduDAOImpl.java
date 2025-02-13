@@ -17,6 +17,7 @@ import fr.eni.tp.encheres.dal.rowmapper.EnchereRowMapper;
 @Repository
 public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 
+	// ****************** CONSTANTES ***********************************
 
 	private static final String SELECT_ALL = "select no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie from articles_vendus";
 	private static final String INSERT = "insert into articles_vendus (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur, no_categorie) values (:nom, :description, :dateDebut, :dateFin, :prixInitial, :idUtilisateur, :idCategorie)";
@@ -28,13 +29,17 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 	private static final String SELECT_BY_ID ="SELECT  no_categorie, prix_vente, no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur FROM ARTICLES_VENDUS WHERE no_article = :id";
 
 
-	
+	// ****************** ATTRIBUT INSTANCES ***********************************
 	
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+	
+	// ****************** CONSTRUCTEURS***********************************
 
 	public ArticleVenduDAOImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
 		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
+	
+	// ****************** METHODES ***********************************
 
 	@Override
 	public List<ArticleVendu> getArticles() {
