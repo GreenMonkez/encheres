@@ -14,4 +14,8 @@ public interface LoginService {
 	
 	void modifierUtilisateur(Utilisateur user, String mdpConfirm, String newMdp) throws BusinessException;
 	
+	void supprimerUtilisateur(Utilisateur userSupp) throws BusinessException;
+	
+	
+	
 }

@@ -15,5 +15,9 @@ public interface ArticleVenduDAO {
 	List<ArticleVendu> getArticlesFiltresById(int idCategorie);
 
 	List<ArticleVendu> getArticlesFiltresByStringAndId(String filtreSql, int idCategorie);
+	
+	List<ArticleVendu> consulterArticlesById(int idUser);
+	
+	void modifierArticle(ArticleVendu article);
 
 }

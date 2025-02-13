@@ -1,18 +1,26 @@
 package fr.eni.tp.encheres.dal;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import fr.eni.tp.encheres.bo.Enchère;
 import fr.eni.tp.encheres.bo.Utilisateur;
+import fr.eni.tp.encheres.dal.rowmapper.EnchèreRowMapper;
 
 @Repository
 public class EnchèreDAOImpl implements EnchèreDAO {
 	private final String INSERT = "INSERT INTO UTILISATEURS (pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur) VALUES (:pseudo, :nom, :prenom, :email, :telephone, :rue, :code_postal, :ville, :motDePasse, :credit, :administrateur)";
-
+	private static final String FIND_ALL_BY_ID = "SELECT date_enchere FROM ENCHERES WHERE no_utilisateur = :id";
+	
+	
+	
 	@Autowired
 	private NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -38,5 +46,16 @@ public class EnchèreDAOImpl implements EnchèreDAO {
 
 			user.setNoUtilisateur(keyHolder.getKey().intValue());
 		}
+	}
+	
+	/**
+	 * Méthode permettant de trouver toutes les enchères correspondant à l'id de l'utilisateur
+	 * Return List Enchère
+	 */
+	@Override
+	public List<Enchère> consulterEncheresById(int idUser) {
+		 MapSqlParameterSource map = new MapSqlParameterSource();
+		    map.addValue("id", idUser);
+		    return jdbcTemplate.query(FIND_ALL_BY_ID, map, new EnchèreRowMapper());
 	}
 }

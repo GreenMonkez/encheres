@@ -91,6 +91,12 @@
 
 		</ul>
 	</form>
+	
+	<form th:action="@{/monProfil/supprimer}" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer votre compte ?');">
+    	
+   		 <button type="submit">Supprimer mon compte</button>
+	</form>
+	
 </main>
 
 <footer th:replace="~{fragments/fragment-footer :: footer}">

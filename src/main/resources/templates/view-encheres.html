@@ -45,7 +45,10 @@
 				<td th:if="${a.prixVente} != 0" th:text="${a.prixVente}"></td>
 				<td th:if="${a.prixVente} == 0" th:text="${a.miseAPrix}"></td>
 				<td th:text="${a.dateFinEncheres}"></td>
-				<td th:text="${a.vendeur.pseudo}"><a th:href="@{/profil(id=${a.vendeur.noUtilisateur})}"></a></td>
+				<td>
+   				 <a th:href="@{/profil/vendeur(id=${a.vendeur.noUtilisateur})}" th:text="${a.vendeur.pseudo}"></a>
+				</td>
+
 			</tr>
 		</tbody>
 	</table>

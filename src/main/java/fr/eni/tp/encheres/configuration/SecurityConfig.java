@@ -18,7 +18,7 @@ public class SecurityConfig {
 
 	private final String SELECT_USER = "select pseudo, mot_de_passe, 'true' as enable from UTILISATEURS where pseudo=?";
 	private final String SELECT_ROLES = "select u.pseudo, r.role from UTILISATEURS u inner join ROLES r on r.IS_ADMIN = u.administrateur where u.pseudo = ?";
-
+										
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(auth -> {
@@ -27,7 +27,13 @@ public class SecurityConfig {
 					.requestMatchers("/login").permitAll().requestMatchers("/login/session").permitAll()
 					.requestMatchers("/inscription").permitAll().requestMatchers("/encheres").permitAll()
 					.requestMatchers("/encheres/nouvelleVente").hasRole("USER").requestMatchers("/encheres/search")
-					.permitAll().anyRequest().denyAll();
+					.permitAll()
+					.requestMatchers("/monProfil").hasRole("USER")
+					.requestMatchers("/monProfil/modifier").hasRole("USER")
+					.requestMatchers("/profil").hasRole("USER")
+					.requestMatchers("/monProfil/supprimer").hasRole("USER")
+					.requestMatchers("/profil/vendeur").hasRole("USER")
+					.anyRequest().denyAll();
 		});
 
 		// Customiser le formulaire

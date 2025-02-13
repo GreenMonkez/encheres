@@ -7,41 +7,39 @@
 <link rel="stylesheet" th:href="@{/css/tp-form.css}" />
 <link rel="stylesheet" th:href="@{/css/tp-table.css}" />
 <link rel="stylesheet" th:href="@{/css/tp-error.css}" />
+
 </head>
 <body>
-	<header th:replace="~{fragments/fragment-entete :: entete}"> </header>
-	<main>
+<header th:replace="~{fragments/fragment-entete :: entete}">
+
+</header>
+
+<main>
 		<form action="">
 			<ul class="flex-outer">
 				
 				<li><label for="idPseudo">Pseudo : </label>
-					<p th:text="${userSession.pseudo}"></p></li>
+					<p th:text="${utilisateur.pseudo}"></p></li>
 				<li><label for="idNom">Nom : </label>
-					<p th:text="${userSession.nom}"></p></li>
+					<p th:text="${utilisateur.nom}"></p></li>
 				<li><label for="idNom">Prénom : </label>
-					<p th:text="${userSession.prenom}"></p></li>
+					<p th:text="${utilisateur.prenom}"></p></li>
 				<li><label for="idEmail">Email : </label>
-					<p th:text="${userSession.email}"></p></li>
+					<p th:text="${utilisateur.email}"></p></li>
 				<li><label for="idTelephone">Téléphone : </label>
-					<p th:text="${userSession.telephone}"></p></li>
+					<p th:text="${utilisateur.telephone}"></p></li>
 				<li><label for="idRue">Rue : </label>
-					<p th:text="${userSession.rue}"></p></li>
+					<p th:text="${utilisateur.rue}"></p></li>
 				<li><label for="idPostal">Code Postal : </label>
-					<p th:text="${userSession.codePostal}"></p></li>
+					<p th:text="${utilisateur.codePostal}"></p></li>
 				<li><label for="idVille">Ville : </label>
-					<p th:text="${userSession.ville}"></p></li>
+					<p th:text="${utilisateur.ville}"></p></li>
 			</ul>
-			
-			<table>
-			<td>
-				<a th:href="@{/monProfil/modifier}">Modifier</a>
-			</td>
-		</table>
+
 		</form>
-		
-	</main>
+</main>
 
-
-	<footer th:replace="~{fragments/fragment-footer :: footer}"> </footer>
+<footer th:replace="~{fragments/fragment-footer :: footer}">
+</footer>
 </body>
 </html>
