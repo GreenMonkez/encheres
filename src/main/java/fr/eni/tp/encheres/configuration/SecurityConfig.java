@@ -22,12 +22,21 @@ public class SecurityConfig {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(auth -> {
-			auth.requestMatchers("/*").permitAll().requestMatchers("/").permitAll().requestMatchers("/css/*")
-					.permitAll().requestMatchers("/images/*").permitAll().requestMatchers("/js/*").permitAll()
-					.requestMatchers("/login").permitAll().requestMatchers("/login/session").permitAll()
-					.requestMatchers("/inscription").permitAll().requestMatchers("/encheres").permitAll()
-					.requestMatchers("/encheres/nouvelleVente").hasRole("USER").requestMatchers("/encheres/search")
-					.permitAll().anyRequest().denyAll();
+			auth.requestMatchers("/*").permitAll()
+			.requestMatchers("/").permitAll()
+			.requestMatchers("/css/*").permitAll()
+			.requestMatchers("/images/*").permitAll()
+			.requestMatchers("/js/*").permitAll()
+			.requestMatchers("/login").permitAll()
+			.requestMatchers("/login/session").permitAll()
+			.requestMatchers("/inscription").permitAll()
+			.requestMatchers("/encheres").permitAll()
+			.requestMatchers("/encheres/nouvelleVente").hasRole("USER")
+			.requestMatchers("/encheres/detail").hasRole("USER")
+			.requestMatchers("/encheres/search").permitAll()
+			
+			
+			.anyRequest().denyAll();
 		});
 
 		// Customiser le formulaire

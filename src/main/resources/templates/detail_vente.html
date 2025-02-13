@@ -23,7 +23,7 @@
 				</div>
 				<div>
 
-					<p th:text="'Meilleure offre : '+${article.prixVente} + ' pts par ' + ${article.acheteur.pseudo}"></p>
+					<p th:if="${article.acheteur.pseudo}!=null" th:text="'Meilleure offre : '+${article.prixVente} + ' pts par ' + ${article.acheteur.pseudo}"></p>
 				</div>
 				<div>
 

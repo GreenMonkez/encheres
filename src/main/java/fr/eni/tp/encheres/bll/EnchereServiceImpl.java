@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import fr.eni.tp.encheres.bo.ArticleVendu;
 import fr.eni.tp.encheres.bo.Categorie;
+import fr.eni.tp.encheres.bo.Enchère;
+import fr.eni.tp.encheres.bo.Retrait;
+import fr.eni.tp.encheres.bo.Utilisateur;
 import fr.eni.tp.encheres.dal.ArticleVenduDAO;
 import fr.eni.tp.encheres.dal.CategorieDAO;
 import fr.eni.tp.encheres.dal.EnchèreDAO;
@@ -70,7 +73,6 @@ public class EnchereServiceImpl implements EnchereService {
 
 	}
 
-
 	private boolean dateFinConforme(LocalDateTime dateDebut, LocalDateTime dateFin, BusinessException be) {
 		if (dateFin == null) {
 			be.addErreur("date.fin.null");
@@ -124,8 +126,29 @@ public class EnchereServiceImpl implements EnchereService {
 
 	@Override
 	public ArticleVendu articleById(int noArticle) {
+		
 		ArticleVendu article = this.articleVenduDAO.read(noArticle);
+		Utilisateur vendeur = this.utilisateurDAO.getUtilisateur(article.getVendeur().getNoUtilisateur());
+		Retrait lieuRetrait = this.retraitDAO.getretraitById(noArticle);
+		String libelleCategorie = this.categorieDAO.getCategorie(article.getCategorieArticle().getNoCategorie())
+				.getLibelle();
+		article.setLieuRetrait(lieuRetrait);
+		article.getCategorieArticle().setLibelle(libelleCategorie);
+		article.setVendeur(vendeur);
 		return article;
+	}
+
+	@Override
+	public String getPseudoAcheteur(int prixVente, int noArticle) {
+		int countEnchere = this.enchèreDAO.getCountEnchere(prixVente, noArticle);
+		if (countEnchere!= 0) {
+			Enchère enchereAcheteur = this.enchèreDAO.getUtilisateurParPrix(prixVente, noArticle);
+			Utilisateur acheteur = this.utilisateurDAO.getUtilisateur(enchereAcheteur.getUtilisateur().getNoUtilisateur());
+
+			return acheteur.getPseudo();
+		}
+		return null;
+
 	}
 
 }

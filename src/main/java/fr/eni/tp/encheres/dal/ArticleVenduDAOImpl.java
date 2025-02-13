@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import fr.eni.tp.encheres.bo.ArticleVendu;
 import fr.eni.tp.encheres.dal.rowmapper.ArticleVenduRowMapper;
-import fr.eni.tp.encheres.dal.rowmapper.DetailArticleRowMapper;
+import fr.eni.tp.encheres.dal.rowmapper.EnchereRowMapper;
 
 
 @Repository
@@ -23,7 +23,7 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 	private static final String SELECT_BY_STRING = "select no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie from articles_vendus where nom_article like :filtreSql";
 	private static final String SELECT_BY_ID_CATEGORIE = "select no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie from articles_vendus where no_categorie = :idCategorie";
 	private static final String SELECT_BY_STRING_AND_ID_CATEGORIE = "select no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie from articles_vendus where nom_article like :filtreSql and no_categorie = :idCategorie";
-	private static final String SELECT_BY_ID ="";
+	private static final String SELECT_BY_ID ="SELECT  no_categorie, prix_vente, no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur FROM ARTICLES_VENDUS WHERE no_article = :id";
 
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -83,7 +83,7 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 	public ArticleVendu read(int id) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("id", id);
-		return namedParameterJdbcTemplate.queryForObject(SELECT_BY_ID, map, new DetailArticleRowMapper());
+		return namedParameterJdbcTemplate.queryForObject(SELECT_BY_ID, map, new ArticleVenduRowMapper());
 	}
 
 }

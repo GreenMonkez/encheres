@@ -4,6 +4,7 @@ import java.util.List;
 
 import fr.eni.tp.encheres.bo.ArticleVendu;
 import fr.eni.tp.encheres.bo.Categorie;
+import fr.eni.tp.encheres.bo.Enchère;
 import fr.eni.tp.encheres.exception.BusinessException;
 
 public interface EnchereService {
@@ -18,6 +19,7 @@ public interface EnchereService {
 
 	List<ArticleVendu> getEncheresFiltrees(String filtre, int idCategorie);
 
+	String getPseudoAcheteur(int prixVente, int idCategorie);
 	
 	ArticleVendu articleById(int id);
 
