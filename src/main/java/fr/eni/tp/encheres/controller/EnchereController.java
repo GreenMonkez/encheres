@@ -1,6 +1,5 @@
 package fr.eni.tp.encheres.controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -19,6 +18,7 @@ import fr.eni.tp.encheres.bo.Categorie;
 import fr.eni.tp.encheres.bo.Retrait;
 import fr.eni.tp.encheres.bo.Utilisateur;
 import fr.eni.tp.encheres.exception.BusinessException;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
@@ -31,11 +31,23 @@ public class EnchereController {
 		this.enchereService = enchereService;
 	}
 
+	/**
+	 * Méthode retournant la vue d'accueil des enchères lorsque l'utilisateur ne
+	 * spécifiie pas de ressource dans l'URL
+	 * 
+	 * @return la vue des enchères
+	 */
 	@GetMapping("/")
 	public String redirectToEncheres() {
 		return "redirect:/encheres";
 	}
 
+	/**
+	 * Méthode retournant la vue des enchères
+	 * 
+	 * @param model avec la liste des articles et la liste des catégories
+	 * @return la vue des enchères
+	 */
 	@GetMapping("/encheres")
 	public String getEncheres(Model model) {
 		List<ArticleVendu> articles = enchereService.getEncheres();
@@ -47,6 +59,13 @@ public class EnchereController {
 		return "view-encheres";
 	}
 
+	/**
+	 * Méthode retournant la vue de création d'un nouvel article
+	 * 
+	 * @param model       avec un article vide et la liste des catégories
+	 * @param userSession avec les données de l'utilisateur en session
+	 * @return la vue de création d'un article
+	 */
 	@GetMapping("/encheres/nouvelleVente")
 	public String getNouvelleVente(Model model, @ModelAttribute("userSession") Utilisateur userSession) {
 		ArticleVendu article = new ArticleVendu();
@@ -64,6 +83,15 @@ public class EnchereController {
 		return "view-nouvelle-vente";
 	}
 
+	/**
+	 * Méthode permettant d'insérer en BDD un nouvel article
+	 * 
+	 * @param article       comprenant les données du formulaire
+	 * @param bindingResult comprenant les erreurs du formulaire
+	 * @param model         avec la liste des catégories
+	 * @param userSession   avec les données de l'utilisateur en session
+	 * @return la vue de création d'un article si erreur, la vue des enchères sinon
+	 */
 	@PostMapping("/encheres/nouvelleVente")
 	public String postNouvelleVente(@Valid @ModelAttribute("article") ArticleVendu article, BindingResult bindingResult,
 			Model model, @ModelAttribute("userSession") Utilisateur userSession) {
@@ -90,10 +118,31 @@ public class EnchereController {
 		return "view-nouvelle-vente";
 	}
 
-	@GetMapping("/encheres/search")
+	/**
+	 * Méthode permettant de filtrer les articles en fonction d'un mot-clé et d'une
+	 * catégorie si déconnecté, si connecté, des options supplémentaires en achats
+	 * et ventes sont disponibles
+	 * 
+	 * @param filtre      comprenant le mot-clé
+	 * @param idCategorie comprenant l'id de la catégorie
+	 * @param options     comprenant la liste des options choisies
+	 * @param model       avec la liste des articles filtrée et la liste des
+	 *                    catégories
+	 * @param session     avec les données de l'utilisateur en session
+	 * @return la vue des enchères
+	 */
+	@PostMapping("/encheres/search")
 	public String postSearch(@RequestParam(name = "filtre") String filtre,
-			@RequestParam(name = "categorie") int idCategorie, Model model) {
+			@RequestParam(name = "categorie") int idCategorie,
+			@RequestParam(name = "option", required = false) List<String> options, Model model, HttpSession session) {
+
 		List<ArticleVendu> articles = enchereService.getEncheresFiltrees(filtre, idCategorie);
+
+		if (options != null) {
+			articles = enchereService.getEncheresFiltreesOptions(articles, options,
+					(Utilisateur) session.getAttribute("userSession"));
+		}
+
 		model.addAttribute("articles", articles);
 
 		List<Categorie> categories = enchereService.getCategories();

@@ -1,61 +1,72 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Demo Spring Boot Web</title>
-
-<link rel="stylesheet" th:href="@{/css/general.css}" />
-<link rel="stylesheet" th:href="@{/css/tp-table.css}" />
-
+	<meta charset="UTF-8">
+	<title>Demo Spring Boot Web</title>
+	<link rel="stylesheet" th:href="@{/css/general.css}" />
+	<link rel="stylesheet" th:href="@{/css/tp-table.css}" />
 </head>
 <body>
-
-<header th:replace="~{fragments/fragment-entete :: entete}">
-</header>
-
-<main >
-	<h1>Liste des enchères</h1>
-	
-	<form th:action="@{/encheres/search}">
-		<label for="filtre">Filtres :</label>
-		<input type="text" placeholder="Le nom de l'article contient" name="filtre"/>
-		<br />
-		<label for="categorie">Catégorie</label>
-		<select name="categorie" id="categorie">
-			<option value="0">Toutes</option>
-			<option th:each="c : ${categories}" th:text="${c.libelle}" th:value="${c.noCategorie}"></option>
-		</select>
-		<button type="submit">Rechercher</button>
-	</form>
-	
-	<table>
-		<thead>
-			<tr>
-				<th>Nom</th>
-				<th>Prix</th>
-				<th>Fin de l'enchère</th>
-				<th>Vendeur</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr th:each="a : ${articles}">
-				<td >
-					<a th:text="${a.nomArticle}" th:href="@{/encheres/detail(id=${a.noArticle})}"></a>
-				</td>
-				<td th:if="${a.prixVente} != 0" th:text="${a.prixVente}"></td>
-				<td th:if="${a.prixVente} == 0" th:text="${a.miseAPrix}"></td>
-				<td th:text="${a.dateFinEncheres}"></td>
-				<td th:text="${a.vendeur.pseudo}"><a th:href="@{/profil(id=${a.vendeur.noUtilisateur})}"></a></td>
-			</tr>
-		</tbody>
-	</table>
-</main>
-
-
-
-<footer th:replace="~{fragments/fragment-footer :: footer}">
-</footer>
-
-
+	<header th:replace="~{fragments/fragment-entete :: entete}"></header>
+	<main >
+		<h1>Liste des enchères</h1>
+		<form th:action="@{/encheres/search}" method="POST">
+			<label for="filtre">Filtres :</label>
+			<input type="text" placeholder="Le nom de l'article contient" name="filtre"/>
+			<br />
+			<label for="categorie">Catégorie</label>
+			<select name="categorie" id="categorie">
+				<option value="0">Toutes</option>
+				<option th:each="c : ${categories}" th:text="${c.libelle}" th:value="${c.noCategorie}"></option>
+			</select>
+			<br />
+			<div sec:authorize="isAuthenticated()">
+				<label for="">Achats</label>
+				<input type="radio" name="radio" id="achats"/>
+				<br />
+				<input type="checkbox" name="option" value="achats1" class="achats-checkbox" disabled/>
+				<label for="">enchères ouvertes</label>
+				<input type="checkbox" name="option" value="achats2" class="achats-checkbox" disabled/>
+				<label for="">mes enchères en cours</label>
+				<input type="checkbox" name="option" value="achats3" class="achats-checkbox" disabled/>
+				<label for="">mes enchères remportées</label>
+				<br />
+				<label for="">Mes ventes</label>
+				<input type="radio" name="radio" id="ventes"/>
+				<br />
+				<input type="checkbox" name="option" value="ventes1" class="ventes-checkbox" disabled/>
+				<label for="">mes ventes en cours</label>
+				<input type="checkbox" name="option" value="ventes2" class="ventes-checkbox" disabled/>
+				<label for="">ventes non débutées</label>
+				<input type="checkbox" name="option" value="ventes3" class="ventes-checkbox" disabled/>
+				<label for="">ventes terminées</label>
+			</div>
+			<br />
+			<button type="submit">Rechercher</button>
+		</form>
+		<table>
+			<thead>
+				<tr>
+					<th>Nom</th>
+					<th>Prix</th>
+					<th>Fin de l'enchère</th>
+					<th>Vendeur</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="a : ${articles}">
+					<td >
+						<a th:text="${a.nomArticle}" th:href="@{/encheres/detail(id=${a.noArticle})}"></a>
+					</td>
+					<td th:if="${a.prixVente} != 0" th:text="${a.prixVente}"></td>
+					<td th:if="${a.prixVente} == 0" th:text="${a.miseAPrix}"></td>
+					<td th:text="${a.dateFinEncheres}"></td>
+					<td th:text="${a.vendeur.pseudo}"><a th:href="@{/profil(id=${a.vendeur.noUtilisateur})}"></a></td>
+				</tr>
+			</tbody>
+		</table>
+	</main>
+	<footer th:replace="~{fragments/fragment-footer :: footer}"></footer>
+	<script src="/js/script.js"></script>
 </body>
 </html>

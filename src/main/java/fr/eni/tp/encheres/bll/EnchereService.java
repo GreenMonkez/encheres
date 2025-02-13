@@ -4,6 +4,7 @@ import java.util.List;
 
 import fr.eni.tp.encheres.bo.ArticleVendu;
 import fr.eni.tp.encheres.bo.Categorie;
+import fr.eni.tp.encheres.bo.Utilisateur;
 import fr.eni.tp.encheres.exception.BusinessException;
 
 public interface EnchereService {
@@ -17,4 +18,7 @@ public interface EnchereService {
 	void createNouvelleVente(ArticleVendu article) throws BusinessException;
 
 	List<ArticleVendu> getEncheresFiltrees(String filtre, int idCategorie);
+
+	List<ArticleVendu> getEncheresFiltreesOptions(List<ArticleVendu> articles, List<String> options,
+			Utilisateur userSession);
 }

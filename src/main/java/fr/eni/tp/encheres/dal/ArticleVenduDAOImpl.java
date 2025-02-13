@@ -32,6 +32,10 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 
 	}
 
+	/**
+	 * Méthode insérant en BDD un nouvel article tout en changeant l'id de cet
+	 * article avec l'id en BDD
+	 */
 	@Override
 	public void create(ArticleVendu article) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
@@ -52,6 +56,9 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 		}
 	}
 
+	/**
+	 * Méthode retournant la liste des articles filtrée par un mot-clé
+	 */
 	@Override
 	public List<ArticleVendu> getArticlesFiltresByString(String filtreSql) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
@@ -59,6 +66,9 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 		return namedParameterJdbcTemplate.query(SELECT_BY_STRING, map, new ArticleVenduRowMapper());
 	}
 
+	/**
+	 * Méthode retournant la liste des articles filtrée par l'id d'une catégorie
+	 */
 	@Override
 	public List<ArticleVendu> getArticlesFiltresById(int idCategorie) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
@@ -66,6 +76,10 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 		return namedParameterJdbcTemplate.query(SELECT_BY_ID_CATEGORIE, map, new ArticleVenduRowMapper());
 	}
 
+	/**
+	 * Méthode retournant la liste des articles filtrée par un mot-clé et par l'id
+	 * d'une catégorie
+	 */
 	@Override
 	public List<ArticleVendu> getArticlesFiltresByStringAndId(String filtreSql, int idCategorie) {
 		MapSqlParameterSource map = new MapSqlParameterSource();

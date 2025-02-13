@@ -1,12 +1,12 @@
 package fr.eni.tp.encheres.bo;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.Min;
 
 public class Enchère {
 
-	private LocalDate dateEnchère;
+	private LocalDateTime dateEnchère;
 
 	@Min(value = 0)
 	private int montant_enchere;
@@ -18,7 +18,8 @@ public class Enchère {
 
 	}
 
-	public Enchère(LocalDate dateEnchère, int montant_enchere, ArticleVendu artcicleVendu, Utilisateur utilisateur) {
+	public Enchère(LocalDateTime dateEnchère, int montant_enchere, ArticleVendu artcicleVendu,
+			Utilisateur utilisateur) {
 		this.dateEnchère = dateEnchère;
 		this.montant_enchere = montant_enchere;
 		this.artcicleVendu = artcicleVendu;
@@ -31,11 +32,11 @@ public class Enchère {
 				+ artcicleVendu + ", utilisateur=" + utilisateur + "]";
 	}
 
-	public LocalDate getDateEnchère() {
+	public LocalDateTime getDateEnchère() {
 		return dateEnchère;
 	}
 
-	public void setDateEnchère(LocalDate dateEnchère) {
+	public void setDateEnchère(LocalDateTime dateEnchère) {
 		this.dateEnchère = dateEnchère;
 	}
 

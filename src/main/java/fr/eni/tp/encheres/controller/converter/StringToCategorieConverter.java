@@ -15,6 +15,10 @@ public class StringToCategorieConverter implements Converter<String, Categorie> 
 		this.enchereService = enchereService;
 	}
 
+	/**
+	 * Méthode permettant de convertir l'id d'une catégorie en formant String en un
+	 * objet de type Catégorie correspondant
+	 */
 	@Override
 	public Categorie convert(String idCategorie) {
 		return enchereService.getCategorie(Integer.parseInt(idCategorie));

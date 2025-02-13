@@ -18,6 +18,9 @@ public class RetraitDAOImpl implements RetraitDAO {
 		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
 
+	/**
+	 * Méthode insérant en BDD un nouvel lieu de retrait lié à un article
+	 */
 	@Override
 	public void create(ArticleVendu article) {
 		MapSqlParameterSource map = new MapSqlParameterSource();

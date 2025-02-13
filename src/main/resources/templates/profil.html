@@ -1,50 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Enchères</title>
-
-
+	<meta charset="UTF-8">
+	<title>Enchères</title>
 </head>
 <body>
-<header th:replace="~{fragments/fragment-entete :: entete}">
-
-</header>
-
-<main>
-	<form action="@{/profil}" method="POST">
-		<ul class="flex-outer">
-		
-			<li>
-				<p th:text ="${user.pseudo}">Pseudo : </p>
-			</li>
-			<li>
-				<p th:text ="${user.nom}">Nom : </p>
-			</li>
-			<li>
-				<p th:text ="${user.prenom}">Prénom : </p>
-			</li>
-			<li>
-				<p th:text ="${user.email}">Email : </p>
-			</li>
-			<li>
-				<p th:text ="${user.telephone}">Téléphone : </p>
-			</li>
-			<li>
-				<p th:text ="${user.rue}">Rue : </p>
-			</li>
-			<li>
-				<p th:text ="${user.codePostal}">Code postal : </p>
-			</li>
-			<li>
-				<p th:text ="${user.ville}">Ville : </p>
-			</li>
-			
-		</ul>
-	</form>
-</main>
-
-<footer th:replace="~{fragments/fragment-footer :: footer}">
-</footer>
+	<header th:replace="~{fragments/fragment-entete :: entete}"></header>
+	<main>
+		<form action="@{/profil}" method="POST">
+			<ul class="flex-outer">
+				<li>
+					<p th:text ="${user.pseudo}">Pseudo : </p>
+				</li>
+				<li>
+					<p th:text ="${user.nom}">Nom : </p>
+				</li>
+				<li>
+					<p th:text ="${user.prenom}">Prénom : </p>
+				</li>
+				<li>
+					<p th:text ="${user.email}">Email : </p>
+				</li>
+				<li>
+					<p th:text ="${user.telephone}">Téléphone : </p>
+				</li>
+				<li>
+					<p th:text ="${user.rue}">Rue : </p>
+				</li>
+				<li>
+					<p th:text ="${user.codePostal}">Code postal : </p>
+				</li>
+				<li>
+					<p th:text ="${user.ville}">Ville : </p>
+				</li>
+			</ul>
+		</form>
+	</main>
+	<footer th:replace="~{fragments/fragment-footer :: footer}"></footer>
 </body>
 </html>

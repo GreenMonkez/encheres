@@ -1,42 +1,42 @@
 package fr.eni.tp.encheres.dal;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import fr.eni.tp.encheres.bo.Utilisateur;
+import fr.eni.tp.encheres.bo.Enchère;
+import fr.eni.tp.encheres.dal.rowmapper.EnchèreRowMapper;
 
 @Repository
 public class EnchèreDAOImpl implements EnchèreDAO {
-	private final String INSERT = "INSERT INTO UTILISATEURS (pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur) VALUES (:pseudo, :nom, :prenom, :email, :telephone, :rue, :code_postal, :ville, :motDePasse, :credit, :administrateur)";
+	private static final String COUNT_BY_ID_ARTICLE = "select count(*) from encheres where no_article = :idArticle";
+	private static final String SELECT_ALL_BY_ID = "select no_utilisateur, no_article, date_enchere, montant_enchere from encheres where no_article = :idArticle";
 
-	@Autowired
-	private NamedParameterJdbcTemplate jdbcTemplate;
+	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+	public EnchèreDAOImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+	}
+
+	/**
+	 * Méthode retournant le nombre d'enchère en fonction de l'id de l'article
+	 */
 	@Override
-	public void creerUtilisateur(Utilisateur user) {
+	public int countByIdArticle(int idArticle) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
-		map.addValue("pseudo", user.getPseudo());
-		map.addValue("nom", user.getNom());
-		map.addValue("prenom", user.getPrenom());
-		map.addValue("email", user.getEmail());
-		map.addValue("telephone", user.getTelephone());
-		map.addValue("rue", user.getRue());
-		map.addValue("code_postal", user.getCodePostal());
-		map.addValue("ville", user.getVille());
-		map.addValue("motDePasse", user.getMotDePasse());
-		map.addValue("credit", user.getCredit());
-		map.addValue("administrateur", user.isAdministrateur());
+		map.addValue("idArticle", idArticle);
+		return namedParameterJdbcTemplate.queryForObject(COUNT_BY_ID_ARTICLE, map, Integer.class);
+	}
 
-		KeyHolder keyHolder = new GeneratedKeyHolder();
-		jdbcTemplate.update(INSERT, map, keyHolder);
-
-		if (keyHolder != null && keyHolder.getKey() != null) {
-
-			user.setNoUtilisateur(keyHolder.getKey().intValue());
-		}
+	/**
+	 * Méthode retournant la liste des enchères en fonction de l'id de l'article
+	 */
+	@Override
+	public List<Enchère> getEncheres(int idArticle) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("idArticle", idArticle);
+		return namedParameterJdbcTemplate.query(SELECT_ALL_BY_ID, map, new EnchèreRowMapper());
 	}
 }
