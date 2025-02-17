@@ -1,10 +1,27 @@
 /* Styles généraux */
+
+*{
+	font-family: cursive;
+}
 body {
 	border: 5px solid black;
-	font-family: cursive;
+
 	margin: 0;
 	padding: 0;
 }
+
+
+main {
+  
+      flex: 1; /* Prend tout l'espace disponible */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centre le contenu */
+    align-items: center;
+    text-align: center;
+
+}
+
 
 /* En-tête */
 header {
