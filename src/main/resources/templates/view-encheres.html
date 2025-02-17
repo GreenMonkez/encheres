@@ -10,62 +10,63 @@
 	<header th:replace="~{fragments/fragment-entete :: entete}"></header>
 	<main>
 		<h1>Liste des enchères</h1>
-		
 		<form class="search-bar" th:action="@{/encheres/search}" method="POST">
 			<div> 
-			<h2>Filtres :</h2>
-			<input type="text" placeholder="Le nom de l'article contient" name="filtre" /> 
+				<h2>Filtres :</h2>
+				<input type="text" placeholder="Le nom de l'article contient" name="filtre" /> 
 				<br />
-			<label for="categorie">Catégorie : </label> <select name="categorie" id="categorie">
-				<option value="0">Toutes</option>
-				<option th:each="c : ${categories}" th:text="${c.libelle}"
-					th:value="${c.noCategorie}"></option>
-			</select> <br />
-			
-			<div class="filtre" sec:authorize="isAuthenticated()">
-				<div>
-					<input type="radio" name="radio" id="achats" />
-					<label for="">Achats</label>  <br /> 
-					<input type="checkbox" name="option" value="achats1" class="achats-checkbox" disabled /> 
-					<label for="">enchères ouvertes</label><br /> 
-					<input type="checkbox" name="option"value="achats2" class="achats-checkbox" disabled />
-					<label for="">mes enchères en cours</label><br />
-					<input type="checkbox" name="option" value="achats3" class="achats-checkbox" disabled /> 
-					<label for="">mes enchères remportées</label> <br />
+				<label for="categorie">Catégorie : </label>
+				<select name="categorie" id="categorie">
+					<option value="0">Toutes</option>
+					<option th:each="c : ${categories}" th:text="${c.libelle}" th:value="${c.noCategorie}"></option>
+				</select>
+				<br />
+				<div class="filtre" sec:authorize="isAuthenticated()">
+					<div>
+						<input type="radio" name="radio" id="achats" />
+						<label for="">Achats</label>  
+						<br /> 
+						<input type="checkbox" name="option" value="achats1" class="achats-checkbox" disabled /> 
+						<label for="">enchères ouvertes</label>
+						<br /> 
+						<input type="checkbox" name="option"value="achats2" class="achats-checkbox" disabled />
+						<label for="">mes enchères en cours</label>
+						<br />
+						<input type="checkbox" name="option" value="achats3" class="achats-checkbox" disabled /> 
+						<label for="">mes enchères remportées</label>
+						<br />
+					</div>
+					<div>
+						<input type="radio" name="radio" id="ventes" /> 
+						<label for="">Mes ventes</label>
+						<br /> 
+						<input type="checkbox" name="option" value="ventes1" class="ventes-checkbox" disabled /> 
+						<label for="">mes ventes en cours</label>
+						<br /> 
+						<input type="checkbox" name="option" value="ventes2" class="ventes-checkbox" disabled /> 
+						<label for="">ventes non débutées</label>
+						<br /> 
+						<input type="checkbox" name="option" value="ventes3" class="ventes-checkbox" disabled /> 
+						<label for="">ventes terminées</label>
+					</div>
 				</div>
-				<div>
-					<input type="radio" name="radio" id="ventes" /> 
-					<label for="">Mes ventes</label> <br /> 
-					<input type="checkbox" name="option" value="ventes1" class="ventes-checkbox" disabled /> 
-					<label for="">mes ventes en cours</label><br /> 
-					<input type="checkbox" name="option" value="ventes2" class="ventes-checkbox" disabled /> 
-					<label for="">ventes non débutées</label><br /> 
-					<input type="checkbox" name="option" value="ventes3" class="ventes-checkbox" disabled /> 
-					<label for="">ventes terminées</label>
-				</div>
-			</div>
-			<br />
+				<br />
 			</div>
 			<div class="center">
-			
 				<button type="submit">Rechercher</button>
 			</div>
 		</form>
 		<section class="encheres">
 			<div class="enchere" th:each="a : ${articles}">
-				<div ><img th:src="@{/images/photo.png}" alt="" /></div>
-				<div class="detail-enchere">
-					<a th:text="${a.nomArticle}" th:href="@{/encheres/detail(id=${a.noArticle})}"></a>
-
-					<p th:if="${a.prixVente} != 0" th:text="'Prix : '+${a.prixVente}"></p>
-					<p th:if="${a.prixVente} == 0" th:text="'Prix : '+${a.miseAPrix}"></p>
-					<p th:text="'Fin de l\'enchère : ' + ${#temporals.format(a.dateFinEncheres, 'dd/MM/yyyy HH:mm')}"></p>
-
-				</p>
-					<p th:text="'Vendeur : '+${a.vendeur.pseudo}">
-			<a th:href="@{/profil(id=${a.vendeur.noUtilisateur})}"></a>
-					</p>
-				</div>
+				<div >
+					<img th:src="'/images/' + ${a.noArticle} + '.png'" alt="Image"></div>
+					<div class="detail-enchere">
+						<a th:text="${a.nomArticle}" th:href="@{/encheres/detail(id=${a.noArticle})}"></a>
+						<p th:if="${a.prixVente} != 0" th:text="'Prix : '+${a.prixVente}"></p>
+						<p th:if="${a.prixVente} == 0" th:text="'Prix : '+${a.miseAPrix}"></p>
+						<p th:text="'Fin de l\'enchère : ' + ${#temporals.format(a.dateFinEncheres, 'dd/MM/yyyy HH:mm')}"></p>
+						<a th:href="@{/profil(id=${a.vendeur.noUtilisateur})}" th:text="'Vendeur : '+${a.vendeur.pseudo}"></a>
+					</div>
 				</div>
 		</section>
 	</main>

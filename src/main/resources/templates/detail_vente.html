@@ -18,6 +18,7 @@
 
 			<h1 th:if="${enchereEnCours}">Détail vente</h1>
 			<section>
+				<img th:src="'/images/' + ${article.noArticle} + '.png'" alt="Image">
 				<h2 th:text="''+${article.nomArticle}"></h2>
 				<div>
 					<p th:text="'Despcription : '+${article.description}"></p>

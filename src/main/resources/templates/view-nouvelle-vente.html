@@ -11,7 +11,7 @@
 <body>
 	<header th:replace="~{fragments/fragment-entete :: entete}"></header>
 	<main >
-		<form th:action="@{/encheres/nouvelleVente}" method="POST" th:object="${article}">
+		<form th:action="@{/encheres/nouvelleVente}" method="POST" th:object="${article}" enctype="multipart/form-data">
 			<h1>Nouvelle vente</h1>
 			<div class="cards" th:if="${#fields.hasErrors('*')}">
 				<h2>Attention : Veuillez vérifier vos champs</h2>
@@ -39,6 +39,7 @@
 				</li>
 				<li>
 					<label for="photo">Photo de l'article</label>
+					<input type="file" name="image"/>
 				</li>
 				<li>
 					<label for="miseAPrix">Mise à prix</label>

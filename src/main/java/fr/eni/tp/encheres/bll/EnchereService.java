@@ -33,7 +33,7 @@ public interface EnchereService {
 
 	void creerEnchere(Utilisateur userSession, int montant, int idArticle) throws BusinessException;
 
-	List<ArticleVendu> getEncheresFiltreesOptions(List<ArticleVendu> articles, List<String> options,
+	List<ArticleVendu> getEncheresFiltreesOptions(String filtre, int idCategorie, List<String> options,
 			Utilisateur userSession);
 
 }

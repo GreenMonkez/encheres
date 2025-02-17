@@ -2,7 +2,6 @@ package fr.eni.tp.encheres.dal;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -14,7 +13,6 @@ import fr.eni.tp.encheres.dal.rowmapper.EnchèreRowMapper;
 
 @Repository
 public class EnchèreDAOImpl implements EnchèreDAO {
-
 
 	// ****************** CONSTANTES ***********************************
 
@@ -31,14 +29,12 @@ public class EnchèreDAOImpl implements EnchèreDAO {
 	// ****************** ATTRIBUT INSTANCES ***********************************
 
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-	
+
 	// ****************** METHODES ***********************************
-	
 
 	public EnchèreDAOImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
 		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
-
 
 	/**
 	 * Méthode retournant le nombre d'enchère en fonction de l'id de l'article
@@ -95,10 +91,10 @@ public class EnchèreDAOImpl implements EnchèreDAO {
 		return namedParameterJdbcTemplate.queryForObject(COUNT_ENCHERE, map, Integer.class);
 	}
 
-	
 	/**
 	 * Méthode permettant de créer une nouvelle enchère dans la base de données
-	 * @Param int 
+	 * 
+	 * @Param int
 	 * @param ArticleVendu
 	 * @param Utilisateur
 	 */
@@ -108,32 +104,29 @@ public class EnchèreDAOImpl implements EnchèreDAO {
 		map.addValue("userId", userSession.getNoUtilisateur());
 		map.addValue("idArticle", article.getNoArticle());
 		map.addValue("montant", montant);
-		
+
 		namedParameterJdbcTemplate.update(INSERT, map);
-		
+
 		MapSqlParameterSource map2 = new MapSqlParameterSource();
 		map2.addValue("prixVente", article.getPrixVente());
 		map2.addValue("idArticle", article.getNoArticle());
-		
+
 		namedParameterJdbcTemplate.update(UPDATE_PRIX_VENTE, map2);
 	}
 
 	/**
 	 * Méthode permettant d'update les crédit d'un utilisateur dans la base de donée
+	 * 
 	 * @param Utilisateur
 	 */
 	public void updateCredit(Utilisateur user) {
-		
+
 		MapSqlParameterSource map3 = new MapSqlParameterSource();
 		map3.addValue("credit", user.getCredit());
 		map3.addValue("id", user.getNoUtilisateur());
-		
-		
+
 		namedParameterJdbcTemplate.update(UPDATE_CREDIT, map3);
-		
+
 	}
 
-	
 }
-
-
