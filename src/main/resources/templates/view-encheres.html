@@ -47,6 +47,7 @@
 		<table>
 			<thead>
 				<tr>
+					<th>Image</th>
 					<th>Nom</th>
 					<th>Prix</th>
 					<th>Fin de l'enchère</th>
@@ -55,6 +56,9 @@
 			</thead>
 			<tbody>
 				<tr th:each="a : ${articles}">
+					<td>
+						<img th:src="'/images/' + ${a.noArticle} + '.png'" alt="Image">
+					</td>
 					<td >
 						<a th:text="${a.nomArticle}" th:href="@{/encheres/detail(id=${a.noArticle})}"></a>
 					</td>

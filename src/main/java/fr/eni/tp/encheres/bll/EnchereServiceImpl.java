@@ -40,13 +40,22 @@ public class EnchereServiceImpl implements EnchereService {
 	}
 
 	/**
-	 * Méthode retournant la liste des articles avec leur vendeur, leur catégorie,
-	 * leurs enchères et les utilisateurs à l'origine de ces enchères
+	 * Méthode retournant la liste des articles en cours avec leur vendeur, leur
+	 * catégorie, leurs enchères et les utilisateurs à l'origine de ces enchères
 	 */
 	@Override
 	public List<ArticleVendu> getEncheres() {
 		List<ArticleVendu> articles = articleVenduDAO.getArticles();
+
+		List<ArticleVendu> articlesEnCours = new ArrayList<ArticleVendu>();
 		for (ArticleVendu articleVendu : articles) {
+			if ((articleVendu.getDateDebutEncheres().isBefore(LocalDateTime.now()))
+					&& (articleVendu.getDateFinEncheres().isAfter(LocalDateTime.now()))) {
+				articlesEnCours.add(articleVendu);
+			}
+		}
+
+		for (ArticleVendu articleVendu : articlesEnCours) {
 			articleVendu.setVendeur(utilisateurDAO.getUtilisateur(articleVendu.getVendeur().getNoUtilisateur()));
 			articleVendu.setCategorieArticle(
 					categorieDAO.getCategorie(articleVendu.getCategorieArticle().getNoCategorie()));
@@ -57,7 +66,173 @@ public class EnchereServiceImpl implements EnchereService {
 				}
 			}
 		}
-		return articles;
+
+		return articlesEnCours;
+	}
+
+	/**
+	 * Méthode retournant la liste des articles en cours filtrée par un mot-clé et
+	 * par une catégorie
+	 */
+	@Override
+	public List<ArticleVendu> getEncheresFiltrees(String filtre, int idCategorie) {
+		List<ArticleVendu> articlesFiltres = new ArrayList<ArticleVendu>();
+		if (filtre.isBlank() && idCategorie == 0) { // mot-clé vide et catégorie vide
+			articlesFiltres = articleVenduDAO.getArticles();
+		}
+		if (!filtre.isBlank() && idCategorie == 0) { // mot-clé rempli et catégorie vide
+			String filtreSql = "%" + filtre + "%";
+			articlesFiltres = articleVenduDAO.getArticlesFiltresByString(filtreSql);
+		}
+		if (filtre.isBlank() && !(idCategorie == 0)) { // mot clé vide et catégorie remplie
+			articlesFiltres = articleVenduDAO.getArticlesFiltresById(idCategorie);
+		}
+		if (!filtre.isBlank() && !(idCategorie == 0)) { // mot clé rempli et catégorie remplie
+			String filtreSql = "%" + filtre + "%";
+			articlesFiltres = articleVenduDAO.getArticlesFiltresByStringAndId(filtreSql, idCategorie);
+		}
+
+		List<ArticleVendu> articlesFiltresEnCours = new ArrayList<ArticleVendu>();
+		for (ArticleVendu articleVendu : articlesFiltres) {
+			if ((articleVendu.getDateDebutEncheres().isBefore(LocalDateTime.now()))
+					&& (articleVendu.getDateFinEncheres().isAfter(LocalDateTime.now()))) {
+				articlesFiltresEnCours.add(articleVendu);
+			}
+		}
+
+		for (ArticleVendu articleVendu : articlesFiltresEnCours) {
+			articleVendu.setVendeur(utilisateurDAO.getUtilisateur(articleVendu.getVendeur().getNoUtilisateur()));
+			articleVendu.setCategorieArticle(
+					categorieDAO.getCategorie(articleVendu.getCategorieArticle().getNoCategorie()));
+			if ((enchèreDAO.countByIdArticle(articleVendu.getNoArticle())) != 0) {
+				articleVendu.setEncheres(enchèreDAO.getEncheres(articleVendu.getNoArticle()));
+				for (Enchère enchère : articleVendu.getEncheres()) {
+					enchère.setUtilisateur(utilisateurDAO.getUtilisateur(enchère.getUtilisateur().getNoUtilisateur()));
+				}
+			}
+		}
+
+		return articlesFiltresEnCours;
+	}
+
+	/**
+	 * Méthode retournant la liste des articles filtrée en fonction d'un mot-clé, de
+	 * la catégorie et des choix optionnels de l'utilisateur, liés à l'achat ou à la
+	 * vente
+	 */
+	@Override
+	public List<ArticleVendu> getEncheresFiltreesOptions(String filtre, int idCategorie, List<String> options,
+			Utilisateur userSession) {
+		List<ArticleVendu> articlesFiltres = new ArrayList<ArticleVendu>();
+		if (filtre.isBlank() && idCategorie == 0) { // mot-clé vide et catégorie vide
+			articlesFiltres = articleVenduDAO.getArticles();
+		}
+		if (!filtre.isBlank() && idCategorie == 0) { // mot-clé rempli et catégorie vide
+			String filtreSql = "%" + filtre + "%";
+			articlesFiltres = articleVenduDAO.getArticlesFiltresByString(filtreSql);
+		}
+		if (filtre.isBlank() && !(idCategorie == 0)) { // mot clé vide et catégorie remplie
+			articlesFiltres = articleVenduDAO.getArticlesFiltresById(idCategorie);
+		}
+		if (!filtre.isBlank() && !(idCategorie == 0)) { // mot clé rempli et catégorie remplie
+			String filtreSql = "%" + filtre + "%";
+			articlesFiltres = articleVenduDAO.getArticlesFiltresByStringAndId(filtreSql, idCategorie);
+		}
+
+		List<ArticleVendu> articlesFiltresOptions = new ArrayList<ArticleVendu>();
+		for (String option : options) {
+			if (option.equals("achats1")) { // ajoute l'article si la vente est en cours et que l'utilisateur n'est pas
+											// le vendeur
+				for (ArticleVendu article : articlesFiltres) {
+					if ((article.getDateDebutEncheres().isBefore(LocalDateTime.now()))
+							&& (article.getDateFinEncheres().isAfter(LocalDateTime.now()))
+							&& (article.getVendeur().getNoUtilisateur() != userSession.getNoUtilisateur())) {
+						articlesFiltresOptions.add(article);
+					}
+				}
+			}
+
+			if (option.equals("achats2")) { // ajoute l'article si la vente est en cours, que l'utilisateur n'est pas le
+											// vendeur et que l'utilisateur possède une enchère sur l'article
+				for (ArticleVendu article : articlesFiltres) {
+					if ((article.getDateDebutEncheres().isBefore(LocalDateTime.now()))
+							&& (article.getDateFinEncheres().isAfter(LocalDateTime.now()))
+							&& (article.getVendeur().getNoUtilisateur() != userSession.getNoUtilisateur())) {
+						for (Enchère enchère : article.getEncheres()) {
+							if (enchère.getUtilisateur().getNoUtilisateur() == userSession.getNoUtilisateur()) {
+								articlesFiltresOptions.add(article);
+							}
+						}
+					}
+				}
+			}
+
+			if (option.equals("achats3")) { // ajoute l'article si la vente est terminée, que l'utilisateur n'est pas le
+											// vendeur et que l'utilisateur a remporté la vente
+				for (ArticleVendu article : articlesFiltres) {
+					if (article.getDateFinEncheres().isBefore(LocalDateTime.now())
+							&& (article.getVendeur().getNoUtilisateur() != userSession.getNoUtilisateur())) {
+						for (Enchère enchère : article.getEncheres()) {
+							if (enchère.getMontant_enchere() == article.getPrixVente()
+									&& enchère.getUtilisateur().getNoUtilisateur() == userSession.getNoUtilisateur()) {
+								articlesFiltresOptions.add(article);
+							}
+						}
+					}
+				}
+			}
+
+			if (option.equals("ventes1")) { // ajoute l'article si la vente est en cours et que l'utilisateur est le
+											// vendeur
+				for (ArticleVendu article : articlesFiltres) {
+					if ((article.getVendeur().getNoUtilisateur() == userSession.getNoUtilisateur())
+							&& (article.getDateDebutEncheres().isBefore(LocalDateTime.now()))
+							&& (article.getDateFinEncheres().isAfter(LocalDateTime.now()))) {
+						articlesFiltresOptions.add(article);
+					}
+				}
+			}
+
+			if (option.equals("ventes2")) { // ajoute l'article si la vente est terminée et que l'utilisateur est le
+											// vendeur
+				for (ArticleVendu article : articlesFiltres) {
+					if ((article.getVendeur().getNoUtilisateur() == userSession.getNoUtilisateur())
+							&& (article.getDateDebutEncheres().isAfter(LocalDateTime.now()))) {
+						articlesFiltresOptions.add(article);
+					}
+				}
+			}
+
+			if (option.equals("ventes3")) { // ajoute l'article si la vente n'est pas commencée et que l'utilisateur est
+											// le vendeur
+				for (ArticleVendu article : articlesFiltres) {
+					if ((article.getVendeur().getNoUtilisateur() == userSession.getNoUtilisateur())
+							&& (article.getDateFinEncheres().isBefore(LocalDateTime.now()))) {
+						articlesFiltresOptions.add(article);
+					}
+				}
+			}
+		}
+
+		// filtre la liste des articles pour ne pas avoir de doublon
+		Set<Integer> seenIds = new HashSet<>();
+
+		List<ArticleVendu> articlesFiltresOptionsUnique = articlesFiltresOptions.stream()
+				.filter(article -> seenIds.add(article.getNoArticle())).collect(Collectors.toList());
+
+		for (ArticleVendu articleVendu : articlesFiltresOptionsUnique) {
+			articleVendu.setVendeur(utilisateurDAO.getUtilisateur(articleVendu.getVendeur().getNoUtilisateur()));
+			articleVendu.setCategorieArticle(
+					categorieDAO.getCategorie(articleVendu.getCategorieArticle().getNoCategorie()));
+			if ((enchèreDAO.countByIdArticle(articleVendu.getNoArticle())) != 0) {
+				articleVendu.setEncheres(enchèreDAO.getEncheres(articleVendu.getNoArticle()));
+				for (Enchère enchère : articleVendu.getEncheres()) {
+					enchère.setUtilisateur(utilisateurDAO.getUtilisateur(enchère.getUtilisateur().getNoUtilisateur()));
+				}
+			}
+		}
+
+		return articlesFiltresOptionsUnique;
 	}
 
 	/**
@@ -94,6 +269,33 @@ public class EnchereServiceImpl implements EnchereService {
 			throw be;
 		}
 
+	}
+
+	@Override
+	public ArticleVendu articleById(int noArticle) {
+
+		ArticleVendu article = this.articleVenduDAO.read(noArticle);
+		Utilisateur vendeur = this.utilisateurDAO.getUtilisateur(article.getVendeur().getNoUtilisateur());
+		Retrait lieuRetrait = this.retraitDAO.getRetraitById(noArticle);
+		String libelleCategorie = this.categorieDAO.getCategorie(article.getCategorieArticle().getNoCategorie())
+				.getLibelle();
+		article.setLieuRetrait(lieuRetrait);
+		article.getCategorieArticle().setLibelle(libelleCategorie);
+		article.setVendeur(vendeur);
+		return article;
+	}
+
+	@Override
+	public String getPseudoAcheteur(int prixVente, int noArticle) {
+		int countEnchere = this.enchèreDAO.getCountEnchere(prixVente, noArticle);
+		if (countEnchere != 0) {
+			Enchère enchereAcheteur = this.enchèreDAO.getUtilisateurParPrix(prixVente, noArticle);
+			Utilisateur acheteur = this.utilisateurDAO
+					.getUtilisateur(enchereAcheteur.getUtilisateur().getNoUtilisateur());
+
+			return acheteur.getPseudo();
+		}
+		return null;
 	}
 
 	/**
@@ -133,163 +335,5 @@ public class EnchereServiceImpl implements EnchereService {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * Méthode retournant la liste des articles filtrée par un mot-clé et par une
-	 * catégorie
-	 */
-	@Override
-	public List<ArticleVendu> getEncheresFiltrees(String filtre, int idCategorie) {
-		List<ArticleVendu> articles = new ArrayList<ArticleVendu>();
-
-		if (filtre.isBlank() && idCategorie == 0) { // mot-clé vide et catégorie vide
-			articles = articleVenduDAO.getArticles();
-		}
-		if (!filtre.isBlank() && idCategorie == 0) { // mot-clé rempli et catégorie vide
-			String filtreSql = "%" + filtre + "%";
-			articles = articleVenduDAO.getArticlesFiltresByString(filtreSql);
-		}
-		if (filtre.isBlank() && !(idCategorie == 0)) { // mot clé vide et catégorie remplie
-			articles = articleVenduDAO.getArticlesFiltresById(idCategorie);
-		}
-		if (!filtre.isBlank() && !(idCategorie == 0)) { // mot clé rempli et catégorie remplie
-			String filtreSql = "%" + filtre + "%";
-			articles = articleVenduDAO.getArticlesFiltresByStringAndId(filtreSql, idCategorie);
-		}
-
-		for (ArticleVendu articleVendu : articles) {
-			articleVendu.setVendeur(utilisateurDAO.getUtilisateur(articleVendu.getVendeur().getNoUtilisateur()));
-			articleVendu.setCategorieArticle(
-					categorieDAO.getCategorie(articleVendu.getCategorieArticle().getNoCategorie()));
-			if ((enchèreDAO.countByIdArticle(articleVendu.getNoArticle())) != 0) {
-				articleVendu.setEncheres(enchèreDAO.getEncheres(articleVendu.getNoArticle()));
-				for (Enchère enchère : articleVendu.getEncheres()) {
-					enchère.setUtilisateur(utilisateurDAO.getUtilisateur(enchère.getUtilisateur().getNoUtilisateur()));
-				}
-			}
-		}
-		return articles;
-	}
-
-	@Override
-	public ArticleVendu articleById(int noArticle) {
-
-		ArticleVendu article = this.articleVenduDAO.read(noArticle);
-		Utilisateur vendeur = this.utilisateurDAO.getUtilisateur(article.getVendeur().getNoUtilisateur());
-		Retrait lieuRetrait = this.retraitDAO.getRetraitById(noArticle);
-		String libelleCategorie = this.categorieDAO.getCategorie(article.getCategorieArticle().getNoCategorie())
-				.getLibelle();
-		article.setLieuRetrait(lieuRetrait);
-		article.getCategorieArticle().setLibelle(libelleCategorie);
-		article.setVendeur(vendeur);
-		return article;
-	}
-
-	@Override
-	public String getPseudoAcheteur(int prixVente, int noArticle) {
-		int countEnchere = this.enchèreDAO.getCountEnchere(prixVente, noArticle);
-		if (countEnchere != 0) {
-			Enchère enchereAcheteur = this.enchèreDAO.getUtilisateurParPrix(prixVente, noArticle);
-			Utilisateur acheteur = this.utilisateurDAO
-					.getUtilisateur(enchereAcheteur.getUtilisateur().getNoUtilisateur());
-
-			return acheteur.getPseudo();
-		}
-		return null;
-
-	}
-
-	/**
-	 * Méthode retournant la liste des articles filtrée en fonction des choix
-	 * optionnels de l'utilisateur, liés à l'achat ou à la vente
-	 */
-	@Override
-	public List<ArticleVendu> getEncheresFiltreesOptions(List<ArticleVendu> articles, List<String> options,
-			Utilisateur userSession) {
-		List<ArticleVendu> articlesOptions = new ArrayList<ArticleVendu>();
-
-		for (String option : options) {
-			if (option.equals("achats1")) { // ajoute l'article si la vente est en cours et que l'utilisateur n'est pas
-											// le
-											// vendeur
-				for (ArticleVendu article : articles) {
-					if ((article.getDateDebutEncheres().isBefore(LocalDateTime.now()))
-							&& (article.getDateFinEncheres().isAfter(LocalDateTime.now()))
-							&& (article.getVendeur().getNoUtilisateur() != userSession.getNoUtilisateur())) {
-						articlesOptions.add(article);
-					}
-				}
-			}
-
-			if (option.equals("achats2")) { // ajoute l'article si la vente est en cours, que l'utilisateur n'est pas le
-											// vendeur et que l'utilisateur possède une enchère sur l'article
-				for (ArticleVendu article : articles) {
-					if ((article.getDateDebutEncheres().isBefore(LocalDateTime.now()))
-							&& (article.getDateFinEncheres().isAfter(LocalDateTime.now()))
-							&& (article.getVendeur().getNoUtilisateur() != userSession.getNoUtilisateur())) {
-						for (Enchère enchère : article.getEncheres()) {
-							if (enchère.getUtilisateur().getNoUtilisateur() == userSession.getNoUtilisateur()) {
-								articlesOptions.add(article);
-							}
-						}
-					}
-				}
-			}
-
-			if (option.equals("achats3")) { // ajoute l'article si la vente est terminée, que l'utilisateur n'est pas le
-											// vendeur et que l'utilisateur a remporté la vente
-				for (ArticleVendu article : articles) {
-					if (article.getDateFinEncheres().isBefore(LocalDateTime.now())
-							&& (article.getVendeur().getNoUtilisateur() != userSession.getNoUtilisateur())) {
-						for (Enchère enchère : article.getEncheres()) {
-							if (enchère.getMontant_enchere() == article.getPrixVente()
-									&& enchère.getUtilisateur().getNoUtilisateur() == userSession.getNoUtilisateur()) {
-								articlesOptions.add(article);
-							}
-						}
-					}
-				}
-			}
-
-			if (option.equals("ventes1")) { // ajoute l'article si la vente est en cours et que l'utilisateur est le
-											// vendeur
-				for (ArticleVendu article : articles) {
-					if ((article.getVendeur().getNoUtilisateur() == userSession.getNoUtilisateur())
-							&& (article.getDateDebutEncheres().isBefore(LocalDateTime.now()))
-							&& (article.getDateFinEncheres().isAfter(LocalDateTime.now()))) {
-						articlesOptions.add(article);
-					}
-				}
-			}
-
-			if (option.equals("ventes2")) { // ajoute l'article si la vente est terminée et que l'utilisateur est le
-											// vendeur
-				for (ArticleVendu article : articles) {
-					if ((article.getVendeur().getNoUtilisateur() == userSession.getNoUtilisateur())
-							&& (article.getDateDebutEncheres().isAfter(LocalDateTime.now()))) {
-						articlesOptions.add(article);
-					}
-				}
-			}
-
-			if (option.equals("ventes3")) { // ajoute l'article si la vente n'est pas commencée et que l'utilisateur est
-											// le vendeur
-				for (ArticleVendu article : articles) {
-					if ((article.getVendeur().getNoUtilisateur() == userSession.getNoUtilisateur())
-							&& (article.getDateFinEncheres().isBefore(LocalDateTime.now()))) {
-						articlesOptions.add(article);
-					}
-				}
-			}
-		}
-
-		// filtre la liste des articles pour ne pas avoir de doublon
-		Set<Integer> seenIds = new HashSet<>();
-
-		List<ArticleVendu> filteredArticlesOptions = articlesOptions.stream()
-				.filter(article -> seenIds.add(article.getNoArticle())).collect(Collectors.toList());
-
-		return filteredArticlesOptions;
 	}
 }

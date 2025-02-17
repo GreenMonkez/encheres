@@ -23,7 +23,7 @@ public interface EnchereService {
 
 	ArticleVendu articleById(int id);
 
-	List<ArticleVendu> getEncheresFiltreesOptions(List<ArticleVendu> articles, List<String> options,
+	List<ArticleVendu> getEncheresFiltreesOptions(String filtre, int idCategorie, List<String> options,
 			Utilisateur userSession);
 
 }

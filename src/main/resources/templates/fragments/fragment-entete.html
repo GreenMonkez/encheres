@@ -4,6 +4,7 @@
 	</h1>
 	<nav>
 		<ul>
+			<li sec:authorize="hasRole('ROLE_USER')"><a th:href="@{/encheres/nouvelleVente}">Nouvelle Vente</a></li>
 			<li sec:authorize="!isAuthenticated()"><a th:href="@{/login}">S'incrire - Se connecter</a></li>
 			<li sec:authorize="isAuthenticated()"><a th:href="@{/monProfil}">Mon profil</a></li>
 			<li sec:authorize="isAuthenticated()"><a th:href="@{/logout}">Déconnexion</a></li>
