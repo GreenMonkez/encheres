@@ -190,17 +190,39 @@ public class EnchereController {
 		article.setAcheteur(acheteur);
 		model.addAttribute("article", article);
 
-		boolean echereEncours = enchereService.isEnchereEnCours(article.getDateFinEncheres());
+
+		boolean echereEncours = enchereService.isEnchereEnCours(article.getDateFinEncheres(),
+				article.getDateDebutEncheres());
+
 		model.addAttribute("enchereEnCours", echereEncours);
-		boolean isAcheteur = enchereService.isAcheteur(id, userSession.getNoUtilisateur());
+		boolean isAcheteur = enchereService.isAcheteur(acheteur.getPseudo(), userSession.getPseudo());
 		model.addAttribute("isAcheteur", isAcheteur);
-		System.out.println(userSession.getPseudo());
 		boolean NotmeilleurOffre = enchereService.ismeilleurOffre(pseudoAcheteur, userSession.getPseudo());
 		model.addAttribute("NotmeilleurOffre", NotmeilleurOffre);
+		int affichage = 0;
+
+		if (article.getPrixVente() != 0 && !isAcheteur) {
+			affichage = 1;
+
+		}
+
+		if (article.getPrixVente() == 0) {
+			affichage = 0;
+
+		}
+
+		if (isAcheteur) {
+			affichage = 3;
+
+		}
+
+		model.addAttribute("affichage", affichage);
+
 		return "detail_vente";
 	}
 
 	/**
+
 	 * Méthode permettant de faire une nouvelle enchère
 	 * 
 	 * @param montant

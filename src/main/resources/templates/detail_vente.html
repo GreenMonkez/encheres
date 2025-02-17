@@ -12,8 +12,9 @@
 	<main>
 		<form action="">
 			<h1 th:if="${!enchereEnCours}">
-				<span th:if="${isAcheteur}">Vous avez remporté l'enchère ! 🎉</span>
-				<span th:unless="${isAcheteur}" th:text="${article.acheteur.pseudo + ' a remporté l\'enchère !'}"></span>
+				<span th:if="${affichage} == 3">Vous avez remporté l'enchère ! 🎉</span>
+				<span th:if="${affichage} == 1" th:text="${article.acheteur.pseudo + ' a remporté l''enchère !'}"></span>
+				<span th:if="${affichage} == 0">Aucune Enchère</span>
 			</h1>
 
 			<h1 th:if="${enchereEnCours}">Détail vente</h1>
@@ -60,7 +61,7 @@
 					spécifiée</li>
 			</ul>
 
-			<div th:if="${enchereEnCours and isAcheteur}">
+			<div th:if="${enchereEnCours}">
 				<label for="idProposition">Ma proposition : </label> <input
 					id="idProposition" type="number" name="proposition"
 					th:value="${article.prixVente}" />
