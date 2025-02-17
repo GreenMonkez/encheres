@@ -11,37 +11,48 @@ import jakarta.validation.constraints.Size;
 
 public class Utilisateur {
 
+	// ****************** ATTRIBUTS D'INSTANCE ***********************************
+	
 	@NotBlank
 	@Size(max = 30)
 	private String pseudo;
+
 	@NotBlank
 	@Size(max = 30)
 	private String nom;
+
 	@NotBlank
 	@Size(max = 30)
 	private String prenom;
-	@NotBlank
-	@Size(max = 40)
+
 	@NotBlank
 	@Size(max = 40)
 	@Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "L'adresse email est invalide.")
 	private String email;
+
 	@Size(max = 15)
 	private String telephone;
+
 	@NotBlank
 	@Size(max = 30)
 	private String rue;
+
 	@NotBlank
 	@Size(max = 5)
 	private String codePostal;
+
 	@NotBlank
 	@Size(max = 30)
 	private String ville;
+
 	@NotBlank
 	private String motDePasse;
+
 	@NotNull
+	@Min(value = 0)
 	private int credit = 0;
 	private boolean administrateur = false;
+
 	@NotNull
 	private int noUtilisateur;
 
@@ -49,6 +60,8 @@ public class Utilisateur {
 	List<ArticleVendu> vendus = new ArrayList<ArticleVendu>();
 	List<Enchère> encheres = new ArrayList<Enchère>();
 
+	// /****************** CONSTRUCTEURS ***********************************
+	
 	public Utilisateur() {
 
 	}
@@ -72,6 +85,8 @@ public class Utilisateur {
 		this.vendus = vendus;
 		this.encheres = encheres;
 	}
+	
+	///****************** METHODES ***********************************
 
 	@Override
 	public String toString() {

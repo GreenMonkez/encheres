@@ -7,6 +7,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class Categorie {
+	
+	// ****************** ATTRIBUTS D'INSTANCE ***********************************
+	
 	private int noCategorie;
 
 	@NotBlank
@@ -14,6 +17,8 @@ public class Categorie {
 	private String libelle;
 	List<ArticleVendu> articlesVendus = new ArrayList<ArticleVendu>();
 
+	// ****************** CONSTRUCTEURS ***********************************
+	
 	public Categorie() {
 	}
 
@@ -23,11 +28,15 @@ public class Categorie {
 		this.articlesVendus = articlesVendus;
 	}
 
+	//****************** METHODES ***********************************
+	
 	@Override
 	public String toString() {
 		return "Categorie [noCategorie=" + noCategorie + ", libelle=" + libelle + ", articlesVendus=" + articlesVendus
 				+ "]";
 	}
+	
+	// ****************** GETTERS & SETTERS ***********************************
 
 	public int getNoCategorie() {
 		return noCategorie;

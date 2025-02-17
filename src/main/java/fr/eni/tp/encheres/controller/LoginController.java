@@ -20,9 +20,6 @@ import fr.eni.tp.encheres.bo.Utilisateur;
 import fr.eni.tp.encheres.exception.BusinessException;
 import jakarta.validation.Valid;
 
-/**
- * 
- */
 @Controller
 @SessionAttributes({ "userSession" })
 public class LoginController {
@@ -33,13 +30,14 @@ public class LoginController {
 	public LoginController(LoginService loginService, MessageSource messageSource) {
 		this.loginService = loginService;
 		this.messageSource = messageSource;
-		
+
 	}
-	
+
 	/**
 	 * Méthode permettant d'afficher la vue d'inscription
+	 * 
 	 * @param model
-	 * @return  le formulaire d'inscription
+	 * @return le formulaire d'inscription
 	 */
 	@GetMapping("/inscription")
 	public String afficherInscription(Model model) {
@@ -51,10 +49,12 @@ public class LoginController {
 
 	/**
 	 * Méthode permettant de soumettre le formulaire d'inscription
+	 * 
 	 * @param mdpConfirm
 	 * @param user
 	 * @param bindingResult
-	 * @return la page listes des enchères; Si erreur @Return le formulaire d'inscription
+	 * @return la page listes des enchères; Si erreur @Return le formulaire
+	 *         d'inscription
 	 * 
 	 */
 	@PostMapping("/inscription")
@@ -78,9 +78,11 @@ public class LoginController {
 			return "inscription";
 		}
 	}
-	
+
 	/**
-	 * Méthode permettant d'afficher la page du profil avec les infos de l'utilisateur en session
+	 * Méthode permettant d'afficher la page du profil avec les infos de
+	 * l'utilisateur en session
+	 * 
 	 * @param model
 	 * @param userSession
 	 * @return la page mon profil
@@ -92,9 +94,10 @@ public class LoginController {
 
 		return "mon-profil";
 	}
-	
+
 	/**
 	 * Méthode permettant d'accéder au formulaire de modification de l'utilisateur
+	 * 
 	 * @param model
 	 * @param userSession
 	 * @return la page formulaire modifier-profil
@@ -107,9 +110,10 @@ public class LoginController {
 
 		return "modifier-profil";
 	}
-	
+
 	/**
 	 * Méthode permettant d'afficher la page de formulaire pour modifier le profil
+	 * 
 	 * @param model
 	 * @param userSession
 	 * @return page modifier le profil
@@ -122,21 +126,23 @@ public class LoginController {
 
 		return "modifier-profil";
 	}
-	
+
 	/**
-	 * Méthode permettant de soumettre les informations modifier de l'utilisateur puis après traitement de modifier l'user en session
+	 * Méthode permettant de soumettre les informations modifier de l'utilisateur
+	 * puis après traitement de modifier l'user en session
+	 * 
 	 * @param newMdp
 	 * @param mdpConfirm
 	 * @param userSession
 	 * @param user
 	 * @param bindingResult
-	 * @return la page mon-profil; Si erreur : @Return le formulaire de modification 
+	 * @return la page mon-profil; Si erreur : @Return le formulaire de modification
 	 */
 	@PostMapping("/monProfil/modifier")
 	public String modifierProfil(@RequestParam("NewMotDePasse") String newMdp,
 			@RequestParam("PasswordConfirm") String mdpConfirm, @ModelAttribute("userSession") Utilisateur userSession,
 			@Valid @ModelAttribute("utilisateur") Utilisateur user, BindingResult bindingResult) {
-		
+
 		user.setNoUtilisateur(userSession.getNoUtilisateur());
 		if (!bindingResult.hasErrors()) {
 
@@ -191,6 +197,7 @@ public class LoginController {
 
 	/**
 	 * Méthode permettant d'afficher le profil d'un utilisateur
+	 * 
 	 * @param id
 	 * @param model
 	 * @return la page profil-utilisateur
@@ -205,22 +212,23 @@ public class LoginController {
 	}
 
 	@PostMapping("/monProfil/supprimer")
-	public String supprimerProfil(@ModelAttribute("userSession") Utilisateur userSession, RedirectAttributes redirectAttributes, Locale locale) throws BusinessException {
+	public String supprimerProfil(@ModelAttribute("userSession") Utilisateur userSession,
+			RedirectAttributes redirectAttributes, Locale locale) throws BusinessException {
 
 		try {
-			
+
 			loginService.supprimerUtilisateur(userSession);
 			return "redirect:/logout";
 		} catch (BusinessException e) {
 			e.printStackTrace();
-		     e.getClesErreurs().forEach(cle -> {
-		     String message = messageSource.getMessage(cle, null, locale); // Traduire la clé en message
-		     redirectAttributes.addFlashAttribute("erreurs", message); // Ajouter le message
-		        });
-		        
-		        return "redirect:/monProfil"; // Retourner à la page du profil avec les messages d'erreur
-		    }
-		
+			e.getClesErreurs().forEach(cle -> {
+				String message = messageSource.getMessage(cle, null, locale); // Traduire la clé en message
+				redirectAttributes.addFlashAttribute("erreurs", message); // Ajouter le message
+			});
+
+			return "redirect:/monProfil"; // Retourner à la page du profil avec les messages d'erreur
+		}
+
 	}
 
 	@GetMapping("/login")

@@ -1,9 +1,6 @@
 package fr.eni.tp.encheres.bll;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDateTime;
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
@@ -82,7 +79,7 @@ public class LoginServiceImpl implements LoginService {
 		}
 
 	}
-	
+
 	@Override
 	public void supprimerUtilisateur(Utilisateur userSupp) throws BusinessException {
 
@@ -123,10 +120,9 @@ public class LoginServiceImpl implements LoginService {
 			throw be;
 		}
 	}
-	
 
-	//**************	VALIDATION	***********************************************
-	
+	// ************** VALIDATION ***********************************************
+
 	private boolean validerUtilisateurPseudo(String pseudo, BusinessException be) {
 
 		boolean valide = true;
@@ -188,15 +184,13 @@ public class LoginServiceImpl implements LoginService {
 
 	}
 
-	
-
 	private boolean validerVenteEnCours(int idUser, BusinessException be, List<ArticleVendu> listArticles) {
 		boolean valide = true;
 
 		if (listArticles != null) {
 
 			for (ArticleVendu articleVendu : listArticles) {
-				
+
 				if (articleVendu.getDateDebutEncheres().isAfter(LocalDateTime.now())) {
 					valide = false;
 					be.addErreur("erreur.supprimer.profil.vente.avenir");
@@ -215,9 +209,9 @@ public class LoginServiceImpl implements LoginService {
 		boolean valide = true;
 
 		if (listEncheres != null) {
-			
+
 			for (Enchère enchère : listEncheres) {
-				//System.out.println(enchère);	
+				// System.out.println(enchère);
 				if (enchère.getDateEnchère().isBefore(LocalDateTime.now())) {
 					valide = false;
 					be.addErreur("erreur.supprimer.profil.enchere.encours");

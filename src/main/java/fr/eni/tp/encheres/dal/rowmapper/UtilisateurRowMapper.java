@@ -9,6 +9,9 @@ import fr.eni.tp.encheres.bo.Utilisateur;
 
 public class UtilisateurRowMapper implements RowMapper<Utilisateur> {
 
+	/**
+	 * Méthode rowmapper d'utilisateur
+	 */
 	@Override
 	public Utilisateur mapRow(ResultSet rs, int rowNum) throws SQLException {
 		Utilisateur u = new Utilisateur();

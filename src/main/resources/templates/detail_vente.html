@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <link rel="stylesheet" th:href="@{/css/general.css}" />
@@ -8,7 +9,6 @@
 </head>
 <body>
 	<header th:replace="~{fragments/fragment-entete :: entete}"> </header>
-
 	<main>
 		<form action="">
 			<h1 th:if="${!enchereEnCours}">
@@ -20,35 +20,28 @@
 			<section>
 				<h2 th:text="''+${article.nomArticle}"></h2>
 				<div>
-
 					<p th:text="'Despcription : '+${article.description}"></p>
 				</div>
 				<div>
-
 					<p th:text="'Catégorie : '+${article.categorieArticle.libelle}"></p>
 				</div>
 				<div>
 
-					<p th:if="${article.acheteur.pseudo}!=null"
-						th:text="'Meilleure offre : '+${article.prixVente} + ' pts par ' + ${article.acheteur.pseudo}"></p>
+					<p th:if="${article.acheteur.pseudo}!=null" th:text="'Meilleure offre : '+${article.prixVente} + ' pts par ' + ${article.acheteur.pseudo}"></p>
 				</div>
 				<div>
-
 					<p th:text="'Mise à prix : '+${article.miseAPrix}"></p>
 				</div>
 				<div>
-
-					<p th:text="'Fin de l\'enchère : '+${article.dateFinEncheres}"></p>
+					<p th:text="'Fin de l\'enchère : '+${article.dateFinEncheres}"></p>  
 				</div>
 				<div>
-
 					<p th:text="'Retrait : '+${article.lieuRetrait.rue}"></p>
 				</div>
-				<p
-					th:text="${article.lieuRetrait.code_postal} + ' ' +${article.lieuRetrait.ville} "></p>
+				<div>
+					<p th:text="${article.lieuRetrait.code_postal} + ' ' +${article.lieuRetrait.ville} "></p>
 				</div>
 				<div>
-
 					<p th:text="'Vendeur : '+${article.vendeur.pseudo}"></p>
 				</div>
 			</section>
@@ -72,13 +65,8 @@
 					th:value="${article.prixVente}" />
 				<button type="submit">Enchérir</button>
 			</div>
-
 		</form>
 	</main>
-
-
-
 	<footer th:replace="~{fragments/fragment-footer :: footer}"> </footer>
-
 </body>
 </html>

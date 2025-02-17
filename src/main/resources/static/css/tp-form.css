@@ -26,7 +26,8 @@ form h1 {
 
 .flex-outer li button {
 	margin-left: auto;
-	margin-bottom: 5px; padding : 8px 16px;
+	margin-bottom: 5px;
+	padding: 8px 16px;
 	border: none;
 	background: #333;
 	color: #f2f2f2;

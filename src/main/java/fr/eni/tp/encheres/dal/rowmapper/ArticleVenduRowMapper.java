@@ -11,8 +11,15 @@ import fr.eni.tp.encheres.bo.Utilisateur;
 
 public class ArticleVenduRowMapper implements RowMapper<ArticleVendu> {
 
+	/**
+	 * Méthode rowmapper d'article, ajoutant un utilisateur avec un id et une
+	 * catégorie avec un id
+	 */
 	@Override
 	public ArticleVendu mapRow(ResultSet rs, int rowNum) throws SQLException {
+		
+		//implementation article
+		
 		ArticleVendu a = new ArticleVendu();
 		a.setNoArticle(rs.getInt("NO_ARTICLE"));
 		a.setNomArticle(rs.getString("NOM_ARTICLE"));
@@ -22,10 +29,14 @@ public class ArticleVenduRowMapper implements RowMapper<ArticleVendu> {
 		a.setMiseAPrix(rs.getInt("PRIX_INITIAL"));
 		a.setPrixVente(rs.getInt("PRIX_VENTE"));
 
+		//implementation utilisateur
+		
 		Utilisateur u = new Utilisateur();
 		u.setNoUtilisateur(rs.getInt("NO_UTILISATEUR"));
 		a.setVendeur(u);
 
+		//implementation categorie
+		
 		Categorie c = new Categorie();
 		c.setNoCategorie(rs.getInt("NO_CATEGORIE"));
 		a.setCategorieArticle(c);
