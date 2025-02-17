@@ -31,7 +31,6 @@ public class EnchereController {
 
 	private EnchereService enchereService;
 	private MessageSource messageSource;
-	
 
 	public EnchereController(EnchereService enchereService, MessageSource messageSource) {
 		this.enchereService = enchereService;
@@ -124,24 +123,44 @@ public class EnchereController {
 		model.addAttribute("categories", categories);
 		return "view-nouvelle-vente";
 	}
-	
+
 	@GetMapping("/encheres/detail")
-	public String detailArticle(@RequestParam ("id") int id, Model model, @ModelAttribute("userSession") Utilisateur userSession ) {
-		
+	public String detailArticle(@RequestParam("id") int id, Model model,
+			@ModelAttribute("userSession") Utilisateur userSession) {
+
 		ArticleVendu article = this.enchereService.articleById(id);
 		String pseudoAcheteur = enchereService.getPseudoAcheteur(article.getPrixVente(), id);
 		Utilisateur acheteur = new Utilisateur();
 		acheteur.setPseudo(pseudoAcheteur);
 		article.setAcheteur(acheteur);
-		model.addAttribute("article",article);
-		
-		boolean echereEncours = enchereService.isEnchereEnCours(article.getDateFinEncheres());
+		model.addAttribute("article", article);
+
+		boolean echereEncours = enchereService.isEnchereEnCours(article.getDateFinEncheres(),
+				article.getDateDebutEncheres());
 		model.addAttribute("enchereEnCours", echereEncours);
-		boolean isAcheteur = enchereService.isAcheteur(id, userSession.getNoUtilisateur());
+		boolean isAcheteur = enchereService.isAcheteur(acheteur.getPseudo(), userSession.getPseudo());
 		model.addAttribute("isAcheteur", isAcheteur);
-		System.out.println(userSession.getPseudo());
 		boolean NotmeilleurOffre = enchereService.ismeilleurOffre(pseudoAcheteur, userSession.getPseudo());
 		model.addAttribute("NotmeilleurOffre", NotmeilleurOffre);
+		int affichage = 0;
+
+		if (article.getPrixVente() != 0 && !isAcheteur) {
+			affichage = 1;
+
+		}
+
+		if (article.getPrixVente() == 0) {
+			affichage = 0;
+
+		}
+
+		if (isAcheteur) {
+			affichage = 3;
+
+		}
+
+		model.addAttribute("affichage", affichage);
+
 		return "detail_vente";
 	}
 
@@ -177,9 +196,10 @@ public class EnchereController {
 
 		return "view-encheres";
 	}
-	
+
 	/**
 	 * Méthode permettant de faire une nouvelle enchère
+	 * 
 	 * @param montant
 	 * @param idArticle
 	 * @param userSession
@@ -189,23 +209,24 @@ public class EnchereController {
 	 * @throws BusinessException
 	 */
 	@PostMapping("/encheres/creer")
-	public String creerEnchere(@RequestParam(name="proposition")int montant,@RequestParam("id")int idArticle, @ModelAttribute("userSession") Utilisateur userSession, RedirectAttributes redirectAttributes, Locale locale) throws BusinessException {
-			try {
-				
-				this.enchereService.creerEnchere(userSession, montant, idArticle);
-				return "redirect:/encheres/detail?id=" + idArticle;
+	public String creerEnchere(@RequestParam(name = "proposition") int montant, @RequestParam("id") int idArticle,
+			@ModelAttribute("userSession") Utilisateur userSession, RedirectAttributes redirectAttributes,
+			Locale locale) throws BusinessException {
+		try {
 
-				
-			} catch (BusinessException e) {
-				e.printStackTrace();
-			     e.getClesErreurs().forEach(cle -> {
-			     String message = messageSource.getMessage(cle, null, locale); 
-			     redirectAttributes.addFlashAttribute("erreurs", message); 
-			        });
-			     
-			     return "redirect:/encheres/detail?id=" + idArticle;
+			this.enchereService.creerEnchere(userSession, montant, idArticle);
+			return "redirect:/encheres/detail?id=" + idArticle;
 
-			}
+		} catch (BusinessException e) {
+			e.printStackTrace();
+			e.getClesErreurs().forEach(cle -> {
+				String message = messageSource.getMessage(cle, null, locale);
+				redirectAttributes.addFlashAttribute("erreurs", message);
+			});
+
+			return "redirect:/encheres/detail?id=" + idArticle;
+
+		}
 
 	}
 

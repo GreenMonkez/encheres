@@ -25,9 +25,9 @@ public interface EnchereService {
 
 	ArticleVendu articleById(int id);
 	
-	boolean isAcheteur(int idUser, int idUserSesssion);
+	boolean isAcheteur(String PseudoAcheter, String pseudoUser);
 	
-	boolean isEnchereEnCours(LocalDateTime dateFin);
+	boolean isEnchereEnCours(LocalDateTime dateFin, LocalDateTime dateDebut);
 	
 	boolean ismeilleurOffre(String pseudoMeilleurOfrre, String pseudoUser);
 

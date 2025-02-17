@@ -206,23 +206,29 @@ public class EnchereServiceImpl implements EnchereService {
 	 * @Return boolean valide
 	 */
 	@Override
-	public boolean isAcheteur(int idUser, int idUserSesssion) {
-		boolean valide = true;
-		if (idUser == idUserSesssion) {
-			valide = false;
-		}	
+	public boolean isAcheteur(String PseudoAcheter, String pseudoUser) {
+		boolean valide = false;
+		
+		if (PseudoAcheter != null) {
+			
+			if  (PseudoAcheter.equals(pseudoUser)) {
+				valide = true;
+			}
+		}
 		return valide;
-	}
+	}	
+	
+	
 	
 	/**
 	 * Vérifie si l'enchere est en cours, si non le bouton enchérir est désactiver
 	 * @Return boolean valide
 	 */
 	@Override
-	public boolean isEnchereEnCours(LocalDateTime dateFin) {
+	public boolean isEnchereEnCours(LocalDateTime dateFin, LocalDateTime dateDebut) {
 		
 		boolean valide = true;
-		if (dateFin.isBefore(LocalDateTime.now())) {
+		if (dateFin.isBefore(LocalDateTime.now()) || dateDebut.isAfter(dateDebut)) {
 			valide = false;
 		}
 		
@@ -267,10 +273,6 @@ public class EnchereServiceImpl implements EnchereService {
 					int countEnchere = enchèreDAO.getCountEnchere(article.getPrixVente(), idArticle);
 					if (countEnchere != 0) {
 						Enchère AncienneEnchere = this.enchèreDAO.getUtilisateurParPrix(article.getPrixVente(), idArticle);
-					
-					
-					
-					
 						Utilisateur ancienAcheteur = this.utilisateurDAO.getUtilisateur(AncienneEnchere.getUtilisateur().getNoUtilisateur());
 						int creditRajout = transactionAjout(ancienAcheteur.getCredit(), AncienneEnchere.getMontant_enchere());
 
