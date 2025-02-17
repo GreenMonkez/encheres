@@ -1,12 +1,12 @@
 <header th:fragment="entete">
 	<h1 id="nav-title">
-		<a href="/">ENI-Enchères</a>
+		<a class="black" href="/">ENI-Enchères</a>
 	</h1>
 	<nav>
 		<ul>
-			<li sec:authorize="!isAuthenticated()"><a th:href="@{/login}">S'incrire - Se connecter</a></li>
-			<li sec:authorize="isAuthenticated()"><a th:href="@{/monProfil}">Mon profil</a></li>
-			<li sec:authorize="isAuthenticated()"><a th:href="@{/logout}">Déconnexion</a></li>
+			<p sec:authorize="!isAuthenticated()"><a th:href="@{/login}">S'incrire - Se connecter</a></p>
+			<p sec:authorize="isAuthenticated()"><a th:href="@{/monProfil}">Mon profil</a></p>
+			<p sec:authorize="isAuthenticated()"><a th:href="@{/logout}">Déconnexion</a></p>
 		</ul>
 	</nav>
 </header>
