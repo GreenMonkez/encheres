@@ -214,7 +214,7 @@ public class EnchereController {
 	@PostMapping("/encheres/creer")
 	public String creerEnchere(@RequestParam(name = "proposition") int montant, @RequestParam("id") int idArticle,
 			@ModelAttribute("userSession") Utilisateur userSession, RedirectAttributes redirectAttributes,
-			Locale locale) throws BusinessException {
+			Locale locale) {
 		try {
 
 			this.enchereService.creerEnchere(userSession, montant, idArticle);

@@ -40,6 +40,8 @@ public class EnchereServiceImpl implements EnchereService {
 		this.utilisateurDAO = utilisateurDAO;
 	}
 
+	// ****************************** ARTICLE ******************************
+
 	/**
 	 * Méthode retournant la liste des articles en cours avec leur vendeur, leur
 	 * catégorie, leurs enchères et les utilisateurs à l'origine de ces enchères
@@ -48,15 +50,7 @@ public class EnchereServiceImpl implements EnchereService {
 	public List<ArticleVendu> getEncheres() {
 		List<ArticleVendu> articles = articleVenduDAO.getArticles();
 
-		List<ArticleVendu> articlesEnCours = new ArrayList<ArticleVendu>();
 		for (ArticleVendu articleVendu : articles) {
-			if ((articleVendu.getDateDebutEncheres().isBefore(LocalDateTime.now()))
-					&& (articleVendu.getDateFinEncheres().isAfter(LocalDateTime.now()))) {
-				articlesEnCours.add(articleVendu);
-			}
-		}
-
-		for (ArticleVendu articleVendu : articlesEnCours) {
 			articleVendu.setVendeur(utilisateurDAO.getUtilisateur(articleVendu.getVendeur().getNoUtilisateur()));
 			articleVendu.setCategorieArticle(
 					categorieDAO.getCategorie(articleVendu.getCategorieArticle().getNoCategorie()));
@@ -65,6 +59,14 @@ public class EnchereServiceImpl implements EnchereService {
 				for (Enchère enchère : articleVendu.getEncheres()) {
 					enchère.setUtilisateur(utilisateurDAO.getUtilisateur(enchère.getUtilisateur().getNoUtilisateur()));
 				}
+			}
+		}
+
+		List<ArticleVendu> articlesEnCours = new ArrayList<ArticleVendu>();
+		for (ArticleVendu articleVendu : articles) {
+			if ((articleVendu.getDateDebutEncheres().isBefore(LocalDateTime.now()))
+					&& (articleVendu.getDateFinEncheres().isAfter(LocalDateTime.now()))) {
+				articlesEnCours.add(articleVendu);
 			}
 		}
 
@@ -93,15 +95,7 @@ public class EnchereServiceImpl implements EnchereService {
 			articlesFiltres = articleVenduDAO.getArticlesFiltresByStringAndId(filtreSql, idCategorie);
 		}
 
-		List<ArticleVendu> articlesFiltresEnCours = new ArrayList<ArticleVendu>();
 		for (ArticleVendu articleVendu : articlesFiltres) {
-			if ((articleVendu.getDateDebutEncheres().isBefore(LocalDateTime.now()))
-					&& (articleVendu.getDateFinEncheres().isAfter(LocalDateTime.now()))) {
-				articlesFiltresEnCours.add(articleVendu);
-			}
-		}
-
-		for (ArticleVendu articleVendu : articlesFiltresEnCours) {
 			articleVendu.setVendeur(utilisateurDAO.getUtilisateur(articleVendu.getVendeur().getNoUtilisateur()));
 			articleVendu.setCategorieArticle(
 					categorieDAO.getCategorie(articleVendu.getCategorieArticle().getNoCategorie()));
@@ -110,6 +104,14 @@ public class EnchereServiceImpl implements EnchereService {
 				for (Enchère enchère : articleVendu.getEncheres()) {
 					enchère.setUtilisateur(utilisateurDAO.getUtilisateur(enchère.getUtilisateur().getNoUtilisateur()));
 				}
+			}
+		}
+
+		List<ArticleVendu> articlesFiltresEnCours = new ArrayList<ArticleVendu>();
+		for (ArticleVendu articleVendu : articlesFiltres) {
+			if ((articleVendu.getDateDebutEncheres().isBefore(LocalDateTime.now()))
+					&& (articleVendu.getDateFinEncheres().isAfter(LocalDateTime.now()))) {
+				articlesFiltresEnCours.add(articleVendu);
 			}
 		}
 
@@ -138,6 +140,18 @@ public class EnchereServiceImpl implements EnchereService {
 		if (!filtre.isBlank() && !(idCategorie == 0)) { // mot clé rempli et catégorie remplie
 			String filtreSql = "%" + filtre + "%";
 			articlesFiltres = articleVenduDAO.getArticlesFiltresByStringAndId(filtreSql, idCategorie);
+		}
+
+		for (ArticleVendu articleVendu : articlesFiltres) {
+			articleVendu.setVendeur(utilisateurDAO.getUtilisateur(articleVendu.getVendeur().getNoUtilisateur()));
+			articleVendu.setCategorieArticle(
+					categorieDAO.getCategorie(articleVendu.getCategorieArticle().getNoCategorie()));
+			if ((enchèreDAO.countByIdArticle(articleVendu.getNoArticle())) != 0) {
+				articleVendu.setEncheres(enchèreDAO.getEncheres(articleVendu.getNoArticle()));
+				for (Enchère enchère : articleVendu.getEncheres()) {
+					enchère.setUtilisateur(utilisateurDAO.getUtilisateur(enchère.getUtilisateur().getNoUtilisateur()));
+				}
+			}
 		}
 
 		List<ArticleVendu> articlesFiltresOptions = new ArrayList<ArticleVendu>();
@@ -221,35 +235,21 @@ public class EnchereServiceImpl implements EnchereService {
 		List<ArticleVendu> articlesFiltresOptionsUnique = articlesFiltresOptions.stream()
 				.filter(article -> seenIds.add(article.getNoArticle())).collect(Collectors.toList());
 
-		for (ArticleVendu articleVendu : articlesFiltresOptionsUnique) {
-			articleVendu.setVendeur(utilisateurDAO.getUtilisateur(articleVendu.getVendeur().getNoUtilisateur()));
-			articleVendu.setCategorieArticle(
-					categorieDAO.getCategorie(articleVendu.getCategorieArticle().getNoCategorie()));
-			if ((enchèreDAO.countByIdArticle(articleVendu.getNoArticle())) != 0) {
-				articleVendu.setEncheres(enchèreDAO.getEncheres(articleVendu.getNoArticle()));
-				for (Enchère enchère : articleVendu.getEncheres()) {
-					enchère.setUtilisateur(utilisateurDAO.getUtilisateur(enchère.getUtilisateur().getNoUtilisateur()));
-				}
-			}
-		}
-
 		return articlesFiltresOptionsUnique;
 	}
 
-	/**
-	 * Méthode retournant la liste des catégories
-	 */
 	@Override
-	public List<Categorie> getCategories() {
-		return categorieDAO.getCategories();
-	}
+	public ArticleVendu articleById(int noArticle) {
 
-	/**
-	 * Méthode retournant une catégorie en fonction de son ID
-	 */
-	@Override
-	public Categorie getCategorie(int idCategorie) {
-		return categorieDAO.getCategorie(idCategorie);
+		ArticleVendu article = this.articleVenduDAO.read(noArticle);
+		Utilisateur vendeur = this.utilisateurDAO.getUtilisateur(article.getVendeur().getNoUtilisateur());
+		Retrait lieuRetrait = this.retraitDAO.getRetraitById(noArticle);
+		String libelleCategorie = this.categorieDAO.getCategorie(article.getCategorieArticle().getNoCategorie())
+				.getLibelle();
+		article.setLieuRetrait(lieuRetrait);
+		article.getCategorieArticle().setLibelle(libelleCategorie);
+		article.setVendeur(vendeur);
+		return article;
 	}
 
 	/**
@@ -269,8 +269,141 @@ public class EnchereServiceImpl implements EnchereService {
 		} else {
 			throw be;
 		}
+	}
+
+	// ****************************** CATÉGORIE ******************************
+
+	/**
+	 * Méthode retournant la liste des catégories
+	 */
+	@Override
+	public List<Categorie> getCategories() {
+		return categorieDAO.getCategories();
+	}
+
+	/**
+	 * Méthode retournant une catégorie en fonction de son ID
+	 */
+	@Override
+	public Categorie getCategorie(int idCategorie) {
+		return categorieDAO.getCategorie(idCategorie);
+	}
+
+	@Override
+	public void updateCategorie(Categorie categorie) {
+		categorieDAO.updateCategorie(categorie);
 
 	}
+
+	@Override
+	public void deleteCategorie(int idCategorie) throws BusinessException {
+		BusinessException be = new BusinessException();
+		boolean valide = categorieNotUsed(idCategorie, be);
+
+		if (valide) {
+			categorieDAO.deleteCategorie(idCategorie);
+		} else {
+			throw be;
+		}
+	}
+
+	// ****************************** ENCHERE ******************************
+
+	/**
+	 * Méthode permettant de créer une enchère
+	 * 
+	 * @paramUtilisateur
+	 * @param int
+	 * @param int
+	 */
+	@Override
+	public void creerEnchere(Utilisateur userSession, int montant, int idArticle) throws BusinessException {
+		BusinessException be = new BusinessException();
+		ArticleVendu article = articleVenduDAO.read(idArticle);
+
+		boolean valide = validerMontant(montant, article, userSession, be);
+
+		try {
+			if (valide) {
+
+				int countEnchere = enchèreDAO.getCountEnchere(article.getPrixVente(), idArticle);
+				if (countEnchere != 0) {
+					Enchère AncienneEnchere = this.enchèreDAO.getUtilisateurParPrix(article.getPrixVente(), idArticle);
+
+					Utilisateur ancienAcheteur = this.utilisateurDAO
+							.getUtilisateur(AncienneEnchere.getUtilisateur().getNoUtilisateur());
+					int creditRajout = transactionAjout(ancienAcheteur.getCredit(),
+							AncienneEnchere.getMontant_enchere());
+
+					ancienAcheteur.setCredit(creditRajout);
+					// TODOO A METTRE DANS UTILISATEURDAO?
+					enchèreDAO.updateCredit(ancienAcheteur);
+				}
+				int creditRetrait = transactionRetrait(userSession.getCredit(), montant);
+				userSession.setCredit(creditRetrait);
+				enchèreDAO.updateCredit(userSession);
+
+				article.setPrixVente(montant);
+				enchèreDAO.creerEnchere(montant, article, userSession);
+
+			} else {
+				throw be;
+			}
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+			be.addErreur("erreur.enchere.creation");
+			throw be;
+		}
+	}
+
+	// ****************************** UTILISATEUR ******************************
+
+	@Override
+	public String getPseudoAcheteur(int prixVente, int noArticle) {
+		int countEnchere = this.enchèreDAO.getCountEnchere(prixVente, noArticle);
+		if (countEnchere != 0) {
+			Enchère enchereAcheteur = this.enchèreDAO.getUtilisateurParPrix(prixVente, noArticle);
+			Utilisateur acheteur = this.utilisateurDAO
+					.getUtilisateur(enchereAcheteur.getUtilisateur().getNoUtilisateur());
+
+			return acheteur.getPseudo();
+		}
+		return null;
+
+	}
+
+	/**
+	 * Méthode permettant de retirer le montant de l'enchère des crédits de
+	 * l'utilisateur
+	 * 
+	 * @param creditAcheteur
+	 * @param montant
+	 * @return int Crédit utilisateur
+	 */
+	private int transactionRetrait(int creditAcheteur, int montant) {
+
+		creditAcheteur -= montant;
+
+		return creditAcheteur;
+	}
+
+	/**
+	 * Méthode permettant de rajouter les crédits à l'utilisateur précédent
+	 * 
+	 * @param creditAcheteurPreview
+	 * @param prixVente
+	 * @return int Crédit
+	 */
+	private int transactionAjout(int creditActuel, int montantRendu) {
+		return creditActuel + montantRendu;
+	}
+
+	@Override
+	public void createNouvelleCategorie(Categorie categorie) {
+		categorieDAO.createNouvelleCategorie(categorie);
+	}
+
+	// ****************************** VALIDATION ******************************
 
 	/**
 	 * Méthode validant la date de fin d'un article en vente
@@ -309,34 +442,6 @@ public class EnchereServiceImpl implements EnchereService {
 			return false;
 		}
 		return true;
-	}
-
-	@Override
-	public ArticleVendu articleById(int noArticle) {
-
-		ArticleVendu article = this.articleVenduDAO.read(noArticle);
-		Utilisateur vendeur = this.utilisateurDAO.getUtilisateur(article.getVendeur().getNoUtilisateur());
-		Retrait lieuRetrait = this.retraitDAO.getRetraitById(noArticle);
-		String libelleCategorie = this.categorieDAO.getCategorie(article.getCategorieArticle().getNoCategorie())
-				.getLibelle();
-		article.setLieuRetrait(lieuRetrait);
-		article.getCategorieArticle().setLibelle(libelleCategorie);
-		article.setVendeur(vendeur);
-		return article;
-	}
-
-	@Override
-	public String getPseudoAcheteur(int prixVente, int noArticle) {
-		int countEnchere = this.enchèreDAO.getCountEnchere(prixVente, noArticle);
-		if (countEnchere != 0) {
-			Enchère enchereAcheteur = this.enchèreDAO.getUtilisateurParPrix(prixVente, noArticle);
-			Utilisateur acheteur = this.utilisateurDAO
-					.getUtilisateur(enchereAcheteur.getUtilisateur().getNoUtilisateur());
-
-			return acheteur.getPseudo();
-		}
-		return null;
-
 	}
 
 	/**
@@ -387,54 +492,6 @@ public class EnchereServiceImpl implements EnchereService {
 	}
 
 	/**
-	 * Méthode permettant de créer une enchère
-	 * 
-	 * @paramUtilisateur
-	 * @param int
-	 * @param int
-	 */
-	@Override
-	public void creerEnchere(Utilisateur userSession, int montant, int idArticle) throws BusinessException {
-		BusinessException be = new BusinessException();
-		ArticleVendu article = articleVenduDAO.read(idArticle);
-
-		boolean valide = validerMontant(montant, article, userSession, be);
-
-		try {
-			if (valide) {
-
-				int countEnchere = enchèreDAO.getCountEnchere(article.getPrixVente(), idArticle);
-				if (countEnchere != 0) {
-					Enchère AncienneEnchere = this.enchèreDAO.getUtilisateurParPrix(article.getPrixVente(), idArticle);
-
-					Utilisateur ancienAcheteur = this.utilisateurDAO
-							.getUtilisateur(AncienneEnchere.getUtilisateur().getNoUtilisateur());
-					int creditRajout = transactionAjout(ancienAcheteur.getCredit(),
-							AncienneEnchere.getMontant_enchere());
-
-					ancienAcheteur.setCredit(creditRajout);
-					// TODOO A METTRE DANS UTILISATEURDAO?
-					enchèreDAO.updateCredit(ancienAcheteur);
-				}
-				int creditRetrait = transactionRetrait(userSession.getCredit(), montant);
-				userSession.setCredit(creditRetrait);
-				enchèreDAO.updateCredit(userSession);
-
-				article.setPrixVente(montant);
-				enchèreDAO.creerEnchere(montant, article, userSession);
-
-			} else {
-				throw be;
-			}
-		} catch (DataAccessException e) {
-			e.printStackTrace();
-			be.addErreur("erreur.enchere.creation");
-			throw be;
-		}
-
-	}
-
-	/**
 	 * Vérifie que le montant de l'enchère entrée par l'utilisateur est supérieur au
 	 * prix de vente actuelle Vérifie aussi que l'utilisateur a assez de crédit sur
 	 * son compte pour payer le montant
@@ -455,29 +512,12 @@ public class EnchereServiceImpl implements EnchereService {
 		return valide;
 	}
 
-	/**
-	 * Méthode permettant de retirer le montant de l'enchère des crédits de
-	 * l'utilisateur
-	 * 
-	 * @param creditAcheteur
-	 * @param montant
-	 * @return int Crédit utilisateur
-	 */
-	private int transactionRetrait(int creditAcheteur, int montant) {
-
-		creditAcheteur -= montant;
-
-		return creditAcheteur;
+	private boolean categorieNotUsed(int idCategorie, BusinessException be) {
+		if (articleVenduDAO.getCountByIdCategorie(idCategorie) != 0) {
+			be.addErreur("erreur.categorie.utilisee");
+			return false;
+		}
+		return true;
 	}
 
-	/**
-	 * Méthode permettant de rajouter les crédits à l'utilisateur précédent
-	 * 
-	 * @param creditAcheteurPreview
-	 * @param prixVente
-	 * @return int Crédit
-	 */
-	private int transactionAjout(int creditActuel, int montantRendu) {
-		return creditActuel + montantRendu;
-	}
 }

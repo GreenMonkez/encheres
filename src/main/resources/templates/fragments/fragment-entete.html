@@ -4,6 +4,9 @@
 	</h1>
 	<nav>
 		<ul>
+			<li sec:authorize="hasRole('ROLE_ADMIN')">
+				<a th:href="@{/categories}">Catégories</a>
+			</li>
 			<li sec:authorize="hasRole('ROLE_USER')">
 				<a th:href="@{/encheres/nouvelleVente}">Nouvelle Vente</a>
 			</li>

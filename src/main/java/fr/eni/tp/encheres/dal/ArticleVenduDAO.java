@@ -22,4 +22,6 @@ public interface ArticleVenduDAO {
 
 	void modifierArticle(ArticleVendu article);
 
+	int getCountByIdCategorie(int idCategorie);
+
 }

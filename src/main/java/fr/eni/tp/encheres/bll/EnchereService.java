@@ -24,16 +24,22 @@ public interface EnchereService {
 	String getPseudoAcheteur(int prixVente, int idCategorie);
 
 	ArticleVendu articleById(int id);
-	
+
 	boolean isAcheteur(int idUser, int idUserSesssion);
-	
+
 	boolean isEnchereEnCours(LocalDateTime dateFin);
-	
+
 	boolean ismeilleurOffre(String pseudoMeilleurOfrre, String pseudoUser);
 
 	void creerEnchere(Utilisateur userSession, int montant, int idArticle) throws BusinessException;
 
 	List<ArticleVendu> getEncheresFiltreesOptions(String filtre, int idCategorie, List<String> options,
 			Utilisateur userSession);
+
+	void createNouvelleCategorie(Categorie categorie);
+
+	void updateCategorie(Categorie categorie);
+
+	void deleteCategorie(int idCategorie) throws BusinessException;
 
 }

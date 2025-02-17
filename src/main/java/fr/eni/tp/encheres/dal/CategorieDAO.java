@@ -10,4 +10,10 @@ public interface CategorieDAO {
 
 	List<Categorie> getCategories();
 
+	void createNouvelleCategorie(Categorie categorie);
+
+	void updateCategorie(Categorie categorie);
+
+	void deleteCategorie(int idCategorie);
+
 }
