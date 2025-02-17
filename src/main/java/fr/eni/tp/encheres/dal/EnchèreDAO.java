@@ -9,11 +9,16 @@ import fr.eni.tp.encheres.bo.Utilisateur;
 
 public interface EnchèreDAO {
 
-	void creerUtilisateur(Utilisateur user);
 
 	List<Enchère> consulterEncheresById(int idUser);
 
 	Enchère getUtilisateurParPrix(int prixVente, int idArticle);
 
 	int getCountEnchere(int prixVente, int idArticle);
+
+	void creerEnchere(int montant, ArticleVendu article, Utilisateur userSession);
+	
+	void updateCredit(Utilisateur user);
+	
+	
 }

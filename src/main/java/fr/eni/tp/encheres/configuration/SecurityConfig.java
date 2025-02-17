@@ -34,6 +34,7 @@ public class SecurityConfig {
 			.requestMatchers("/encheres/nouvelleVente").hasRole("USER")
 			.requestMatchers("/encheres/search").permitAll()
 			.requestMatchers("/encheres/detail").hasRole("USER")
+			.requestMatchers("/encheres/creer").hasRole("USER")
 			.requestMatchers("/monProfil").hasRole("USER")
 			.requestMatchers("/monProfil/modifier").hasRole("USER")
 			.requestMatchers("/profil").hasRole("USER")

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import fr.eni.tp.encheres.bo.ArticleVendu;
@@ -150,5 +151,146 @@ public class EnchereServiceImpl implements EnchereService {
 		return null;
 
 	}
+	
+	/**
+	 * Vérifie si l'user est l'acheteur, si oui  le bouton enchérir est désactivé
+	 * @Return boolean valide
+	 */
+	@Override
+	public boolean isAcheteur(int idUser, int idUserSesssion) {
+		boolean valide = true;
+		if (idUser == idUserSesssion) {
+			valide = false;
+		}	
+		return valide;
+	}
+	
+	/**
+	 * Vérifie si l'enchere est en cours, si non le bouton enchérir est désactiver
+	 * @Return boolean valide
+	 */
+	@Override
+	public boolean isEnchereEnCours(LocalDateTime dateFin) {
+		
+		boolean valide = true;
+		if (dateFin.isBefore(LocalDateTime.now())) {
+			valide = false;
+		}
+		
+		return valide;
+	}
+
+	/**
+	 * Verifie si l'user en session est l'actuel détenteur de la meilleur offre,
+	 *  si oui le bouton enchérir est désactive
+	 * @return boolean valide
+	 */
+	@Override
+	public boolean ismeilleurOffre(String pseudoMeilleurOfrre, String pseudoUser) {
+		boolean valide = true;
+		if (pseudoMeilleurOfrre != null) {
+			if (pseudoMeilleurOfrre.equals(pseudoUser)) {
+				valide = false;
+			}
+		}
+	return valide;
+	}
+
+	
+	/**
+	 * Méthode permettant de créer une enchère
+	 * @paramUtilisateur
+	 * @param int
+	 * @param int
+	 */
+	@Override
+	public void creerEnchere(Utilisateur userSession, int montant, int idArticle) throws BusinessException {
+		BusinessException be = new BusinessException();
+		ArticleVendu article = articleVenduDAO.read(idArticle);
+		
+		
+		
+		boolean valide = validerMontant(montant, article, userSession, be);
+		 				
+		try {
+			if (valide) {
+					
+					int countEnchere = enchèreDAO.getCountEnchere(article.getPrixVente(), idArticle);
+					if (countEnchere != 0) {
+						Enchère AncienneEnchere = this.enchèreDAO.getUtilisateurParPrix(article.getPrixVente(), idArticle);
+					
+					
+					
+					
+						Utilisateur ancienAcheteur = this.utilisateurDAO.getUtilisateur(AncienneEnchere.getUtilisateur().getNoUtilisateur());
+						int creditRajout = transactionAjout(ancienAcheteur.getCredit(), AncienneEnchere.getMontant_enchere());
+
+						ancienAcheteur.setCredit(creditRajout);
+						//TODOO A METTRE DANS UTILISATEURDAO?
+						enchèreDAO.updateCredit(ancienAcheteur);
+					}	
+					int creditRetrait = transactionRetrait(userSession.getCredit(), montant);
+					userSession.setCredit(creditRetrait);
+					enchèreDAO.updateCredit(userSession);
+
+					article.setPrixVente(montant);
+					enchèreDAO.creerEnchere(montant, article, userSession);
+		
+
+			}else {
+				throw be;
+			}
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+			be.addErreur("erreur.enchere.creation");
+			throw be;
+		}
+
+	}
+
+	
+	/**
+	 * Vérifie que le montant de l'enchère entrée par l'utilisateur est supérieur au prix de vente actuelle
+	 * Vérifie aussi que l'utilisateur a assez de crédit sur son compte pour payer le montant
+	 * @param montant
+	 * @param article
+	 * @param userSession
+	 * @return boolean valide
+	 */
+	private boolean validerMontant(int montant, ArticleVendu article, Utilisateur userSession, BusinessException be) {
+		boolean valide = true;
+		
+		if (montant < article.getPrixVente() || montant > userSession.getCredit()) {
+			valide = false;
+			be.addErreur("erreur.montant.enchere");
+		}
+		
+		return valide;
+	}
+	
+	/**
+	 * Méthode permettant de retirer le montant de l'enchère des crédit de l'utilisateur
+	 * @param creditAcheteur
+	 * @param montant
+	 * @return int Crédit utilisateur
+	 */
+	private int transactionRetrait(int creditAcheteur, int montant) {
+		
+		creditAcheteur -= montant; 
+
+		return creditAcheteur;
+	}
+	
+	/**
+	 * Méthodde permettant de rajouter les crédit à l'utilisateur précédent
+	 * @param creditAcheteurPreview
+	 * @param prixVente
+	 * @return int Crédit
+	 */
+	private int transactionAjout(int creditActuel, int montantRendu) {
+		return creditActuel + montantRendu;
+	}
+	
+	
 
 }
