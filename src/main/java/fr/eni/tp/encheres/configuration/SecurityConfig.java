@@ -37,6 +37,7 @@ public class SecurityConfig {
 			.requestMatchers("/encheres/nouvelleVente").hasRole("USER")
 			.requestMatchers("/encheres/search").permitAll()
 			.requestMatchers("/encheres/detail").hasRole("USER")
+			.requestMatchers("/encheres/creer").hasRole("USER")
 			.requestMatchers("/monProfil").hasRole("USER")
 			.requestMatchers("/monProfil/modifier").hasRole("USER")
 			.requestMatchers("/profil").hasRole("USER")
@@ -61,6 +62,12 @@ public class SecurityConfig {
 			.invalidateHttpSession(true)
 			.logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
 			.logoutSuccessUrl("/"));
+		
+		// gestion du timeout au bout de 5 minutes avec redirection vers le /
+		
+		http.sessionManagement(session -> session
+			.invalidSessionUrl("/")
+			.maximumSessions(1));
 
 		return http.build();
 

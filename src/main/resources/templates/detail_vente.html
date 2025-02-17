@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>Insert title here</title>
-	<link rel="stylesheet" th:href="@{/css/general.css}" />
+
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" th:href="@{/css/general.css}" />
+<link rel="stylesheet" th:href="@{/css/tp-form.css}" />
 </head>
 <body>
 	<header th:replace="~{fragments/fragment-entete :: entete}"> </header>
 	<main>
-		<form>
-			<h1>Détail vente</h1>
+		<form action="">
+			<h1 th:if="${!enchereEnCours}">
+				<span th:if="${isAcheteur}">Vous avez remporté l'enchère ! 🎉</span>
+				<span th:unless="${isAcheteur}" th:text="${article.acheteur.pseudo + ' a remporté l\'enchère !'}"></span>
+			</h1>
+
+			<h1 th:if="${enchereEnCours}">Détail vente</h1>
 			<section>
 				<h2 th:text="''+${article.nomArticle}"></h2>
 				<div>
@@ -19,6 +26,7 @@
 					<p th:text="'Catégorie : '+${article.categorieArticle.libelle}"></p>
 				</div>
 				<div>
+
 					<p th:if="${article.acheteur.pseudo}!=null" th:text="'Meilleure offre : '+${article.prixVente} + ' pts par ' + ${article.acheteur.pseudo}"></p>
 				</div>
 				<div>
@@ -30,12 +38,33 @@
 				<div>
 					<p th:text="'Retrait : '+${article.lieuRetrait.rue}"></p>
 				</div>
+				<div>
 					<p th:text="${article.lieuRetrait.code_postal} + ' ' +${article.lieuRetrait.ville} "></p>
 				</div>
 				<div>
 					<p th:text="'Vendeur : '+${article.vendeur.pseudo}"></p>
 				</div>
 			</section>
+		</form>
+		<form th:action="@{/encheres/creer}" method="POST">
+			<input type="hidden" name="id" th:value="${article.noArticle}" />
+
+			<div class="cards" th:if="${erreurs != null}">
+				<h2>Attention : Veuillez vérifier vos champs</h2>
+			</div>
+
+			<!-- Liste des erreurs globales -->
+			<ul class="flex-outer" th:if="${erreurs != null}">
+				<li th:each="err : ${erreurs}" th:text="${err}">Erreur non
+					spécifiée</li>
+			</ul>
+
+			<div th:if="${enchereEnCours and isAcheteur}">
+				<label for="idProposition">Ma proposition : </label> <input
+					id="idProposition" type="number" name="proposition"
+					th:value="${article.prixVente}" />
+				<button type="submit">Enchérir</button>
+			</div>
 		</form>
 	</main>
 	<footer th:replace="~{fragments/fragment-footer :: footer}"> </footer>

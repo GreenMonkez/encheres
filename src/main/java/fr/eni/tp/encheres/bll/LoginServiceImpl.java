@@ -86,7 +86,6 @@ public class LoginServiceImpl implements LoginService {
 		BusinessException be = new BusinessException();
 		List<ArticleVendu> listArticles = articleDAO.consulterArticlesById(userSupp.getNoUtilisateur());
 		List<Enchère> listEncheres = enchereDAO.consulterEncheresById(userSupp.getNoUtilisateur());
-		System.out.println(listEncheres);
 		String newMdp = "G7#xL9vP!mQ2zW@dT5yF";
 		boolean valide = validerVenteEnCours(userSupp.getNoUtilisateur(), be, listArticles);
 		valide &= validerEnchereEnCours(userSupp.getNoUtilisateur(), be, listEncheres);

@@ -1,7 +1,9 @@
 package fr.eni.tp.encheres.controller;
 
 import java.util.List;
+import java.util.Locale;
 
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,10 +13,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import fr.eni.tp.encheres.bll.EnchereService;
 import fr.eni.tp.encheres.bo.ArticleVendu;
 import fr.eni.tp.encheres.bo.Categorie;
+import fr.eni.tp.encheres.bo.Enchère;
 import fr.eni.tp.encheres.bo.Retrait;
 import fr.eni.tp.encheres.bo.Utilisateur;
 import fr.eni.tp.encheres.exception.BusinessException;
@@ -26,10 +30,12 @@ import jakarta.validation.Valid;
 public class EnchereController {
 
 	private EnchereService enchereService;
+	private MessageSource messageSource;
 	
 
-	public EnchereController(EnchereService enchereService) {
+	public EnchereController(EnchereService enchereService, MessageSource messageSource) {
 		this.enchereService = enchereService;
+		this.messageSource = messageSource;
 	}
 
 	/**
@@ -120,15 +126,22 @@ public class EnchereController {
 	}
 	
 	@GetMapping("/encheres/detail")
-	public String detailArticle(@RequestParam ("id") int id, Model model ) {
+	public String detailArticle(@RequestParam ("id") int id, Model model, @ModelAttribute("userSession") Utilisateur userSession ) {
 		
 		ArticleVendu article = this.enchereService.articleById(id);
 		String pseudoAcheteur = enchereService.getPseudoAcheteur(article.getPrixVente(), id);
 		Utilisateur acheteur = new Utilisateur();
-		
 		acheteur.setPseudo(pseudoAcheteur);
 		article.setAcheteur(acheteur);
 		model.addAttribute("article",article);
+		
+		boolean echereEncours = enchereService.isEnchereEnCours(article.getDateFinEncheres());
+		model.addAttribute("enchereEnCours", echereEncours);
+		boolean isAcheteur = enchereService.isAcheteur(id, userSession.getNoUtilisateur());
+		model.addAttribute("isAcheteur", isAcheteur);
+		System.out.println(userSession.getPseudo());
+		boolean NotmeilleurOffre = enchereService.ismeilleurOffre(pseudoAcheteur, userSession.getPseudo());
+		model.addAttribute("NotmeilleurOffre", NotmeilleurOffre);
 		return "detail_vente";
 	}
 
@@ -163,6 +176,37 @@ public class EnchereController {
 		model.addAttribute("categories", categories);
 
 		return "view-encheres";
+	}
+	
+	/**
+	 * Méthode permettant de faire une nouvelle enchère
+	 * @param montant
+	 * @param idArticle
+	 * @param userSession
+	 * @param redirectAttributes
+	 * @param locale
+	 * @return
+	 * @throws BusinessException
+	 */
+	@PostMapping("/encheres/creer")
+	public String creerEnchere(@RequestParam(name="proposition")int montant,@RequestParam("id")int idArticle, @ModelAttribute("userSession") Utilisateur userSession, RedirectAttributes redirectAttributes, Locale locale) throws BusinessException {
+			try {
+				
+				this.enchereService.creerEnchere(userSession, montant, idArticle);
+				return "redirect:/encheres/detail?id=" + idArticle;
+
+				
+			} catch (BusinessException e) {
+				e.printStackTrace();
+			     e.getClesErreurs().forEach(cle -> {
+			     String message = messageSource.getMessage(cle, null, locale); 
+			     redirectAttributes.addFlashAttribute("erreurs", message); 
+			        });
+			     
+			     return "redirect:/encheres/detail?id=" + idArticle;
+
+			}
+
 	}
 
 }
