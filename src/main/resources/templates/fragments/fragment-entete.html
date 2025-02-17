@@ -1,12 +1,12 @@
 <header th:fragment="entete">
-	
-		
 	<h1 id="nav-title">
 		<a class="black" href="/">ENI-Enchères</a>
 	</h1>
 	<nav>
-	
 		<div>
+			<p sec:authorize="hasRole('ROLE_ADMIN')">
+				<a th:href="@{/categories}">Catégories</a>
+			</p>
 			<p sec:authorize="hasRole('ROLE_USER')">
 				<a th:href="@{/encheres/nouvelleVente}">Nouvelle Vente</a>
 			</p>

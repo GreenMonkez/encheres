@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Demo Spring Boot Web</title>
-<link rel="stylesheet" th:href="@{/css/enchere-structure.css}" />
-<!--  <link rel="stylesheet" th:href="@{/css/tp-table.css}" />-->
+	<meta charset="UTF-8">
+	<title>Demo Spring Boot Web</title>
+	<link rel="stylesheet" th:href="@{/css/enchere-structure.css}" />
 </head>
 <body>
-
 	<header th:replace="~{fragments/fragment-entete :: entete}"></header>
 	<main>
 		<h1>Liste des enchères</h1>
@@ -60,19 +58,19 @@
 		<section class="encheres">
 			<div class="enchere" th:each="a : ${articles}">
 				<div >
-					<img th:src="'/images/' + ${a.noArticle} + '.png'" alt="Image"></div>
-					<div class="detail-enchere">
-						<a th:text="${a.nomArticle}" th:href="@{/encheres/detail(id=${a.noArticle})}"></a>
-						<p th:if="${a.prixVente} != 0" th:text="'Prix : '+${a.prixVente}"></p>
-						<p th:if="${a.prixVente} == 0" th:text="'Prix : '+${a.miseAPrix}"></p>
-						<p th:text="'Fin de l\'enchère : ' + ${#temporals.format(a.dateFinEncheres, 'dd/MM/yyyy HH:mm')}"></p>
-						<a th:href="@{/profil(id=${a.vendeur.noUtilisateur})}" th:text="'Vendeur : '+${a.vendeur.pseudo}"></a>
-					</div>
+					<img th:src="'/images/' + ${a.noArticle} + '.png'" alt="Image">
 				</div>
+				<div class="detail-enchere">
+					<a th:text="${a.nomArticle}" th:href="@{/encheres/detail(id=${a.noArticle})}"></a>
+					<p th:if="${a.prixVente} != 0" th:text="'Prix : '+${a.prixVente}"></p>
+					<p th:if="${a.prixVente} == 0" th:text="'Prix : '+${a.miseAPrix}"></p>
+					<p th:text="'Fin de l\'enchère : ' + ${#temporals.format(a.dateFinEncheres, 'dd/MM/yyyy HH:mm')}"></p>
+					<a th:href="@{/profil/vendeur(id=${a.vendeur.noUtilisateur})}" th:text="'Vendeur : '+${a.vendeur.pseudo}"></a>
+				</div>
+			</div>
 		</section>
 	</main>
 	<footer th:replace="~{fragments/fragment-footer :: footer}"></footer>
 	<script src="/js/script.js"></script>
-
 </body>
 </html>

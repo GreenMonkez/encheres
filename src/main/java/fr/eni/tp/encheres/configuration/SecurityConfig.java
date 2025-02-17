@@ -43,6 +43,10 @@ public class SecurityConfig {
 			.requestMatchers("/profil").hasRole("USER")
 			.requestMatchers("/monProfil/supprimer").hasRole("USER")
 			.requestMatchers("/profil/vendeur").hasRole("USER")
+			.requestMatchers("/categories").hasRole("ADMIN")
+			.requestMatchers("/categories/ajouter").hasRole("ADMIN")
+			.requestMatchers("/categories/modifier").hasRole("ADMIN")
+			.requestMatchers("/categories/supprimer").hasRole("ADMIN")
 			.anyRequest().denyAll();
 		});
 

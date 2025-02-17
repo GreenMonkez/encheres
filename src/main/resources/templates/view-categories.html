@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Demo Spring Boot Web</title>
+	<link rel="stylesheet" th:href="@{/css/enchere-structure.css}" />
+</head>
+<body>
+	<header th:replace="~{fragments/fragment-entete :: entete}"></header>
+	<main>
+		<h1>Liste des categories</h1>
+		<section>
+			<div >
+				<a th:href="@{/categories/ajouter}">Ajouter une catégorie</a>
+			</div>
+			<div th:if="${errorMessages}">
+    			<p th:each="err : ${errorMessages}" th:text="${err}"></p>
+			</div>
+			<div th:each="c : ${categories}">
+				<div>
+					<p th:text="${c.libelle}"></p>
+					<a th:href="@{/categories/modifier(idCategorie=${c.noCategorie})}">Modifier</a>
+					<form th:action="@{/categories/supprimer(idCategorie=${c.noCategorie})}" method="post">
+						<button type="submit">Supprimer</button>
+					</form>
+				</div>
+			</div>
+		</section>
+	</main>
+	<footer th:replace="~{fragments/fragment-footer :: footer}"></footer>
+</body>
+</html>
