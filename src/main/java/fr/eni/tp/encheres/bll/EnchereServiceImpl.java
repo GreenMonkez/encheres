@@ -44,6 +44,25 @@ public class EnchereServiceImpl implements EnchereService {
 	// ****************************** ARTICLE ******************************
 
 	/**
+	 * Méthode permettant de créer un nouvel article en BDD à partir d'un article
+	 * Insère par la même occasion un lieu de retrait correspondant en BDD
+	 */
+	@Override
+	public void createNouvelleVente(ArticleVendu article) throws BusinessException {
+		BusinessException be = new BusinessException();
+
+		boolean valide = dateDebutConforme(article.getDateDebutEncheres(), be);
+		valide &= dateFinConforme(article.getDateDebutEncheres(), article.getDateFinEncheres(), be);
+
+		if (valide) {
+			articleVenduDAO.create(article);
+			retraitDAO.create(article);
+		} else {
+			throw be;
+		}
+	}
+
+	/**
 	 * Méthode retournant la liste des articles en cours avec leur vendeur, leur
 	 * catégorie, leurs enchères et les utilisateurs à l'origine de ces enchères
 	 */
@@ -253,26 +272,15 @@ public class EnchereServiceImpl implements EnchereService {
 		return article;
 	}
 
+	// ****************************** CATÉGORIE ******************************
+
 	/**
-	 * Méthode permettant de créer un nouvel article en BDD à partir d'un article
-	 * Insère par la même occasion un lieu de retrait correspondant en BDD
+	 * Méthode permettant de créer une nouvelle catégorie
 	 */
 	@Override
-	public void createNouvelleVente(ArticleVendu article) throws BusinessException {
-		BusinessException be = new BusinessException();
-
-		boolean valide = dateDebutConforme(article.getDateDebutEncheres(), be);
-		valide &= dateFinConforme(article.getDateDebutEncheres(), article.getDateFinEncheres(), be);
-
-		if (valide) {
-			articleVenduDAO.create(article);
-			retraitDAO.create(article);
-		} else {
-			throw be;
-		}
+	public void createNouvelleCategorie(Categorie categorie) {
+		categorieDAO.createNouvelleCategorie(categorie);
 	}
-
-	// ****************************** CATÉGORIE ******************************
 
 	/**
 	 * Méthode retournant la liste des catégories
@@ -290,12 +298,19 @@ public class EnchereServiceImpl implements EnchereService {
 		return categorieDAO.getCategorie(idCategorie);
 	}
 
+	/**
+	 * Méthode permettant de modifier une catégorie
+	 */
 	@Override
 	public void updateCategorie(Categorie categorie) {
 		categorieDAO.updateCategorie(categorie);
 
 	}
 
+	/**
+	 * Méthode permettant de supprimer une catégorie si celle-ci n'est pas utilisée
+	 * par un article
+	 */
 	@Override
 	public void deleteCategorie(int idCategorie) throws BusinessException {
 		BusinessException be = new BusinessException();
@@ -401,18 +416,13 @@ public class EnchereServiceImpl implements EnchereService {
 		return creditActuel + montantRendu;
 	}
 
-	@Override
-	public void createNouvelleCategorie(Categorie categorie) {
-		categorieDAO.createNouvelleCategorie(categorie);
-	}
-
 	// ****************************** VALIDATION ******************************
 
 	/**
 	 * Méthode validant la date de fin d'un article en vente
 	 * 
-	 * @param dateDebut = date de début de la vente de l'article
-	 * @param dateFin   = date de fin de la vente de l'article
+	 * @param dateDebut date de début de la vente de l'article
+	 * @param dateFin   date de fin de la vente de l'article
 	 * @param be
 	 * @return true si conforme, false sinon
 	 */
@@ -431,7 +441,7 @@ public class EnchereServiceImpl implements EnchereService {
 	/**
 	 * Méthode validant la date de début d'un article en vente
 	 * 
-	 * @param dateDebut = date de début de la vente de l'article
+	 * @param dateDebut date de début de la vente de l'article
 	 * @param be
 	 * @return true si conforme, false sinon
 	 */
@@ -519,6 +529,13 @@ public class EnchereServiceImpl implements EnchereService {
 		return valide;
 	}
 
+	/**
+	 * Vérifie que la catégorie n'est pas utilisée par un article
+	 * 
+	 * @param idCategorie id de la catégorie à tester
+	 * @param be
+	 * @return true si conforme, false sinon
+	 */
 	private boolean categorieNotUsed(int idCategorie, BusinessException be) {
 		if (articleVenduDAO.getCountByIdCategorie(idCategorie) != 0) {
 			be.addErreur("erreur.categorie.utilisee");

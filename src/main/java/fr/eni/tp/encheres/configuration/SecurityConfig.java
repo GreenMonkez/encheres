@@ -42,6 +42,7 @@ public class SecurityConfig {
 			.requestMatchers("/monProfil/modifier").hasRole("USER")
 			.requestMatchers("/profil").hasRole("USER")
 			.requestMatchers("/monProfil/supprimer").hasRole("USER")
+			.requestMatchers("/monProfil/achatCredit").hasRole("USER")
 			.requestMatchers("/profil/vendeur").hasRole("USER")
 			.requestMatchers("/categories").hasRole("ADMIN")
 			.requestMatchers("/categories/ajouter").hasRole("ADMIN")

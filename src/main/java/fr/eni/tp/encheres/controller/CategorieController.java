@@ -29,6 +29,12 @@ public class CategorieController {
 		this.messageSource = messageSource;
 	}
 
+	/**
+	 * Méthode renvoyant la vue des catégories
+	 * 
+	 * @param model avec les catégories
+	 * @return la vue des catégories
+	 */
 	@GetMapping("/categories")
 	public String getCategories(Model model) {
 		List<Categorie> categories = enchereService.getCategories();
@@ -37,6 +43,12 @@ public class CategorieController {
 		return "view-categories";
 	}
 
+	/**
+	 * Méthode renvoyant la vue de création d'une nouvelle catégorie
+	 * 
+	 * @param model avec un objet de catégorie vide
+	 * @return la vue de création de catégorie
+	 */
 	@GetMapping("/categories/ajouter")
 	public String getNouvelleCategorie(Model model) {
 		model.addAttribute("categorie", new Categorie());
@@ -44,6 +56,14 @@ public class CategorieController {
 		return "view-nouvelle-categorie";
 	}
 
+	/**
+	 * Méthode permettant de créer une catégorie en BDD et de renvoyer la vue des
+	 * catégories après
+	 * 
+	 * @param categorie     les données de la nouvelle catégorie
+	 * @param bindingResult les erreurs
+	 * @return la vue des catégories
+	 */
 	@PostMapping("/categories/ajouter")
 	public String postNouvelleCategorie(@ModelAttribute("categorie") Categorie categorie, BindingResult bindingResult) {
 
@@ -57,6 +77,13 @@ public class CategorieController {
 		}
 	}
 
+	/**
+	 * Méthode renvoyant la vue de modification de la catégorie
+	 * 
+	 * @param idCategorie l'id de la catégorie à modifier
+	 * @param model       avec les données de la catégorie
+	 * @return la vue de modification de la catégorie
+	 */
 	@GetMapping("/categories/modifier")
 	public String getModifier(@RequestParam("idCategorie") int idCategorie, Model model) {
 		model.addAttribute("categorie", enchereService.getCategorie(idCategorie));
@@ -64,6 +91,14 @@ public class CategorieController {
 		return "view-modifier-categorie";
 	}
 
+	/**
+	 * Méthode permettant de modifier les données de la catégorie en BDD et
+	 * renvoyant la vue des catégories
+	 * 
+	 * @param categorie     la données de la catégorie modifiée
+	 * @param bindingResult les erreurs
+	 * @return la vue des catégories
+	 */
 	@PostMapping("/categories/modifier")
 	public String postModifier(@ModelAttribute("categorie") Categorie categorie, BindingResult bindingResult) {
 
@@ -77,6 +112,14 @@ public class CategorieController {
 		}
 	}
 
+	/**
+	 * Méthode permettant de supprimer une catégorie si celle-ci n'est pas utilisée
+	 * par un article
+	 * 
+	 * @param idCategorie id de la catégorie à supprimer
+	 * @param model       avec les catégories
+	 * @return la vue des catégories
+	 */
 	@PostMapping("/categories/supprimer")
 	public String postSupprimer(@RequestParam("idCategorie") int idCategorie, Model model) {
 
