@@ -271,6 +271,27 @@ public class EnchereServiceImpl implements EnchereService {
 			throw be;
 		}
 	}
+	
+	/**
+	 * Méthode permettant de rechercher ArticleVendu + Utilisateur
+	 * pour pouvoir implemter Utilisateur dans l'ArticleVendu
+	 * @param int id de l' ArticleVendu
+	 * @return ArticleVendu
+	 */
+	public ArticleVendu chercherArticleComplet(int id) {
+		
+		ArticleVendu article = articleById(id);
+		Utilisateur acheteur = getAcheteur(article.getPrixVente(), id);
+		
+		
+		
+		if (acheteur == null) {
+			acheteur = new Utilisateur();
+		}
+		article.setAcheteur(acheteur);
+		return article;
+		
+	}
 
 	// ****************************** CATÉGORIE ******************************
 
@@ -358,11 +379,52 @@ public class EnchereServiceImpl implements EnchereService {
 		}
 
 	}
+	
+	
+	/**
+	 * Méthode permettant de déterminer l'affichage selon les conditions :
+	 * Si userSession n'est pas acheteur et prixVente != 0
+	 * Si prixVente == 0
+	 * Si userSession est acheteur
+	 * @param ArticleVendu
+	 * @Param boolean
+	 */
+	public int definirAffichage(ArticleVendu article, boolean isAcheteur) {
+		
+		int affichage = 0;
+
+		if (article.getPrixVente() != 0 && !isAcheteur) {
+			affichage = 1;
+
+		}
+
+		if (article.getPrixVente() == 0) {
+			affichage = 0;
+
+		}
+
+		if (isAcheteur) {
+			affichage = 3;
+
+		}
+		return affichage;
+
+		
+	}
 
 	// ****************************** UTILISATEUR ******************************
-
+	
+	
+	
+	/**
+	 * 
+	 * Méthode permettant de récupérer un utilisateur grâce aux enchère qu'il a faite
+	 *@Param int 
+	 *@Param int
+	 *@Return Utilisateur
+	 */
 	@Override
-	public Utilisateur getPseudoAcheteur(int prixVente, int noArticle) {
+	public Utilisateur getAcheteur(int prixVente, int noArticle) {
 		int countEnchere = this.enchèreDAO.getCountEnchere(prixVente, noArticle);
 		if (countEnchere != 0) {
 			Enchère enchereAcheteur = this.enchèreDAO.getUtilisateurParPrix(prixVente, noArticle);

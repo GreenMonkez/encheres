@@ -34,7 +34,6 @@ public class LoginController {
 
 	/**
 	 * Méthode permettant d'afficher la vue d'inscription
-	 * 
 	 * @param model
 	 * @return le formulaire d'inscription
 	 */
@@ -78,29 +77,35 @@ public class LoginController {
 		}
 	}
 
-
+	
+	
+	/**
+	 * Méthode permettant d'afficher la page login
+	 * @return view login
+	 */
 	@GetMapping("/login")
-	public String login(HttpServletRequest request, Model model) {
-		Cookie[] cookies = request.getCookies();
-		String savedLogin = null;
-
-		if (cookies != null) {
-			for (Cookie cookie : cookies) {
-				if ("remember-me".equals(cookie.getName())) {
-					savedLogin = cookie.getValue();
-					break;
-				}
-			}
-		}
-
+	public String login() {
 		return "login";
 	}
-
+	
+	/**
+	 * Méthode permettant d'instancier un Utilisateur pour par la suite créer un userSession
+	 * @return new  Utilisateur
+	 */
 	@ModelAttribute("userSession")
 	public Utilisateur addUserSession() {
 		return new Utilisateur();
 	}
-
+	
+	
+	/***
+	 * Méthode permettant d'instancier l'Utilisateur userSession 
+	 * En récupérant les données de l'Utilisateur qui se connecte
+	 * @param userSession
+	 * @param principal
+	 * @param request
+	 * @return page view encheres
+	 */
 	@GetMapping("/login/session")
 	public String connexion(@ModelAttribute("userSession") Utilisateur userSession, Principal principal, HttpServletRequest request) {
 		Utilisateur utilisateur = this.loginService.charger(principal.getName());

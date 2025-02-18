@@ -178,45 +178,34 @@ public class EnchereController {
 		model.addAttribute("categories", categories);
 		return "view-nouvelle-vente";
 	}
-
+	
+	
+	/**
+	 * Méthode permettant d'envoyer la vue détail des ventes
+	 * Avec vérification auprès de enchèreService pour :
+	 * Savoir si l'enchère est en cours ; si l'userSession est l'enchère la plus haute
+	 * Si oui affichage du pseudo de la personne qui a remporté l'enchère 
+	 * Si non affichage d'aucune enchère
+	 * @param id
+	 * @param model
+	 * @param userSession
+	 * @return view detail-vente
+	 */
 	@GetMapping("/encheres/detail")
 	public String detailArticle(@RequestParam("id") int id, Model model,
 			@ModelAttribute("userSession") Utilisateur userSession) {
-
-		ArticleVendu article = this.enchereService.articleById(id);
-		Utilisateur acheteur = enchereService.getPseudoAcheteur(article.getPrixVente(), id);
-		if (acheteur == null) {
-			acheteur = new Utilisateur();
-		}
-		article.setAcheteur(acheteur);
+		
+		ArticleVendu article = enchereService.chercherArticleComplet(id);
+		
 		model.addAttribute("article", article);
-
-
 		boolean echereEncours = enchereService.isEnchereEnCours(article.getDateFinEncheres(),
 				article.getDateDebutEncheres());
-
 		model.addAttribute("enchereEnCours", echereEncours);
 		boolean isAcheteur = enchereService.isAcheteur(article.getAcheteur().getPseudo(), userSession.getPseudo());
 		model.addAttribute("isAcheteur", isAcheteur);
-		boolean NotmeilleurOffre = enchereService.ismeilleurOffre(acheteur, userSession.getPseudo());
+		boolean NotmeilleurOffre = enchereService.ismeilleurOffre(article.getAcheteur(), userSession.getPseudo());
 		model.addAttribute("NotmeilleurOffre", NotmeilleurOffre);
-		int affichage = 0;
-
-		if (article.getPrixVente() != 0 && !isAcheteur) {
-			affichage = 1;
-
-		}
-
-		if (article.getPrixVente() == 0) {
-			affichage = 0;
-
-		}
-
-		if (isAcheteur) {
-			affichage = 3;
-
-		}
-
+		int affichage = enchereService.definirAffichage(article, isAcheteur);
 		model.addAttribute("affichage", affichage);
 
 		return "detail_vente";

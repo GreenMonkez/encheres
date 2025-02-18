@@ -166,7 +166,17 @@ public class UtilisateurController {
 		}
 
 	}
-
+	
+	
+	/**
+	 * Méthode permettant d'appeller loginservice pour supprimer Utilisateur
+	 * @param userSession
+	 * @param redirectAttributes
+	 * @param locale
+	 * @return redirect la page mon-profil si erreur
+	 * @return déconnexion si pas d'erreur
+	 * @throws BusinessException
+	 */
 	@PostMapping("/monProfil/supprimer")
 	public String supprimerProfil(@ModelAttribute("userSession") Utilisateur userSession,
 			RedirectAttributes redirectAttributes, Locale locale) throws BusinessException {

@@ -21,7 +21,7 @@ public interface EnchereService {
 
 	List<ArticleVendu> getEncheresFiltrees(String filtre, int idCategorie);
 
-	Utilisateur getPseudoAcheteur(int prixVente, int idCategorie);
+	Utilisateur getAcheteur(int prixVente, int idCategorie);
 
 	ArticleVendu articleById(int id);
 
@@ -41,6 +41,10 @@ public interface EnchereService {
 	void updateCategorie(Categorie categorie);
 
 	void deleteCategorie(int idCategorie) throws BusinessException;
+	
+	int definirAffichage(ArticleVendu article, boolean isAcheteur);
+	
+	ArticleVendu chercherArticleComplet(int id);
 
 
 }
