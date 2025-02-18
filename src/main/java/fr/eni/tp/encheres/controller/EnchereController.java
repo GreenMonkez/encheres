@@ -184,9 +184,10 @@ public class EnchereController {
 			@ModelAttribute("userSession") Utilisateur userSession) {
 
 		ArticleVendu article = this.enchereService.articleById(id);
-		String pseudoAcheteur = enchereService.getPseudoAcheteur(article.getPrixVente(), id);
-		Utilisateur acheteur = new Utilisateur();
-		acheteur.setPseudo(pseudoAcheteur);
+		Utilisateur acheteur = enchereService.getPseudoAcheteur(article.getPrixVente(), id);
+		if (acheteur == null) {
+			acheteur = new Utilisateur();
+		}
 		article.setAcheteur(acheteur);
 		model.addAttribute("article", article);
 
@@ -194,9 +195,9 @@ public class EnchereController {
 				article.getDateDebutEncheres());
 
 		model.addAttribute("enchereEnCours", echereEncours);
-		boolean isAcheteur = enchereService.isAcheteur(acheteur.getPseudo(), userSession.getPseudo());
+		boolean isAcheteur = enchereService.isAcheteur(article.getAcheteur().getPseudo(), userSession.getPseudo());
 		model.addAttribute("isAcheteur", isAcheteur);
-		boolean NotmeilleurOffre = enchereService.ismeilleurOffre(pseudoAcheteur, userSession.getPseudo());
+		boolean NotmeilleurOffre = enchereService.ismeilleurOffre(acheteur, userSession.getPseudo());
 		model.addAttribute("NotmeilleurOffre", NotmeilleurOffre);
 		int affichage = 0;
 

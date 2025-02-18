@@ -3,10 +3,15 @@
 		<a class="black" href="/">ENI-Enchères</a>
 	</h1>
 	<nav>
+<<<<<<< HEAD
 		<div>
 			<p sec:authorize="hasRole('ROLE_ADMIN')">
 				<a th:href="@{/categories}">Catégories</a>
 			</p>
+=======
+	
+		<div class="inblockMargin">
+>>>>>>> feature-denis
 			<p sec:authorize="hasRole('ROLE_USER')">
 				<a th:href="@{/encheres/nouvelleVente}">Nouvelle Vente</a>
 			</p>
