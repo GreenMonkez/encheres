@@ -18,4 +18,6 @@ public interface UtilisateurDAO {
 
 	void modifierUtilisateur(Utilisateur user);
 
+	void updateCredit(int noUtilisateur, int nouveauSoldeCredit);
+
 }

@@ -29,17 +29,12 @@ public class LoginServiceImpl implements LoginService {
 		this.enchereDAO = enchereDAO;
 
 	}
-	
-	
-	
+
 	/**
-	 *Méthode permettant de créer un Utilisateur 
-	 *Fais appel aux méthodes de validation : 
-	 *Verifier pseudo Utilisateur unique
-	 *Vérifier email Utilisateur unique
-	 *Vérifier si mots de passe confirmation == mot de passe
-	 *Encoder le mot de passe
-	 *Appelle de la DAO pour enregistrer un base de donnée
+	 * Méthode permettant de créer un Utilisateur Fais appel aux méthodes de
+	 * validation : Verifier pseudo Utilisateur unique Vérifier email Utilisateur
+	 * unique Vérifier si mots de passe confirmation == mot de passe Encoder le mot
+	 * de passe Appelle de la DAO pour enregistrer un base de donnée
 	 */
 	@Override
 	public void creerUtilisateur(Utilisateur user, String mdpConfirm) throws BusinessException {
@@ -65,16 +60,36 @@ public class LoginServiceImpl implements LoginService {
 		}
 
 	}
-	
-	
-	
+
 	/**
-	 *Méthode permettant de modifier les infos d'un Utilisateur
-	 *Fais appel aux méthodes de validation : 
-	 *Vérifier si mots de passe confirmation == mot de passe
-	 *Vérifier si mot de passe actuel est bien celui entrer par l'Utilisateur
-	 *Appel de la DAO pour enregistrer les modifications en base de données
-	 *Encoder le mot de passe
+	 * Trouver un Utilisateur grâce à son id
+	 * 
+	 * @param int id
+	 * @return Utilisateur
+	 */
+	@Override
+	public Utilisateur consulterUtilisateur(int id) {
+		Utilisateur user = utilisateurDAO.getUtilisateur(id);
+		return user;
+	}
+
+	/**
+	 * Trouver un Utilisateur grâce à son pseudo
+	 * 
+	 * @return Utilisateur
+	 */
+	@Override
+	public Utilisateur charger(String pseudo) {
+		return this.utilisateurDAO.getUtilisateurByPseudo(pseudo);
+
+	}
+
+	/**
+	 * Méthode permettant de modifier les infos d'un Utilisateur Fais appel aux
+	 * méthodes de validation : Vérifier si mots de passe confirmation == mot de
+	 * passe Vérifier si mot de passe actuel est bien celui entrer par l'Utilisateur
+	 * Appel de la DAO pour enregistrer les modifications en base de données Encoder
+	 * le mot de passe
 	 */
 	@Override
 	public void modifierUtilisateur(Utilisateur user, String mdpConfirm, String newMdp) throws BusinessException {
@@ -100,15 +115,22 @@ public class LoginServiceImpl implements LoginService {
 		}
 
 	}
-	
-	
-	
+
 	/**
-	 *Méthode permettant de supprimer un Utilisateur
-	 *Fais appel aux méthodes de validation : 
-	 *Vérifie si l' Utilisateur a des articles en cours de vente
-	 *Vérifie si l' Utilisateur a des encheres sur des articles en cours de vente
-	 *Implémentation d'info vide puis envoie vers DAO pour save en base de donnée
+	 * Méthode permettant de mettre à jour les crédits de l'utilisateur en fonction
+	 * de son id et du montant à ajouter
+	 */
+	@Override
+	public void updateCredit(Utilisateur user, int achatCredit) {
+		int nouveauSoldeCredit = user.getCredit() + achatCredit;
+		utilisateurDAO.updateCredit(user.getNoUtilisateur(), nouveauSoldeCredit);
+	}
+
+	/**
+	 * Méthode permettant de supprimer un Utilisateur Fais appel aux méthodes de
+	 * validation : Vérifie si l' Utilisateur a des articles en cours de vente
+	 * Vérifie si l' Utilisateur a des encheres sur des articles en cours de vente
+	 * Implémentation d'info vide puis envoie vers DAO pour save en base de donnée
 	 */
 	@Override
 	public void supprimerUtilisateur(Utilisateur userSupp) throws BusinessException {
@@ -152,11 +174,11 @@ public class LoginServiceImpl implements LoginService {
 	}
 
 	// ************** VALIDATION ***********************************************
-	
-	
+
 	/**
-	 * Méthode permettant de verifier si le pseudo est unique
-	 * Appel DAO pour récupérer le nombre de pseudo associer au pseudo entrer par l'Utilisateur
+	 * Méthode permettant de verifier si le pseudo est unique Appel DAO pour
+	 * récupérer le nombre de pseudo associer au pseudo entrer par l'Utilisateur
+	 * 
 	 * @param pseudo
 	 * @param be
 	 * @return boolean
@@ -173,11 +195,11 @@ public class LoginServiceImpl implements LoginService {
 		return valide;
 
 	}
-	
-	
+
 	/**
-	 * Méthode permettant de verifier si l'email est unique
-	 * Appel DAO pour récupérer le nombre d'email associer au email entrer par l'Utilisateur
+	 * Méthode permettant de verifier si l'email est unique Appel DAO pour récupérer
+	 * le nombre d'email associer au email entrer par l'Utilisateur
+	 * 
 	 * @param email
 	 * @param be
 	 * @return boolean
@@ -194,20 +216,11 @@ public class LoginServiceImpl implements LoginService {
 		return valide;
 
 	}
-	
+
 	/**
-	 * Trouver un Utilisateur grâce à son id
-	 * @param int id
-	 * @return Utilisateur
-	 */
-	@Override
-	public Utilisateur consulterUtilisateur(int id) {
-		Utilisateur user = utilisateurDAO.getUtilisateur(id);
-		return user;
-	}
-	
-	/**
-	 * Méthode permettant de comparer le mot de passe et la confirmation  mots de passe entrer par l'Utilisateur
+	 * Méthode permettant de comparer le mot de passe et la confirmation mots de
+	 * passe entrer par l'Utilisateur
+	 * 
 	 * @param mdp
 	 * @param mdpConfirm
 	 * @param be
@@ -222,11 +235,12 @@ public class LoginServiceImpl implements LoginService {
 		}
 		return valide;
 	}
-	
+
 	/**
-	 * Méthode permettant de vérifier si le mots de passe entrer par l'Utilisateur est bien le mots de passe dans la base de donnée
-	 * Encodage du mot de passe avant envoie en base de donnée
-	 * Appel de la DAO 
+	 * Méthode permettant de vérifier si le mots de passe entrer par l'Utilisateur
+	 * est bien le mots de passe dans la base de donnée Encodage du mot de passe
+	 * avant envoie en base de donnée Appel de la DAO
+	 * 
 	 * @param mdp
 	 * @param be
 	 * @return boolean
@@ -243,19 +257,10 @@ public class LoginServiceImpl implements LoginService {
 		return valide;
 
 	}
-	/**
-	 * Trouver un Utilisateur grâce à son pseudo
-	 * @return Utilisateur
-	 */
-	@Override
-	public Utilisateur charger(String pseudo) {
-		return this.utilisateurDAO.getUtilisateurByPseudo(pseudo);
 
-	}
-	
-	
 	/**
 	 * Méthode permettant de savoir si l'article est en cours de ventes
+	 * 
 	 * @param idUser
 	 * @param be
 	 * @param listArticles
@@ -281,10 +286,11 @@ public class LoginServiceImpl implements LoginService {
 		}
 		return valide;
 	}
-	
-	
+
 	/**
-	 * Méthode permettant de vérifier si un Utilisateur a fait des enchères sur des article en vente
+	 * Méthode permettant de vérifier si un Utilisateur a fait des enchères sur des
+	 * article en vente
+	 * 
 	 * @param idUser
 	 * @param be
 	 * @param listEncheres
@@ -296,7 +302,7 @@ public class LoginServiceImpl implements LoginService {
 		if (listEncheres != null) {
 
 			for (Enchère enchère : listEncheres) {
-			
+
 				if (enchère.getDateEnchère().isBefore(LocalDateTime.now())) {
 					valide = false;
 					be.addErreur("erreur.supprimer.profil.enchere.encours");

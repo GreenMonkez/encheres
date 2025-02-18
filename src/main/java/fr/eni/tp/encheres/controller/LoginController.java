@@ -2,8 +2,6 @@ package fr.eni.tp.encheres.controller;
 
 import java.security.Principal;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,7 +17,6 @@ import fr.eni.tp.encheres.bo.Utilisateur;
 import fr.eni.tp.encheres.exception.BusinessException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
@@ -34,6 +31,7 @@ public class LoginController {
 
 	/**
 	 * Méthode permettant d'afficher la vue d'inscription
+	 * 
 	 * @param model
 	 * @return le formulaire d'inscription
 	 */
@@ -77,37 +75,39 @@ public class LoginController {
 		}
 	}
 
-	
-	
 	/**
 	 * Méthode permettant d'afficher la page login
+	 * 
 	 * @return view login
 	 */
 	@GetMapping("/login")
 	public String login() {
 		return "login";
 	}
-	
+
 	/**
-	 * Méthode permettant d'instancier un Utilisateur pour par la suite créer un userSession
-	 * @return new  Utilisateur
+	 * Méthode permettant d'instancier un Utilisateur pour par la suite créer un
+	 * userSession
+	 * 
+	 * @return new Utilisateur
 	 */
 	@ModelAttribute("userSession")
 	public Utilisateur addUserSession() {
 		return new Utilisateur();
 	}
-	
-	
+
 	/***
-	 * Méthode permettant d'instancier l'Utilisateur userSession 
-	 * En récupérant les données de l'Utilisateur qui se connecte
+	 * Méthode permettant d'instancier l'Utilisateur userSession En récupérant les
+	 * données de l'Utilisateur qui se connecte
+	 * 
 	 * @param userSession
 	 * @param principal
 	 * @param request
 	 * @return page view encheres
 	 */
 	@GetMapping("/login/session")
-	public String connexion(@ModelAttribute("userSession") Utilisateur userSession, Principal principal, HttpServletRequest request) {
+	public String connexion(@ModelAttribute("userSession") Utilisateur userSession, Principal principal,
+			HttpServletRequest request) {
 		Utilisateur utilisateur = this.loginService.charger(principal.getName());
 
 		if (utilisateur != null) {

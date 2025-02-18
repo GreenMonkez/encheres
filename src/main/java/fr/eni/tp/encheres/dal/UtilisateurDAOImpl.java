@@ -12,7 +12,7 @@ import fr.eni.tp.encheres.dal.rowmapper.UtilisateurRowMapper;
 
 @Repository
 public class UtilisateurDAOImpl implements UtilisateurDAO {
-	
+
 	// ****************** CONSTANTES ***********************************
 
 	private static final String INSERT = "INSERT INTO UTILISATEURS (pseudo, nom, prenom, email, telephone, rue, code_postal, ville, mot_de_passe, credit, administrateur) VALUES (:pseudo, :nom, :prenom, :email, :telephone, :rue, :code_postal, :ville, :motDePasse, :credit, :administrateur)";
@@ -22,14 +22,14 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 	private static final String FIND_BY_PSEUDO = "select no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, credit, administrateur from utilisateurs where pseudo = :pseudo";
 	private static final String FIND_UNIQUE_PASSWORD = "SELECT count(mot_de_passe) FROM UTILISATEURS WHERE mot_de_passe like :mot_de_passe";
 	private static final String UPDATE = "UPDATE UTILISATEURS SET pseudo = :pseudo, nom = :nom, prenom = :prenom, email = :email, telephone = :telephone, rue = :rue, code_postal = :code_postal, ville = :ville, mot_de_passe = :motDePasse WHERE no_utilisateur = :no_utilisateur";
-	
+	private static final String UPDATE_CREDIT = "update utilisateurs set credit = :nouveauSoldeCredit where no_utilisateur = :noUtilisateur";
 	// ****************** ATTRIBUT INSTANCES ***********************************
-	
+
 	@Autowired
 	private NamedParameterJdbcTemplate jdbcTemplate;
-	
+
 	// ****************** METHODES ***********************************
-	
+
 	/**
 	 * Méthode permettant d'inserer un utilisateur nouvellement créer dans la base
 	 * de donnée
@@ -74,10 +74,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 		map.addValue("email", email);
 		return jdbcTemplate.queryForObject(FIND_UNIQUE_EMAIL, map, Integer.class);
 	}
-	
+
 	/**
-	 * Méthode permettant de chercher un user en base grâce à son id
-	 * Return un utilisateur
+	 * Méthode permettant de chercher un user en base grâce à son id Return un
+	 * utilisateur
 	 */
 	@Override
 	public Utilisateur getUtilisateur(int noUtilisateur) {
@@ -134,6 +134,18 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 			throw new RuntimeException("Erreur lors de la mise à jour de l'utilisateur : " + e.getMessage(), e);
 		}
 
+	}
+
+	/**
+	 * Méthode permettant de modifier le solde de crédit d'un utilisateur en
+	 * fonction de son id et du montant
+	 */
+	@Override
+	public void updateCredit(int noUtilisateur, int nouveauSoldeCredit) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("noUtilisateur", noUtilisateur);
+		map.addValue("nouveauSoldeCredit", nouveauSoldeCredit);
+		jdbcTemplate.update(UPDATE_CREDIT, map);
 	}
 
 }
