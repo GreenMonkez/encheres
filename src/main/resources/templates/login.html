@@ -14,15 +14,22 @@
 			<ul class="flex-outer">
 				<li>
 					<label for="idpseudo">Identifiant :</label>
-					<input id="idpseudo" type="text" name="pseudo"/>
+					<input id="idpseudo" type="text" name="pseudo"  th:value="${savedLogin != null ? savedLogin : ''}"/>
 				</li>
 				<li>
 					<label for="idPassword">Mot de passe :</label>
 					<input id="idPassword" type="password" name="mot_de_passe"/>
 				</li>	
-			<div>	<li>
+			<div>
+        		<label for="rememberMe">Se souvenir de moi : </label>
+            	<input type="checkbox" id="rememberMe" name="remember-me" /> 
+        
+   			</div>
+			<div>	
+				<li>
 					<button type="submit">Connexion</button>
 				</li>
+			</div>
 			</ul>
 			<table class="center-section">
 				<td>

@@ -4,12 +4,13 @@ import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.server.authentication.RedirectServerAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -18,7 +19,12 @@ public class SecurityConfig {
 
 	private final String SELECT_USER = "select pseudo, mot_de_passe, 'true' as enable from UTILISATEURS where pseudo=?";
 	private final String SELECT_ROLES = "select u.pseudo, r.role from UTILISATEURS u inner join ROLES r on r.IS_ADMIN = u.administrateur where u.pseudo = ?";
-						
+	private Securityhandler successHandler;
+	
+	public SecurityConfig(Securityhandler successHandler) {
+		this.successHandler = successHandler;
+	}
+
 	//filtre d'accée aux pages
 
 	@Bean
@@ -47,21 +53,29 @@ public class SecurityConfig {
 		});
 
 		// Customiser le formulaire
-
-		http.formLogin(form -> {form
-			.usernameParameter("pseudo")
-			.passwordParameter("mot_de_passe")
-			.loginPage("/login")
-			.defaultSuccessUrl("/login/session")
-			.failureUrl("/login?error");
-		});
+		// RAJOUT SE SOUVENIR DE MOI ************************************************
+		http
+	    .formLogin(form -> form
+	        .usernameParameter("pseudo")  
+	        .passwordParameter("mot_de_passe")  
+	        .loginPage("/login")  
+	        .defaultSuccessUrl("/login/session")  
+	        .failureUrl("/login?error")  
+	    )
+	    .rememberMe(r->r.authenticationSuccessHandler(successHandler));
+	  
+	    //**************************************************************		
+	          
 
 		// /logout --> vider la session
 
 		http.logout(logout -> logout
 			.invalidateHttpSession(true)
 			.logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
-			.logoutSuccessUrl("/"));
+			.logoutSuccessUrl("/"))
+			
+			;
+			
 		
 		// gestion du timeout au bout de 5 minutes avec redirection vers le /
 		

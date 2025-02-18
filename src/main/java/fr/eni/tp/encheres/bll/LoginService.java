@@ -16,6 +16,6 @@ public interface LoginService {
 	
 	void supprimerUtilisateur(Utilisateur userSupp) throws BusinessException;
 	
-	
+
 	
 }

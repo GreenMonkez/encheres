@@ -82,7 +82,6 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 	@Override
 	public Utilisateur getUtilisateur(int noUtilisateur) {
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-		System.out.println(noUtilisateur);
 		namedParameters.addValue("idUtilisateur", noUtilisateur);
 		return jdbcTemplate.queryForObject(SELECT_BY_ID, namedParameters, new UtilisateurRowMapper());
 	}
