@@ -14,12 +14,12 @@
 			<h1>Mon profil</h1>
 			<div class="cards" th:if="${#fields.hasErrors('*')}">
 				<h2>Attention : Veuillez vérifier vos champs</h2>
-			</div>
-			
-				<p th:if="${#fields.hasErrors('*')}">Erreur de Saisie</p>
-				<ul th:if="${#fields.hasErrors('global')}">
-	  				<li th:each="err : ${#fields.errors('global')}" th:text="#{${err}}">Incorrect</li>
-				</ul>
+			</div >	
+			<p th:if="${#fields.hasErrors('*')}">Erreur de Saisie</p>
+			<ul th:if="${#fields.hasErrors('global')}">
+  				<li th:each="err : ${#fields.errors('global')}" th:text="#{${err}}">Incorrect</li>
+			</ul>
+			<div id="wrap">
 				<div class="inblockMargin">
 					<label for="idPseudo">Pseudo : </label>
 					<input id="idPseudo" type="text" th:field="*{pseudo}"/>
@@ -74,16 +74,15 @@
 					<label for="idMotDePasseConfirm">Confirmation : </label>
 					<input id="idMotDePasseConfirm" type="password" name="PasswordConfirm"/>
 				</div>
-				<div class="inblockMargin">
-					<button type="submit">Modifier</button>
-				</div>
-				<div class="inblockMargin">
-					<a th:href="@{/monProfil}">Annuler</a>
-				</div>
+			</div>
+			<div class="center">
+				<button type="submit">Modifier</button>
 			
+				<a class="button" th:href="@{/monProfil}">Annuler</a>
+			</div>	
 		</form>
 		<form th:action="@{/monProfil/supprimer}" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer votre compte ?');">
-	   		 <button type="submit">Supprimer mon compte</button>
+	   		 <button class="big-button" type="submit">Supprimer mon compte</button>
 		</form>
 	</main>
 	<footer th:replace="~{fragments/fragment-footer :: footer}"></footer>

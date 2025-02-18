@@ -4,25 +4,33 @@
 	<meta charset="UTF-8">
 	<title>Demo Spring Boot Web</title>
 	<link rel="stylesheet" th:href="@{/css/enchere-structure.css}" />
+	<link rel="stylesheet" th:href="@{/css/tp-form.css}" />
 </head>
 <body>
 	<header th:replace="~{fragments/fragment-entete :: entete}"></header>
 	<main>
 		<h1>Liste des categories</h1>
-		<section>
+		<section >
 			<div >
 				<a th:href="@{/categories/ajouter}">Ajouter une catégorie</a>
 			</div>
 			<div th:if="${errorMessages}">
     			<p th:each="err : ${errorMessages}" th:text="${err}"></p>
 			</div>
-			<div th:each="c : ${categories}">
-				<div>
-					<p th:text="${c.libelle}"></p>
-					<a th:href="@{/categories/modifier(idCategorie=${c.noCategorie})}">Modifier</a>
-					<form th:action="@{/categories/supprimer(idCategorie=${c.noCategorie})}" method="post">
-						<button type="submit">Supprimer</button>
-					</form>
+			<div  th:each="c : ${categories}">
+				<div id="center">
+					<div class="inblockMargin">
+							<p id="center" th:text="${c.libelle}"></p>
+							<div id="center" >
+								<div class="inblockMargin">
+									<a class="button" th:href="@{/categories/modifier(idCategorie=${c.noCategorie})}">Modifier</a>
+									<form th:action="@{/categories/supprimer(idCategorie=${c.noCategorie})}" method="post">
+										<button type="submit">Supprimer</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</section>

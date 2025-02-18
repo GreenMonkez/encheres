@@ -14,68 +14,68 @@
 			<h1>Mon profil</h1>
 			<div class="cards" th:if="${#fields.hasErrors('*')}">
 				<h2>Attention : Veuillez vérifier vos champs</h2>
-			</div>
-			<ul class="flex-outer">
-				<div th:if="${#fields.hasErrors('*')}">Erreur de Saisie</div>
-				<ul th:if="${#fields.hasErrors('global')}">
-	  				<li th:each="err : ${#fields.errors('global')}" th:text="#{${err}}">Incorrect</li>
-				</ul>
-				<li>
+			</div>	
+			<p th:if="${#fields.hasErrors('*')}">Erreur de Saisie</p>
+			<ul th:if="${#fields.hasErrors('global')}">
+  				<li th:each="err : ${#fields.errors('global')}" th:text="#{${err}}">Incorrect</li>
+			</ul>
+			<div id="wrap">
+				<div class ="inblockMargin">
 					<label for="idPseudo">Pseudo : </label>
 					<input id="idPseudo" type="text" name="pseudo"/>
 					<p class="cards" th:errors="*{pseudo}"></p>
-				</li>
-				<li>
+				</div>
+				<div class ="inblockMargin">
 					<label for="idPrenom">Prénom : </label>
 					<input id="idPrenom" type="text" name="prenom"/>
 					<p class="cards" th:errors="*{prenom}"></p>
-				</li>
-				<li>
+				</div>
+				<div class ="inblockMargin">
 					<label for="idNom">Nom : </label>
 					<input id="idNom" type="text" name="nom"/>
 					<p class="cards" th:errors="*{nom}"></p>
-				</li>
-				<li>
+				</div>
+				<div class ="inblockMargin">
 					<label for="idEmail">Email : </label>
 					<input id="idEmail" type="text" name="email"/>
 					<p class="cards" th:errors="*{email}"></p>
-				</li>
-				<li>
+				</div>
+				<div class ="inblockMargin">
 					<label for="idTelephone">Téléphone : </label>
 					<input id="idTelephone" type="text" name="telephone"/>
 					<p class="cards" th:errors="*{telephone}"></p>
-				</li>
-				<li>
+				</div>
+				<div class ="inblockMargin">
 					<label for="idRue">Rue : </label>
 					<input id="idRue" type="text" name="rue"/>
 					<p class="cards" th:errors="*{rue}"></p>
-				</li>
-				<li>
+				</div>
+				<div class ="inblockMargin">
 					<label for="idPostal">Code Postal : </label>
 					<input id="idPostal" type="text" name="codePostal"/>
 					<p class="cards" th:errors="*{codePostal}"></p>
-				</li>
-				<li>
+				</div>
+				<div class ="inblockMargin">
 					<label for="idVille">Ville : </label>
 					<input id="idVille" type="text" name="ville"/>
 					<p class="cards" th:errors="*{ville}"></p>
-				</li>
-				<li>
+				</div>
+				<div class ="inblockMargin">
 					<label for="idMotDePasse">Mot de passe : </label>
 					<input id="idMotDePasse" type="password" name="motDePasse"/>
 					<p class="cards" th:errors="*{motDePasse}"></p>
-				</li>
-				<li>
+				</div>
+				<div class ="inblockMargin">
 					<label for="idMotDePasseConfirm">Confirmation : </label>
 					<input id="idMotDePasseConfirm" type="password" name="PasswordConfirm"/>
-				</li>
-				<li>
-					<button type="submit">Créer</button>
-				</li>
-				<li>
-					<button type="reset">Annuler</button>
-				</li>
-			</ul>
+				</div>
+			</div>
+			<div class="center">
+				<button type="submit">Créer</button>
+			
+				<button type="reset">Annuler</button>
+			</div>
+		
 		</form>
 	</main>
 	<footer th:replace="~{fragments/fragment-footer :: footer}"></footer>

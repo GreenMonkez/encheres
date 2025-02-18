@@ -11,40 +11,40 @@
 	<header th:replace="~{fragments/fragment-entete :: entete}"></header>
 	<main>
 		<form action="">
-			<ul class="flex-outer">
-				<li>
+			<div>
+				<div class="inblockMargin">
 					<label for="idPseudo">Pseudo : </label>
 					<p th:text="${utilisateur.pseudo}"></p>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<label for="idNom">Nom : </label>
 					<p th:text="${utilisateur.nom}"></p>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<label for="idNom">Prénom : </label>
 					<p th:text="${utilisateur.prenom}"></p>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<label for="idEmail">Email : </label>
 					<p th:text="${utilisateur.email}"></p>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<label for="idTelephone">Téléphone : </label>
 					<p th:text="${utilisateur.telephone}"></p>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<label for="idRue">Rue : </label>
 					<p th:text="${utilisateur.rue}"></p>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<label for="idPostal">Code Postal : </label>
 					<p th:text="${utilisateur.codePostal}"></p>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<label for="idVille">Ville : </label>
 					<p th:text="${utilisateur.ville}"></p>
-				</li>
-			</ul>
+				</div>
+			</div>
 		</form>
 	</main>
 	<footer th:replace="~{fragments/fragment-footer :: footer}"></footer>
