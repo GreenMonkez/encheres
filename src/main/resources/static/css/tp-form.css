@@ -28,6 +28,8 @@ input[type="number"] {
 div {
  margin-top: 10px;
  margin-bottom: 10px;
+ 
+ 
 }
 
 
@@ -63,6 +65,7 @@ button {
 }
 .big-button {
     display: block;
+    align-content:center;
     text-decoration:none;
     margin-top: 20px;
 	color:black;
@@ -78,4 +81,16 @@ button {
 }
 #idProposition{
 	padding: 0px;
+}
+
+#sectionLeft{
+	
+    align-items: unset; 
+}
+#center{
+	
+	display: flex;
+	flex-direction: column;
+	align-content: center;
+	justify-content: center;
 }

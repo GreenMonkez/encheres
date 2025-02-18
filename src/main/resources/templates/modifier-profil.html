@@ -15,72 +15,72 @@
 			<div class="cards" th:if="${#fields.hasErrors('*')}">
 				<h2>Attention : Veuillez vérifier vos champs</h2>
 			</div>
-			<ul class="flex-outer">
-				<div th:if="${#fields.hasErrors('*')}">Erreur de Saisie</div>
+			
+				<p th:if="${#fields.hasErrors('*')}">Erreur de Saisie</p>
 				<ul th:if="${#fields.hasErrors('global')}">
 	  				<li th:each="err : ${#fields.errors('global')}" th:text="#{${err}}">Incorrect</li>
 				</ul>
-				<li>
+				<div class="inblockMargin">
 					<label for="idPseudo">Pseudo : </label>
 					<input id="idPseudo" type="text" th:field="*{pseudo}"/>
 					<p class="cards" th:errors="*{pseudo}"></p>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<label for="idPrenom">Prénom : </label>
 					<input id="idPrenom" type="text" th:field="*{prenom}"/>
 					<p class="cards" th:errors="*{prenom}"></p>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<label for="idNom">Nom : </label>
 					<input id="idNom" type="text" th:field="*{nom}"/>
 					<p class="cards" th:errors="*{nom}"></p>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<label for="idEmail">Email : </label>
 					<input id="idEmail" type="text" th:field="*{email}"/>
 					<p class="cards" th:errors="*{email}"></p>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<label for="idTelephone">Téléphone : </label>
 					<input id="idTelephone" type="text" th:field="*{telephone}"/>
 					<p class="cards" th:errors="*{telephone}"></p>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<label for="idRue">Rue : </label>
 					<input id="idRue" type="text" th:field="*{rue}"/>
 					<p class="cards" th:errors="*{rue}"></p>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<label for="idPostal">Code Postal : </label>
 					<input id="idPostal" type="text" th:field="*{codePostal}"/>
 					<p class="cards" th:errors="*{codePostal}"></p>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<label for="idVille">Ville : </label>
 					<input id="idVille" type="text" th:field="*{ville}"/>
 					<p class="cards" th:errors="*{ville}"></p>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<label for="idMotDePasse">Mot de passe actuel : </label>
 					<input id="idMotDePasse" type="password" th:field="*{motDePasse}"/>
 					<p class="cards" th:errors="*{motDePasse}"></p>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<label for="idMotDePasse">Nouveau mot de passe : </label>
 					<input id="idMotDePasse" type="password" name="NewMotDePasse"/>
 					<p class="cards" th:errors="*{motDePasse}"></p>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<label for="idMotDePasseConfirm">Confirmation : </label>
 					<input id="idMotDePasseConfirm" type="password" name="PasswordConfirm"/>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<button type="submit">Modifier</button>
-				</li>
-				<li>
+				</div>
+				<div class="inblockMargin">
 					<a th:href="@{/monProfil}">Annuler</a>
-				</li>
-			</ul>
+				</div>
+			
 		</form>
 		<form th:action="@{/monProfil/supprimer}" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer votre compte ?');">
 	   		 <button type="submit">Supprimer mon compte</button>

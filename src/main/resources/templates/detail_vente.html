@@ -10,7 +10,7 @@
 </head>
 <body>
 	<header th:replace="~{fragments/fragment-entete :: entete}"> </header>
-	<main>
+	<main id="sectionLeft">
 		<form action="">
 			<h1 th:if="${!enchereEnCours}">
 				<span th:if="${affichage} == 3">Vous avez remporté l'enchère ! 🎉</span>
@@ -19,7 +19,7 @@
 			</h1>
 
 			<h1 th:if="${enchereEnCours}">Détail vente</h1>
-			<section class="encheres">
+			<section  class="encheres">
 				<img  th:src="'/images/' + ${article.noArticle} + '.png'" alt="Image">
 				<div class="detail" >
 					<div class="inblockMargin">

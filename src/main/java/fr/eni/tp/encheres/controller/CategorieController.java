@@ -33,7 +33,6 @@ public class CategorieController {
 	public String getCategories(Model model) {
 		List<Categorie> categories = enchereService.getCategories();
 		model.addAttribute("categories", categories);
-
 		return "view-categories";
 	}
 
