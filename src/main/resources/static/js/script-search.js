@@ -18,5 +18,9 @@ function toggleCheckboxes() {
 	}
 }
 
-radioAchats.addEventListener("change", toggleCheckboxes);
-radioVentes.addEventListener("change", toggleCheckboxes);
+if (radioAchats) {
+	radioAchats.addEventListener("change", toggleCheckboxes);
+}
+if (radioVentes) {
+	radioVentes.addEventListener("change", toggleCheckboxes);
+}

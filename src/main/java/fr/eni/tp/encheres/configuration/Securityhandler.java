@@ -16,12 +16,10 @@ import jakarta.servlet.http.HttpServletResponse;
 public class Securityhandler implements AuthenticationSuccessHandler {
 
 	private UtilisateurDAO utilisateurDAO;
-	
-	
+
 	public Securityhandler(UtilisateurDAO utilisateurDAO) {
 		this.utilisateurDAO = utilisateurDAO;
 	}
-
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,

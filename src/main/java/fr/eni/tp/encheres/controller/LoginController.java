@@ -2,8 +2,6 @@ package fr.eni.tp.encheres.controller;
 
 import java.security.Principal;
 
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,7 +17,6 @@ import fr.eni.tp.encheres.bo.Utilisateur;
 import fr.eni.tp.encheres.exception.BusinessException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @Controller
@@ -78,7 +75,6 @@ public class LoginController {
 		}
 	}
 
-
 	@GetMapping("/login")
 	public String login(HttpServletRequest request, Model model) {
 		Cookie[] cookies = request.getCookies();
@@ -96,13 +92,9 @@ public class LoginController {
 		return "login";
 	}
 
-	@ModelAttribute("userSession")
-	public Utilisateur addUserSession() {
-		return new Utilisateur();
-	}
-
 	@GetMapping("/login/session")
-	public String connexion(@ModelAttribute("userSession") Utilisateur userSession, Principal principal, HttpServletRequest request) {
+	public String connexion(@ModelAttribute("userSession") Utilisateur userSession, Principal principal,
+			HttpServletRequest request) {
 		Utilisateur utilisateur = this.loginService.charger(principal.getName());
 
 		if (utilisateur != null) {
@@ -136,6 +128,11 @@ public class LoginController {
 
 		return "redirect:/encheres";
 
+	}
+
+	@ModelAttribute("userSession")
+	public Utilisateur addUserSession() {
+		return new Utilisateur();
 	}
 
 }

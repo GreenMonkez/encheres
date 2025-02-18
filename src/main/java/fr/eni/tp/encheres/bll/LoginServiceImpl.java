@@ -56,6 +56,18 @@ public class LoginServiceImpl implements LoginService {
 	}
 
 	@Override
+	public Utilisateur consulterUtilisateur(int id) {
+		Utilisateur user = utilisateurDAO.getUtilisateur(id);
+		return user;
+	}
+
+	@Override
+	public Utilisateur charger(String pseudo) {
+		return this.utilisateurDAO.getUtilisateurByPseudo(pseudo);
+
+	}
+
+	@Override
 	public void modifierUtilisateur(Utilisateur user, String mdpConfirm, String newMdp) throws BusinessException {
 		BusinessException be = new BusinessException();
 		String mdpActuel = user.getMotDePasse();
@@ -78,6 +90,16 @@ public class LoginServiceImpl implements LoginService {
 			throw be;
 		}
 
+	}
+
+	/**
+	 * Méthode permettant de mettre à jour les crédits de l'utilisateur en fonction
+	 * de son id et du montant à ajouter
+	 */
+	@Override
+	public void updateCredit(Utilisateur user, int achatCredit) {
+		int nouveauSoldeCredit = user.getCredit() + achatCredit;
+		utilisateurDAO.updateCredit(user.getNoUtilisateur(), nouveauSoldeCredit);
 	}
 
 	@Override
@@ -149,12 +171,6 @@ public class LoginServiceImpl implements LoginService {
 
 	}
 
-	@Override
-	public Utilisateur consulterUtilisateur(int id) {
-		Utilisateur user = utilisateurDAO.getUtilisateur(id);
-		return user;
-	}
-
 	private boolean validerConfirmMdp(String mdp, String mdpConfirm, BusinessException be) {
 
 		boolean valide = true;
@@ -175,12 +191,6 @@ public class LoginServiceImpl implements LoginService {
 		}
 
 		return valide;
-
-	}
-
-	@Override
-	public Utilisateur charger(String pseudo) {
-		return this.utilisateurDAO.getUtilisateurByPseudo(pseudo);
 
 	}
 
