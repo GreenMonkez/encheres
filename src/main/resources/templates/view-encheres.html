@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Demo Spring Boot Web</title>
 <link rel="stylesheet" th:href="@{/css/enchere-structure.css}" />
-<!--  <link rel="stylesheet" th:href="@{/css/tp-table.css}" />-->
 </head>
 <body>
 
@@ -66,7 +65,7 @@
 						<p th:if="${a.prixVente} != 0" th:text="'Prix : '+${a.prixVente}"></p>
 						<p th:if="${a.prixVente} == 0" th:text="'Prix : '+${a.miseAPrix}"></p>
 						<p th:text="'Fin de l\'enchère : ' + ${#temporals.format(a.dateFinEncheres, 'dd/MM/yyyy HH:mm')}"></p>
-						<a th:href="@{/profil(id=${a.vendeur.noUtilisateur})}" th:text="'Vendeur : '+${a.vendeur.pseudo}"></a>
+						<a th:href="@{/profil/vendeur(id=${a.vendeur.noUtilisateur})}" th:text="'Vendeur : '+${a.vendeur.pseudo}"></a>
 					</div>
 				</div>
 		</section>

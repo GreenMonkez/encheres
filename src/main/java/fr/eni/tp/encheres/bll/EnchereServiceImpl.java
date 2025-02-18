@@ -327,14 +327,14 @@ public class EnchereServiceImpl implements EnchereService {
 	}
 
 	@Override
-	public String getPseudoAcheteur(int prixVente, int noArticle) {
+	public Utilisateur getPseudoAcheteur(int prixVente, int noArticle) {
 		int countEnchere = this.enchèreDAO.getCountEnchere(prixVente, noArticle);
 		if (countEnchere != 0) {
 			Enchère enchereAcheteur = this.enchèreDAO.getUtilisateurParPrix(prixVente, noArticle);
 			Utilisateur acheteur = this.utilisateurDAO
 					.getUtilisateur(enchereAcheteur.getUtilisateur().getNoUtilisateur());
 
-			return acheteur.getPseudo();
+			return acheteur;
 		}
 		return null;
 
@@ -346,12 +346,12 @@ public class EnchereServiceImpl implements EnchereService {
 	 * @Return boolean valide
 	 */
 	@Override
-	public boolean isAcheteur(String PseudoAcheter, String pseudoUser) {
+	public boolean isAcheteur(String PseudoAcheteur, String pseudoUser) {
 		boolean valide = false;
 		
-		if (PseudoAcheter != null) {
+		if (PseudoAcheteur != null) {
 			
-			if  (PseudoAcheter.equals(pseudoUser)) {
+			if  (PseudoAcheteur.equals(pseudoUser)) {
 				valide = true;
 			}
 		}
@@ -384,7 +384,7 @@ public class EnchereServiceImpl implements EnchereService {
 	 * @return boolean valide
 	 */
 	@Override
-	public boolean ismeilleurOffre(String pseudoMeilleurOfrre, String pseudoUser) {
+	public boolean ismeilleurOffre(Utilisateur pseudoMeilleurOfrre, String pseudoUser) {
 		boolean valide = true;
 		if (pseudoMeilleurOfrre != null) {
 			if (pseudoMeilleurOfrre.equals(pseudoUser)) {
