@@ -24,17 +24,18 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 	private static final String CHECK_ARTICLES_VENDUS = "SELECT * FROM ARTICLES_VENDUS a WHERE a.no_utilisateur = :id";
 	private static final String UPDATE = "UPDATE  articles_vendus (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur, no_categorie) values (:nom, :description, :dateDebut, :dateFin, :prixInitial, :idUtilisateur, :idCategorie)";
 	private static final String SELECT_BY_ID = "SELECT  no_categorie, prix_vente, no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur FROM ARTICLES_VENDUS WHERE no_article = :id";
+	private static final String COUNT_BY_ID_CATEGORIE = "select count(*) from articles_vendus where no_categorie = :idCategorie";
 
 	// ****************** ATTRIBUT INSTANCES ***********************************
 
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-	
+
 	// ****************** CONSTRUCTEURS***********************************
 
 	public ArticleVenduDAOImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
 		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
-	
+
 	// ****************** METHODES ***********************************
 
 	@Override
@@ -142,6 +143,13 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("id", id);
 		return namedParameterJdbcTemplate.queryForObject(SELECT_BY_ID, map, new ArticleVenduRowMapper());
+	}
+
+	@Override
+	public int getCountByIdCategorie(int idCategorie) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("idCategorie", idCategorie);
+		return namedParameterJdbcTemplate.queryForObject(COUNT_BY_ID_CATEGORIE, map, Integer.class);
 	}
 
 }

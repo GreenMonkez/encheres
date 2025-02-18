@@ -3,19 +3,22 @@
 		<a class="black" href="/">ENI-Enchères</a>
 	</h1>
 	<nav>
-		<ul>
-			<li sec:authorize="hasRole('ROLE_USER')">
+		<div class="inblockMargin">
+			<p sec:authorize="hasRole('ROLE_ADMIN')">
+				<a th:href="@{/categories}">Catégories</a>
+			</p>
+			<p sec:authorize="hasRole('ROLE_USER')">
 				<a th:href="@{/encheres/nouvelleVente}">Nouvelle Vente</a>
-			</li>
-			<li sec:authorize="!isAuthenticated()">
+			</p>
+			<p sec:authorize="!isAuthenticated()">
 				<a th:href="@{/login}">S'incrire - Se connecter</a>
-			</li>
-			<li sec:authorize="isAuthenticated()">
+			</p>
+			<p sec:authorize="isAuthenticated()">
 				<a th:href="@{/monProfil}">Mon profil</a>
-			</li>
-			<li sec:authorize="isAuthenticated()">
+			</p>
+			<p sec:authorize="isAuthenticated()">
 				<a th:href="@{/logout}">Déconnexion</a>
-			</li>
-		</ul>
+			</p>
+		</div>
 	</nav>
 </header>

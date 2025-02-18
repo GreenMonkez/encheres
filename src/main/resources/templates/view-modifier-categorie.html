@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Demo Spring Boot Web</title>
+	<link rel="stylesheet" th:href="@{/css/general.css}" />
+	<link rel="stylesheet" th:href="@{/css/tp-form.css}" />
+	<link rel="stylesheet" th:href="@{/css/tp-error.css}" />
+	<link rel="stylesheet" th:href="@{/css/tp-table.css}" />
+</head>
+<body>
+	<header th:replace="~{fragments/fragment-entete :: entete}"></header>
+	<main >
+		<form th:action="@{/categories/modifier}" method="POST" th:object="${categorie}">
+			<input type="hidden" th:field="*{noCategorie}"/>
+			<h1>Modifier la catégorie</h1>
+			<div class="cards" th:if="${#fields.hasErrors('*')}">
+				<h2>Attention : Veuillez vérifier vos champs</h2>
+			</div>
+			<ul th:if="${#fields.hasErrors('global')}">
+		  		<li th:each="err : ${#fields.errors('global')}" th:text="#{${err}}">Input is incorrect</li>
+			</ul>
+			<ul class="flex-outer">
+				<li>
+					<label for="libelle">Libellé</label>
+					<input id="libelle" type="text" th:field="*{libelle}"/>
+					<p class="cards" th:errors="*{libelle}"></p>
+				</li>
+				<li>
+					<button type="submit">Enregistrer</button>
+					<table>
+						<td>
+							<a th:href="@{/categories}">Annuler</a>
+						</td>
+					</table>
+				</li>
+			</ul>
+		</form>
+	</main>
+	<footer th:replace="~{fragments/fragment-footer :: footer}"></footer>
+</body>
+</html>

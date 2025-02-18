@@ -6,38 +6,41 @@
 	<link rel="stylesheet" th:href="@{/css/enchere-structure.css}" />
 	<link rel="stylesheet" th:href="@{/css/tp-form.css}" />
 	<link rel="stylesheet" th:href="@{/css/tp-error.css}" />
-</head>
-<body>
-	<header th:replace="~{fragments/fragment-entete :: entete}"></header>
-		<form th:action="@{/login}" method="POST"  >
-			<p th:if="${param.error}">Mail ou mot de passe invalide</p>
-			<ul class="flex-outer">
-				<li>
-					<label for="idpseudo">Identifiant :</label>
-					<input id="idpseudo" type="text" name="pseudo"  th:value="${savedLogin != null ? savedLogin : ''}"/>
-				</li>
-				<li>
-					<label for="idPassword">Mot de passe :</label>
-					<input id="idPassword" type="password" name="mot_de_passe"/>
-				</li>	
-			<div>
-        		<label for="rememberMe">Se souvenir de moi : </label>
-            	<input type="checkbox" id="rememberMe" name="remember-me" /> 
-        
-   			</div>
-			<div>	
-				<li>
-					<button type="submit">Connexion</button>
-				</li>
-			</div>
-			</ul>
+</head>			
+<body> 
+	<header th:replace="~{fragments/fragment-entete :: entete}">
+	</header>
+	<main>
+	<form th:action="@{/login}" method="POST">
+		<p th:if="${param.error}">Mail ou mot de passe invalide</p>
+		<div class="inblock">
+			<label for="idpseudo">Identifiant :</label> 
+			<input id="idpseudo" type="text" name="pseudo" />
+		</div>
+		<div class="inblock">
+			<label for="idPassword">Mot de passe :</label> 
+			<input id="idPassword" type="password" name="mot_de_passe" />
+		</div>	
+		
+	
+	
+			<div class="options">
+				<button type="submit">Connexion</button>	
+				<section>	
+					<div class="inblockMargin">
+						<label for="rememberMe">Se souvenir de moi : </label>
+            			<input type="checkbox" id="rememberMe" name="remember-me" /> 
+					</div>
+					<a class="forgot-password" href="">Mot de passe oublié</a>
+				</section>
+			</div>	
 			<table class="center-section">
 				<td>
-					<a th:href="@{/inscription}">Créer un compte</a>
+					<a class="big-button" th:href="@{/inscription}">Créer un compte</a>
 				</td>
-			</table>
-			</div>
-		</form>
+			</table>		
+		</form>	
+	</main>
 	<footer th:replace="~{fragments/fragment-footer :: footer}"></footer>
 </body>
 </html>
