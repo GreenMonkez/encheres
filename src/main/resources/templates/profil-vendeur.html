@@ -5,7 +5,7 @@
 	<title>Enchères</title>
 	<link rel="stylesheet" th:href="@{/css/enchere-structure.css}" />
 <link rel="stylesheet" th:href="@{/css/tp-form.css}" />
-<link rel="stylesheet" th:href="@{/css/tp-error.css}" />
+<link rel="stylesheet" th:href="@{/css/responsive.css}" />
 </head>
 <body>
 	<header th:replace="~{fragments/fragment-entete :: entete}"></header>
@@ -26,7 +26,7 @@
 				</div>
 				<div class="inblockMargin">
 					<label for="idEmail">Email : </label>
-					<p th:text="${utilisateur.email}"></p>
+					<p id="marginL" th:text="${utilisateur.email}"></p>
 				</div>
 				<div class="inblockMargin">
 					<label for="idTelephone">Téléphone : </label>

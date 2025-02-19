@@ -5,7 +5,7 @@
 }
 html, body {
 	
-
+	
     height: 100%;
     margin: 0;
     display: flex;
@@ -25,6 +25,10 @@ main {
 	justify-content: space-between;
 }
 
+.top-main{
+	 justify-content: unset;
+	 justify-content: unset;
+}
 
 /* En-tête */
 header {
@@ -98,12 +102,12 @@ nav ul {
 }
 
 .search-bar button {
-	padding-left: 200px;
-	padding-right: 200px;
+	padding-left: clamp(50px, 10vw, 200px);
+	padding-right: clamp(05px, 10vw, 200px);
 	padding-top: 30px;
 	padding-bottom: 30px;
-	margin-left:150px;
-	margin-right: 300px;
+	margin-left:clamp(0px, 10vw, 150px);
+	margin-right: clamp(0px, 10vw, 300px);
 	display: flex;
 	justify-content: center;
 	border: 3px solid black;
@@ -188,4 +192,5 @@ footer {
 	margin-top: 30px;
 	display: flex;
 	justify-content: center;
+	align-content: center;
 }
