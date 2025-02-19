@@ -12,13 +12,13 @@
 	<header th:replace="~{fragments/fragment-entete :: entete}"> </header>
 	<main id="sectionLeft">
 		<form action="">
-			<h1 th:if="${!enchereEnCours}">
-				<span th:if="${affichage} == 3">Vous avez remporté l'enchère ! 🎉</span>
-				<span th:if="${affichage} == 1" th:text="${article.acheteur.pseudo + ' a remporté l''enchère !'}"></span>
-				<span th:if="${affichage} == 0">Aucune Enchère</span>
+			<h1 th:if="${article.etatVente} == 'EC'">
+				<span th:if="${article.acheteur.noUtilisateur} == ${userSession.noUtilisateur}" th:text="${article.acheteur.pseudo + ' a remporté l''enchère !'}"></span>
+				<span th:if="${article.acheteur.noUtilisateur} != ${userSession.noUtilisateur}" th:text="${article.acheteur.pseudo + ' a remporté l''enchère !'}"></span>
+				<span th:if="${article.prixVente} == 0">Aucune Enchère</span>
 			</h1>
 
-			<h1 th:if="${enchereEnCours}">Détail vente</h1>
+			<h1 th:if="${article.etatVente} == 'EC'">Détail vente</h1>
 			<section  class="encheres">
 				<img  th:src="'/images/' + ${article.noArticle} + '.png'" alt="Image">
 				<div class="detail" >
@@ -55,28 +55,28 @@
 					<div class="inblockMargin">
 						<p>Vendeur :</p>
 						<p th:text="${article.vendeur.pseudo}"></p>
-					</div>			
-					
-					<form th:action="@{/encheres/creer}" method="POST">
-						<input type="hidden" name="id" th:value="${article.noArticle}" />
-						<div class="cards" th:if="${erreurs != null}">
-							<h2>Attention : Veuillez vérifier vos champs</h2>
-						</div>
-	
-							<!-- Liste des erreurs globales -->
-						<ul class="flex-outer" th:if="${erreurs != null}">
-							<li th:each="err : ${erreurs}" th:text="${err}">Erreur non spécifiée</li>
-						</ul>
-	
-						<div class="inblockMargin" th:if="${enchereEnCours}">
-							<label for="idProposition">Ma proposition : </label>
-							<input id="idProposition" type="number" name="proposition" th:value="${article.prixVente}" />
-							<button type="submit">Enchérir</button>
-						</div>
-					</form>			
+					</div>				
 				</div>
 			</section>
 		</form>
+		<form th:action="@{/encheres/creer}" method="POST">
+					<input type="hidden" name="id" th:value="${article.noArticle}" />
+				<div class="cards" th:if="${erreurs != null}">
+					<h2>Attention : Veuillez vérifier vos champs</h2>
+				</div>
+	
+							<!-- Liste des erreurs globales -->
+				<ul class="flex-outer" th:if="${erreurs != null}">
+						<li th:each="err : ${erreurs}" th:text="${err}">Erreur non spécifiée</li>
+				</ul>
+				<div class="inblockMargin" 
+    					 th:if="${article.etatVente} == 'EC' and (${article.vendeur.noUtilisateur} != ${userSession.noUtilisateur})">
+
+						<label for="idProposition">Ma proposition : </label>
+						<input id="idProposition" type="number" name="proposition"/>
+						<button type="submit">Enchérir</button>
+					</div>
+					</form>		
 	</main>
 	<footer th:replace="~{fragments/fragment-footer :: footer}"> </footer>
 </body>

@@ -1,7 +1,11 @@
 package fr.eni.tp.encheres.controller;
 
 import java.security.Principal;
+import java.util.Locale;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import fr.eni.tp.encheres.bll.LoginService;
 import fr.eni.tp.encheres.bo.Utilisateur;
@@ -24,9 +29,11 @@ import jakarta.validation.Valid;
 public class LoginController {
 
 	private LoginService loginService;
+	private MessageSource messageSource;
 
-	public LoginController(LoginService loginService) {
+	public LoginController(LoginService loginService, MessageSource messageSource) {
 		this.loginService = loginService;
+		this.messageSource = messageSource;
 	}
 
 	/**
@@ -142,5 +149,68 @@ public class LoginController {
 		return "redirect:/encheres";
 
 	}
+	
+	/**
+	 * Permet d'afficher la view reset-password
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/forgotPassword")
+	public String afficherMdpOublie(Model model) {
+		return "forgot-password";
+		
+	}
+	@PostMapping("/resetPassword")
+	public String resetMdp(@RequestParam("email")String email, Locale locale, RedirectAttributes redirectAttributes)  {
+		
+	try {
+		String linkToken = loginService.creerResetPasswordLink(email);
+		return "redirect:" + linkToken;
+		
+	} catch (BusinessException e) {
+		e.printStackTrace();
+			redirectAttributes.addFlashAttribute("erreurs", e.getClesErreurs().stream()
+				    .map(cle -> messageSource.getMessage(cle, null, locale))
+				    .collect(Collectors.toList()));
 
+		
+		;
+			return "redirect:/forgotPassword";
+		}
+	}
+	
+	@GetMapping("/resetPassword/token")
+	public String verifTokenUser(@RequestParam("token") String token, Model model) {
+		
+		try {
+			boolean valid = loginService.validerResetToken(token);
+			if (valid) {
+	            model.addAttribute("token", token);
+	            return "reset-password-form";
+	        } else {
+	            model.addAttribute("erreur", "Token invalide ou expiré");
+	            return "reset-password";
+	        }
+		} catch (BusinessException  e) {
+			 e.printStackTrace();
+		        model.addAttribute("erreur", "Une erreur s'est produite");
+		        return "reset-password";
+		}
+	}
+	
+	@PostMapping("/resetPassword/formulaire")
+	public String resetPassword(@RequestParam("token")String token, @RequestParam("NewMotDePasse") String password,
+								@RequestParam("PasswordConfirm") String passwordConfirm, RedirectAttributes redirectAttributes ) {
+		try {
+			 loginService.resetPassword(token, password, passwordConfirm);
+		        redirectAttributes.addFlashAttribute("success", "Mot de passe réinitialisé avec succès");
+		        return "redirect:/login";
+		} catch (BusinessException  e) {
+			 e.printStackTrace();
+		        redirectAttributes.addFlashAttribute("erreur", "Une erreur s'est produite");
+		        return "redirect:/reset-password?token=" + token;
+		}
+
+	}
+	
 }

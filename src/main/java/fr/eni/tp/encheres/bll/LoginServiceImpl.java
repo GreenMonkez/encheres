@@ -1,7 +1,9 @@
 package fr.eni.tp.encheres.bll;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -12,6 +14,7 @@ import fr.eni.tp.encheres.bo.Enchère;
 import fr.eni.tp.encheres.bo.Utilisateur;
 import fr.eni.tp.encheres.dal.ArticleVenduDAO;
 import fr.eni.tp.encheres.dal.EnchèreDAO;
+import fr.eni.tp.encheres.dal.RetraitDAO;
 import fr.eni.tp.encheres.dal.UtilisateurDAO;
 import fr.eni.tp.encheres.exception.BusinessException;
 
@@ -21,12 +24,14 @@ public class LoginServiceImpl implements LoginService {
 	private UtilisateurDAO utilisateurDAO;
 	private ArticleVenduDAO articleDAO;
 	private EnchèreDAO enchereDAO;
+	private RetraitDAO retraitDAO;
 
-	public LoginServiceImpl(UtilisateurDAO utilisateurDAO, ArticleVenduDAO articleDAO, EnchèreDAO enchereDAO) {
+	public LoginServiceImpl(UtilisateurDAO utilisateurDAO, ArticleVenduDAO articleDAO, EnchèreDAO enchereDAO, RetraitDAO retraitDAO) {
 
 		this.utilisateurDAO = utilisateurDAO;
 		this.articleDAO = articleDAO;
 		this.enchereDAO = enchereDAO;
+		this.retraitDAO = retraitDAO;
 
 	}
 
@@ -83,7 +88,58 @@ public class LoginServiceImpl implements LoginService {
 		return this.utilisateurDAO.getUtilisateurByPseudo(pseudo);
 
 	}
+	
+	
+	/**
+	 *Créer le lien de pour reset le mdp
+	 *Vérifie si l'email est bien existant dans la base de donnée
+	 *Création d'un token
+	 *@Return String
+	 */
+	@Override
+	public String creerResetPasswordLink(String email) throws BusinessException {
+		BusinessException be = new BusinessException();
+		Utilisateur user = new Utilisateur();
+		boolean valide = validerUtilisateurEmail(email, be);
+		String token = UUID.randomUUID().toString();// génère un id universel aléatoire de nombre + convertit en String					
+		//Timestamp dateExpiration = new Timestamp(System.currentTimeMillis() + 3600000);
+		 
+		try {
+			if (!valide) {
+					user = utilisateurDAO.getUtilisateurByEmail(email);
+			        utilisateurDAO.sauvegarderPasswordResetToken(user.getNoUtilisateur(), token);
 
+			}
+			
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+			be.addErreur("erreur.user.notfound");
+			throw be;
+		}
+
+		return "http://localhost:8080/reset-password?token=" + token;
+		
+	}
+	
+	@Override
+	public void resetPassword(String token, String password, String passwordConfirm) throws BusinessException {
+		BusinessException be = new BusinessException();
+		Utilisateur utilisateur = utilisateurDAO.readByToken(token);
+		boolean valide = validerConfirmMdp(passwordConfirm, password, be);
+		valide &= validerDateToken(token, be);
+		try {
+			if (valide) {
+				utilisateurDAO.resetPassword(utilisateur.getNoUtilisateur(), password);
+			}
+		} catch (DataAccessException e) {
+			 e.printStackTrace();
+		        be.addErreur("erreur.password.save");
+		        throw be;
+		}
+	}
+
+	
+	
 	/**
 	 * Méthode permettant de modifier les infos d'un Utilisateur Fais appel aux
 	 * méthodes de validation : Vérifier si mots de passe confirmation == mot de
@@ -146,8 +202,15 @@ public class LoginServiceImpl implements LoginService {
 			if (valide) {
 				if (listArticles != null) {
 					for (ArticleVendu article : listArticles) {
-						article.setDescription("Inconnu");
-						articleDAO.modifierArticle(article);
+						//supprimer le retrait et l'article que si la date est pas commencé
+						if (article.getDateDebutEncheres().isAfter(LocalDateTime.now())) {
+							retraitDAO.getRetraitById(article.getNoArticle());
+							//articleDAO supprimer
+						}
+						if (article.getDateDebutEncheres().isBefore(LocalDateTime.now())) {
+							article.setDescription("Inconnu");// si la date est avant la date du jour
+							articleDAO.modifierArticle(article);
+						}	
 					}
 				}
 				userSupp.setPseudo("UserSupp");
@@ -172,7 +235,8 @@ public class LoginServiceImpl implements LoginService {
 			throw be;
 		}
 	}
-
+	
+	
 	// ************** VALIDATION ***********************************************
 
 	/**
@@ -307,12 +371,44 @@ public class LoginServiceImpl implements LoginService {
 					valide = false;
 					be.addErreur("erreur.supprimer.profil.enchere.encours");
 				}
-
 			}
 		}
 
 		return valide;
 
 	}
+
+	@Override
+	public boolean validerResetToken(String token) throws BusinessException{
+		BusinessException be = new BusinessException();
+		Boolean valide = true;
+	    boolean valid = utilisateurDAO.validerPasswordResetToken(token);
+	    valide &= this.validerDateToken(token, be);
+	    	if (!valid) {
+				valide = false;
+				be.addErreur("erreur.token.invalid");
+			}
+	    	
+	        return valide;
+	 
+	}
+	
+	private boolean validerDateToken(String token,BusinessException be) {
+		boolean valide = true;
+		Timestamp dateExpiration = utilisateurDAO.findDateToken(token);
+		LocalDateTime expirationDateTime = dateExpiration.toLocalDateTime();
+
+		if (expirationDateTime.isBefore(LocalDateTime.now())) {
+			valide = false;
+			be.addErreur("erreur.token.date.invalid");
+		}
+		return valide;
+	}
+
+	
+
+	
+
+	
 
 }

@@ -1,5 +1,7 @@
 package fr.eni.tp.encheres.dal;
 
+import java.sql.Timestamp;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -23,6 +25,14 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 	private static final String FIND_UNIQUE_PASSWORD = "SELECT count(mot_de_passe) FROM UTILISATEURS WHERE mot_de_passe like :mot_de_passe";
 	private static final String UPDATE = "UPDATE UTILISATEURS SET pseudo = :pseudo, nom = :nom, prenom = :prenom, email = :email, telephone = :telephone, rue = :rue, code_postal = :code_postal, ville = :ville, mot_de_passe = :motDePasse WHERE no_utilisateur = :no_utilisateur";
 	private static final String UPDATE_CREDIT = "update utilisateurs set credit = :nouveauSoldeCredit where no_utilisateur = :noUtilisateur";
+	private static final String FIND_BY_EMAIL = "select no_utilisateur, pseudo, nom, prenom, email, telephone, rue, code_postal, ville, credit, administrateur from utilisateurs where email = :email";
+    private static final String INSERT_TOKEN = "INSERT INTO PASSWORD_TOKENS (token, no_utilisateur) VALUES (:token, :no_utilisateur)";
+    private static final String FIND_TOKEN = "SELECT COUNT(*) FROM PASSWORD_TOKENS WHERE token = :token ";
+    private static final String FIND_USER_BY_TOKEN = "SELECT no_utilisateur FROM PASSWORD_TOKENS WHERE token = :token";
+    private static final String FIND_DATE_BY_TOKEN = "SELECT date_expiration FROM PASSWORD_TOKENS WHERE token = :token";
+	private static final String UPDATE_PASSWORD = "UPDATE UTILISATEURS SET  mot_de_passe = :motDePasse WHERE no_utilisateur = :no_utilisateur";
+
+	
 	// ****************** ATTRIBUT INSTANCES ***********************************
 
 	@Autowired
@@ -148,4 +158,53 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 		jdbcTemplate.update(UPDATE_CREDIT, map);
 	}
 
+	@Override
+	public Utilisateur getUtilisateurByEmail(String email) {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("email", email);
+		return jdbcTemplate.queryForObject(FIND_BY_EMAIL, mapSqlParameterSource, new UtilisateurRowMapper());
+	}
+
+	@Override
+	public void sauvegarderPasswordResetToken(int idUser, String token) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("token", token);
+		map.addValue("no_utilisateur", idUser);
+		jdbcTemplate.update(INSERT_TOKEN, map);
+		
+	}
+
+	@Override
+	public boolean validerPasswordResetToken(String token) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("token", token);
+		int count = jdbcTemplate.queryForObject(FIND_TOKEN, map, Integer.class);
+		return count == 0;
+	}
+
+	@Override
+	public Utilisateur readByToken(String token) {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("token", token);
+		return jdbcTemplate.queryForObject(FIND_USER_BY_TOKEN, mapSqlParameterSource, new UtilisateurRowMapper());
+
+	}
+//FIND_DATE_BY_TOKEN
+	
+	@Override
+	public Timestamp findDateToken(String token) {
+		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+		mapSqlParameterSource.addValue("token", token);
+		return jdbcTemplate.queryForObject(FIND_DATE_BY_TOKEN, mapSqlParameterSource, Timestamp.class);
+
+	}
+
+	@Override
+	public void resetPassword(int idUser, String password) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("noUtilisateur", idUser);
+		map.addValue("motDePasse", password);
+		jdbcTemplate.update(UPDATE_PASSWORD, map);
+		
+	}
 }

@@ -42,7 +42,9 @@ public class SecurityConfig {
 					.hasRole("USER").requestMatchers("/profil/vendeur").hasRole("USER").requestMatchers("/categories")
 					.hasRole("ADMIN").requestMatchers("/categories/ajouter").hasRole("ADMIN")
 					.requestMatchers("/categories/modifier").hasRole("ADMIN").requestMatchers("/categories/supprimer")
-					.hasRole("ADMIN").anyRequest().denyAll();
+					.hasRole("ADMIN")
+					.requestMatchers("/reset/password").permitAll()
+					.anyRequest().denyAll();
 		});
 
 		// Customiser le formulaire

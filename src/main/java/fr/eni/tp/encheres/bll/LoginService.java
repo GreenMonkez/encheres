@@ -1,5 +1,6 @@
 package fr.eni.tp.encheres.bll;
 
+
 import fr.eni.tp.encheres.bo.Utilisateur;
 import fr.eni.tp.encheres.exception.BusinessException;
 
@@ -16,5 +17,11 @@ public interface LoginService {
 	void supprimerUtilisateur(Utilisateur userSupp) throws BusinessException;
 
 	void updateCredit(Utilisateur userSession, int achatCredit);
+			
+	String creerResetPasswordLink(String email) throws BusinessException;
+	
+	boolean validerResetToken(String token) throws BusinessException;
+	
+	void resetPassword(String token, String password, String passwordConfirm) throws BusinessException;
 
 }

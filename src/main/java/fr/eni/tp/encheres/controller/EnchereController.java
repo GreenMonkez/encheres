@@ -196,18 +196,8 @@ public class EnchereController {
 			@ModelAttribute("userSession") Utilisateur userSession) {
 		
 		ArticleVendu article = enchereService.chercherArticleComplet(id);
-		
 		model.addAttribute("article", article);
-		boolean echereEncours = enchereService.isEnchereEnCours(article.getDateFinEncheres(),
-				article.getDateDebutEncheres());
-		model.addAttribute("enchereEnCours", echereEncours);
-		boolean isAcheteur = enchereService.isAcheteur(article.getAcheteur().getPseudo(), userSession.getPseudo());
-		model.addAttribute("isAcheteur", isAcheteur);
-		boolean NotmeilleurOffre = enchereService.ismeilleurOffre(article.getAcheteur(), userSession.getPseudo());
-		model.addAttribute("NotmeilleurOffre", NotmeilleurOffre);
-		int affichage = enchereService.definirAffichage(article, isAcheteur);
-		model.addAttribute("affichage", affichage);
-
+		model.addAttribute("userSession", userSession );
 		return "detail_vente";
 	}
 
@@ -227,8 +217,9 @@ public class EnchereController {
 	public String creerEnchere(@RequestParam(name = "proposition") int montant, @RequestParam("id") int idArticle,
 			@ModelAttribute("userSession") Utilisateur userSession, RedirectAttributes redirectAttributes,
 			Locale locale) {
+		
 		try {
-
+			
 			this.enchereService.creerEnchere(userSession, montant, idArticle);
 			return "redirect:/encheres/detail?id=" + idArticle;
 

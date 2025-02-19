@@ -281,26 +281,27 @@ public class EnchereServiceImpl implements EnchereService {
 	public void createNouvelleCategorie(Categorie categorie) {
 		categorieDAO.createNouvelleCategorie(categorie);
 	}
-	
+
 	/**
-	 * Méthode permettant de rechercher ArticleVendu + Utilisateur
-	 * pour pouvoir implemter Utilisateur dans l'ArticleVendu
+	 * Méthode permettant de rechercher ArticleVendu + Utilisateur pour pouvoir
+	 * implemter Utilisateur dans l'ArticleVendu
+	 * 
 	 * @param int id de l' ArticleVendu
 	 * @return ArticleVendu
 	 */
 	public ArticleVendu chercherArticleComplet(int id) {
-		
+
 		ArticleVendu article = articleById(id);
 		Utilisateur acheteur = getAcheteur(article.getPrixVente(), id);
-		
-		
-		
+		 if (article.getDateDebutEncheres().isBefore(LocalDateTime.now()) && article.getDateFinEncheres().isAfter(LocalDateTime.now())) {
+			article.setEtatVente("EC");
+		}
 		if (acheteur == null) {
 			acheteur = new Utilisateur();
 		}
 		article.setAcheteur(acheteur);
 		return article;
-		
+
 	}
 
 	/**
@@ -374,7 +375,6 @@ public class EnchereServiceImpl implements EnchereService {
 							AncienneEnchere.getMontant_enchere());
 
 					ancienAcheteur.setCredit(creditRajout);
-					// TODOO A METTRE DANS UTILISATEURDAO?
 					enchèreDAO.updateCredit(ancienAcheteur);
 				}
 				int creditRetrait = transactionRetrait(userSession.getCredit(), montant);
@@ -394,49 +394,18 @@ public class EnchereServiceImpl implements EnchereService {
 		}
 
 	}
-	
-	
-	/**
-	 * Méthode permettant de déterminer l'affichage selon les conditions :
-	 * Si userSession n'est pas acheteur et prixVente != 0
-	 * Si prixVente == 0
-	 * Si userSession est acheteur
-	 * @param ArticleVendu
-	 * @Param boolean
-	 */
-	public int definirAffichage(ArticleVendu article, boolean isAcheteur) {
-		
-		int affichage = 0;
 
-		if (article.getPrixVente() != 0 && !isAcheteur) {
-			affichage = 1;
-
-		}
-
-		if (article.getPrixVente() == 0) {
-			affichage = 0;
-
-		}
-
-		if (isAcheteur) {
-			affichage = 3;
-
-		}
-		return affichage;
-
-		
-	}
 
 	// ****************************** UTILISATEUR ******************************
-	
-	
-	
+
 	/**
 	 * 
-	 * Méthode permettant de récupérer un utilisateur grâce aux enchère qu'il a faite
-	 *@Param int 
-	 *@Param int
-	 *@Return Utilisateur
+	 * Méthode permettant de récupérer un utilisateur grâce aux enchère qu'il a
+	 * faite
+	 * 
+	 * @Param int
+	 * @Param int
+	 * @Return Utilisateur
 	 */
 	@Override
 	public Utilisateur getAcheteur(int prixVente, int noArticle) {
@@ -519,32 +488,13 @@ public class EnchereServiceImpl implements EnchereService {
 		return true;
 	}
 
-	/**
-	 * Vérifie si l'user est l'acheteur, si oui le bouton enchérir est désactivé
-	 * 
-	 * @Return boolean valide
-	 */
-	@Override
-	public boolean isAcheteur(String PseudoAcheteur, String pseudoUser) {
-		boolean valide = false;
-
-		if (PseudoAcheteur != null) {
-
-			if (PseudoAcheteur.equals(pseudoUser)) {
-
-				valide = true;
-			}
-		}
-		return valide;
-	}
 
 	/**
 	 * Vérifie si l'enchere est en cours, si non le bouton enchérir est désactiver
 	 * 
 	 * @Return boolean valide
 	 */
-	@Override
-	public boolean isEnchereEnCours(LocalDateTime dateFin, LocalDateTime dateDebut) {
+	private boolean isEnchereEnCours(LocalDateTime dateFin, LocalDateTime dateDebut) {
 
 		boolean valide = true;
 		if (dateFin.isBefore(LocalDateTime.now()) || dateDebut.isAfter(dateDebut)) {
@@ -554,22 +504,7 @@ public class EnchereServiceImpl implements EnchereService {
 		return valide;
 	}
 
-	/**
-	 * Verifie si l'user en session est l'actuel détenteur de la meilleur offre, si
-	 * oui le bouton enchérir est désactive
-	 * 
-	 * @return boolean valide
-	 */
-	@Override
-	public boolean ismeilleurOffre(Utilisateur pseudoMeilleurOfrre, String pseudoUser) {
-		boolean valide = true;
-		if (pseudoMeilleurOfrre != null) {
-			if (pseudoMeilleurOfrre.equals(pseudoUser)) {
-				valide = false;
-			}
-		}
-		return valide;
-	}
+	
 
 	/**
 	 * Vérifie que le montant de l'enchère entrée par l'utilisateur est supérieur au
@@ -584,7 +519,7 @@ public class EnchereServiceImpl implements EnchereService {
 	private boolean validerMontant(int montant, ArticleVendu article, Utilisateur userSession, BusinessException be) {
 		boolean valide = true;
 
-		if (montant < article.getPrixVente() || montant > userSession.getCredit()) {
+		if (montant <= article.getPrixVente() || montant > userSession.getCredit()) {
 			valide = false;
 			be.addErreur("erreur.montant.enchere");
 		}
@@ -606,5 +541,6 @@ public class EnchereServiceImpl implements EnchereService {
 		}
 		return true;
 	}
+
 
 }

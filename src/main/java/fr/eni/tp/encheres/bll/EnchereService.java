@@ -25,12 +25,6 @@ public interface EnchereService {
 
 	ArticleVendu articleById(int id);
 
-	boolean isAcheteur(String PseudoAcheter, String pseudoUser);
-
-	boolean isEnchereEnCours(LocalDateTime dateFin, LocalDateTime dateDebut);
-	
-	boolean ismeilleurOffre(Utilisateur pseudoAcheteur, String pseudoUser);
-
 	void creerEnchere(Utilisateur userSession, int montant, int idArticle) throws BusinessException;
 
 	List<ArticleVendu> getEncheresFiltreesOptions(String filtre, int idCategorie, List<String> options,
@@ -41,8 +35,6 @@ public interface EnchereService {
 	void updateCategorie(Categorie categorie);
 
 	void deleteCategorie(int idCategorie) throws BusinessException;
-	
-	int definirAffichage(ArticleVendu article, boolean isAcheteur);
 	
 	ArticleVendu chercherArticleComplet(int id);
 
