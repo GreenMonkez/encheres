@@ -86,6 +86,7 @@ public class EnchereServiceImpl implements EnchereService {
 		for (ArticleVendu articleVendu : articles) {
 			if ((articleVendu.getDateDebutEncheres().isBefore(LocalDateTime.now()))
 					&& (articleVendu.getDateFinEncheres().isAfter(LocalDateTime.now()))) {
+				articleVendu.setEtatVente("enCours");
 				articlesEnCours.add(articleVendu);
 			}
 		}
@@ -131,6 +132,7 @@ public class EnchereServiceImpl implements EnchereService {
 		for (ArticleVendu articleVendu : articlesFiltres) {
 			if ((articleVendu.getDateDebutEncheres().isBefore(LocalDateTime.now()))
 					&& (articleVendu.getDateFinEncheres().isAfter(LocalDateTime.now()))) {
+				articleVendu.setEtatVente("enCours");
 				articlesFiltresEnCours.add(articleVendu);
 			}
 		}
@@ -182,6 +184,7 @@ public class EnchereServiceImpl implements EnchereService {
 					if ((article.getDateDebutEncheres().isBefore(LocalDateTime.now()))
 							&& (article.getDateFinEncheres().isAfter(LocalDateTime.now()))
 							&& (article.getVendeur().getNoUtilisateur() != userSession.getNoUtilisateur())) {
+						article.setEtatVente("enCours");
 						articlesFiltresOptions.add(article);
 					}
 				}
@@ -195,6 +198,7 @@ public class EnchereServiceImpl implements EnchereService {
 							&& (article.getVendeur().getNoUtilisateur() != userSession.getNoUtilisateur())) {
 						for (Enchère enchère : article.getEncheres()) {
 							if (enchère.getUtilisateur().getNoUtilisateur() == userSession.getNoUtilisateur()) {
+								article.setEtatVente("enCours");
 								articlesFiltresOptions.add(article);
 							}
 						}
@@ -210,6 +214,7 @@ public class EnchereServiceImpl implements EnchereService {
 						for (Enchère enchère : article.getEncheres()) {
 							if (enchère.getMontant_enchere() == article.getPrixVente()
 									&& enchère.getUtilisateur().getNoUtilisateur() == userSession.getNoUtilisateur()) {
+								article.setEtatVente("finie");
 								articlesFiltresOptions.add(article);
 							}
 						}
@@ -223,26 +228,29 @@ public class EnchereServiceImpl implements EnchereService {
 					if ((article.getVendeur().getNoUtilisateur() == userSession.getNoUtilisateur())
 							&& (article.getDateDebutEncheres().isBefore(LocalDateTime.now()))
 							&& (article.getDateFinEncheres().isAfter(LocalDateTime.now()))) {
+						article.setEtatVente("enCours");
 						articlesFiltresOptions.add(article);
 					}
 				}
 			}
 
-			if (option.equals("ventes2")) { // ajoute l'article si la vente est terminée et que l'utilisateur est le
-											// vendeur
-				for (ArticleVendu article : articlesFiltres) {
-					if ((article.getVendeur().getNoUtilisateur() == userSession.getNoUtilisateur())
-							&& (article.getDateDebutEncheres().isAfter(LocalDateTime.now()))) {
-						articlesFiltresOptions.add(article);
-					}
-				}
-			}
-
-			if (option.equals("ventes3")) { // ajoute l'article si la vente n'est pas commencée et que l'utilisateur est
+			if (option.equals("ventes2")) { // ajoute l'article si la vente n'est pas commencée et que l'utilisateur est
 											// le vendeur
 				for (ArticleVendu article : articlesFiltres) {
 					if ((article.getVendeur().getNoUtilisateur() == userSession.getNoUtilisateur())
+							&& (article.getDateDebutEncheres().isAfter(LocalDateTime.now()))) {
+						article.setEtatVente("pasCommencee");
+						articlesFiltresOptions.add(article);
+					}
+				}
+			}
+
+			if (option.equals("ventes3")) { // ajoute l'article si la vente est terminée et que l'utilisateur est le
+											// vendeur
+				for (ArticleVendu article : articlesFiltres) {
+					if ((article.getVendeur().getNoUtilisateur() == userSession.getNoUtilisateur())
 							&& (article.getDateFinEncheres().isBefore(LocalDateTime.now()))) {
+						article.setEtatVente("finie");
 						articlesFiltresOptions.add(article);
 					}
 				}
@@ -272,6 +280,54 @@ public class EnchereServiceImpl implements EnchereService {
 		return article;
 	}
 
+	@Override
+	public ArticleVendu getArticleByIdArticle(int idArticle, Utilisateur userSession) throws BusinessException {
+		BusinessException be = new BusinessException();
+		boolean valide = validerUtilisateurArticle(userSession.getNoUtilisateur(), idArticle, be);
+		valide = encherePasEnCours(idArticle, be);
+
+		if (valide) {
+			ArticleVendu article = articleVenduDAO.read(idArticle);
+			article.setLieuRetrait(retraitDAO.getRetraitById(idArticle));
+			article.setCategorieArticle(categorieDAO.getCategorie(article.getCategorieArticle().getNoCategorie()));
+			return article;
+		} else {
+			throw be;
+		}
+
+	}
+
+	@Override
+	public void updateArticle(ArticleVendu article) throws BusinessException {
+		BusinessException be = new BusinessException();
+
+		boolean valide = dateDebutConforme(article.getDateDebutEncheres(), be);
+		valide &= dateFinConforme(article.getDateDebutEncheres(), article.getDateFinEncheres(), be);
+
+		if (valide) {
+			articleVenduDAO.updateArticle(article);
+			retraitDAO.updateRetrait(article);
+		} else {
+			throw be;
+		}
+
+	}
+
+	@Override
+	public void deleteArticle(int noUtilisateur, int idArticle) throws BusinessException {
+		BusinessException be = new BusinessException();
+		boolean valide = validerUtilisateurArticle(noUtilisateur, idArticle, be);
+		valide = encherePasEnCours(idArticle, be);
+
+		if (valide) {
+			retraitDAO.deleteRetrait(idArticle);
+			articleVenduDAO.deleteArticle(idArticle);
+		} else {
+			throw be;
+		}
+
+	}
+
 	// ****************************** CATÉGORIE ******************************
 
 	/**
@@ -281,26 +337,25 @@ public class EnchereServiceImpl implements EnchereService {
 	public void createNouvelleCategorie(Categorie categorie) {
 		categorieDAO.createNouvelleCategorie(categorie);
 	}
-	
+
 	/**
-	 * Méthode permettant de rechercher ArticleVendu + Utilisateur
-	 * pour pouvoir implemter Utilisateur dans l'ArticleVendu
+	 * Méthode permettant de rechercher ArticleVendu + Utilisateur pour pouvoir
+	 * implemter Utilisateur dans l'ArticleVendu
+	 * 
 	 * @param int id de l' ArticleVendu
 	 * @return ArticleVendu
 	 */
 	public ArticleVendu chercherArticleComplet(int id) {
-		
+
 		ArticleVendu article = articleById(id);
 		Utilisateur acheteur = getAcheteur(article.getPrixVente(), id);
-		
-		
-		
+
 		if (acheteur == null) {
 			acheteur = new Utilisateur();
 		}
 		article.setAcheteur(acheteur);
 		return article;
-		
+
 	}
 
 	/**
@@ -345,6 +400,23 @@ public class EnchereServiceImpl implements EnchereService {
 	}
 
 	// ****************************** ENCHERE ******************************
+
+	@Override
+	public List<Enchère> getEncheresByIdArticle(int idArticle, Utilisateur userSession) throws BusinessException {
+		BusinessException be = new BusinessException();
+		boolean valide = validerUtilisateurArticle(userSession.getNoUtilisateur(), idArticle, be);
+
+		if (valide) {
+			List<Enchère> encheres = enchèreDAO.getEncheresByIdArticleOrderDesc(idArticle);
+			for (Enchère enchere : encheres) {
+				enchere.setUtilisateur(utilisateurDAO.getUtilisateur(enchere.getUtilisateur().getNoUtilisateur()));
+			}
+			return encheres;
+		} else {
+			throw be;
+		}
+
+	}
 
 	/**
 	 * Méthode permettant de créer une enchère
@@ -394,18 +466,17 @@ public class EnchereServiceImpl implements EnchereService {
 		}
 
 	}
-	
-	
+
 	/**
-	 * Méthode permettant de déterminer l'affichage selon les conditions :
-	 * Si userSession n'est pas acheteur et prixVente != 0
-	 * Si prixVente == 0
-	 * Si userSession est acheteur
+	 * Méthode permettant de déterminer l'affichage selon les conditions : Si
+	 * userSession n'est pas acheteur et prixVente != 0 Si prixVente == 0 Si
+	 * userSession est acheteur
+	 * 
 	 * @param ArticleVendu
 	 * @Param boolean
 	 */
 	public int definirAffichage(ArticleVendu article, boolean isAcheteur) {
-		
+
 		int affichage = 0;
 
 		if (article.getPrixVente() != 0 && !isAcheteur) {
@@ -424,19 +495,18 @@ public class EnchereServiceImpl implements EnchereService {
 		}
 		return affichage;
 
-		
 	}
 
 	// ****************************** UTILISATEUR ******************************
-	
-	
-	
+
 	/**
 	 * 
-	 * Méthode permettant de récupérer un utilisateur grâce aux enchère qu'il a faite
-	 *@Param int 
-	 *@Param int
-	 *@Return Utilisateur
+	 * Méthode permettant de récupérer un utilisateur grâce aux enchère qu'il a
+	 * faite
+	 * 
+	 * @Param int
+	 * @Param int
+	 * @Return Utilisateur
 	 */
 	@Override
 	public Utilisateur getAcheteur(int prixVente, int noArticle) {
@@ -602,6 +672,22 @@ public class EnchereServiceImpl implements EnchereService {
 	private boolean categorieNotUsed(int idCategorie, BusinessException be) {
 		if (articleVenduDAO.getCountByIdCategorie(idCategorie) != 0) {
 			be.addErreur("erreur.categorie.utilisee");
+			return false;
+		}
+		return true;
+	}
+
+	private boolean encherePasEnCours(int idArticle, BusinessException be) {
+		if (articleVenduDAO.read(idArticle).getDateDebutEncheres().isBefore(LocalDateTime.now())) {
+			be.addErreur("erreur.supprimer.article.commencee");
+			return false;
+		}
+		return true;
+	}
+
+	private boolean validerUtilisateurArticle(int noUtilisateur, int idArticle, BusinessException be) {
+		if (articleVenduDAO.read(idArticle).getVendeur().getNoUtilisateur() != noUtilisateur) {
+			be.addErreur("erreur.supprimer.article.utilisateur");
 			return false;
 		}
 		return true;

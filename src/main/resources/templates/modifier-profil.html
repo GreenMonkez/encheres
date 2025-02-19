@@ -3,9 +3,9 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Enchères</title>
-<link rel="stylesheet" th:href="@{/css/enchere-structure.css}" />
-<link rel="stylesheet" th:href="@{/css/tp-form.css}" />
-<link rel="stylesheet" th:href="@{/css/tp-error.css}" />
+	<link rel="stylesheet" th:href="@{/css/enchere-structure.css}" />
+	<link rel="stylesheet" th:href="@{/css/tp-form.css}" />
+	<link rel="stylesheet" th:href="@{/css/tp-error.css}" />
 </head>
 <body>
 	<header th:replace="~{fragments/fragment-entete :: entete}"></header>
@@ -74,10 +74,12 @@
 					<label for="idMotDePasseConfirm">Confirmation : </label>
 					<input id="idMotDePasseConfirm" type="password" name="PasswordConfirm"/>
 				</div>
+
 			</div>
 			<div class="center">
+				<p th:text="'Crédit ' + ${utilisateur.credit}"></p>
+				<a th:href="@{/monProfil/achatCredit}"><img src="/images/icone-ajouter.png" alt="Bouton ajouter crédit" /></a>
 				<button type="submit">Modifier</button>
-			
 				<a class="button" th:href="@{/monProfil}">Annuler</a>
 			</div>	
 		</form>

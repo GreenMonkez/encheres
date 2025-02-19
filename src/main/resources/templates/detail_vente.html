@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<link rel="stylesheet" th:href="@{/css/enchere-structure.css}" />
-<link rel="stylesheet" th:href="@{/css/tp-form.css}" />
-<link rel="stylesheet" th:href="@{/css/tp-error.css}" />
+	<meta charset="UTF-8">
+	<title>Enchères</title>
+	<link rel="stylesheet" th:href="@{/css/enchere-structure.css}" />
+	<link rel="stylesheet" th:href="@{/css/tp-form.css}" />
+	<link rel="stylesheet" th:href="@{/css/tp-error.css}" />
 </head>
 <body>
 	<header th:replace="~{fragments/fragment-entete :: entete}"> </header>
@@ -20,7 +19,7 @@
 
 			<h1 th:if="${enchereEnCours}">Détail vente</h1>
 			<section  class="encheres">
-				<img  th:src="'/images/' + ${article.noArticle} + '.png'" alt="Image">
+				<img  th:src="'/images/uploads/' + ${article.noArticle} + '.png'" alt="Image">
 				<div class="detail" >
 					<div class="inblockMargin">
 						<h2 th:text="''+${article.nomArticle}"></h2>
@@ -35,7 +34,7 @@
 					</div>
 					<div class="inblockMargin">
 						<p th:if="${article.acheteur.pseudo}!=null">Meilleure offre : </p>
-						<a th:if="${article.acheteur.pseudo}!=null" th:href="@{/profil/vendeur(id=${article.acheteur.noUtilisateur})}" th:text="${article.acheteur.pseudo}"></a>
+						<a th:if="${article.acheteur.pseudo}!=null" th:href="@{/profil(id=${article.acheteur.noUtilisateur})}" th:text="${article.acheteur.pseudo}"></a>
 					</div>
 					<div class="inblockMargin">
 						<p>Mise à prix :</p>

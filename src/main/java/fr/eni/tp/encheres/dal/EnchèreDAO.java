@@ -19,8 +19,9 @@ public interface EnchèreDAO {
 	int getCountEnchere(int prixVente, int idArticle);
 
 	void creerEnchere(int montant, ArticleVendu article, Utilisateur userSession);
-	
+
 	void updateCredit(Utilisateur user);
-	
-	
+
+	List<Enchère> getEncheresByIdArticleOrderDesc(int idArticle);
+
 }
