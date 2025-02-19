@@ -31,6 +31,7 @@ public class Utilisateur {
 	private String email;
 
 	@Size(max = 15)
+	@Pattern(regexp = "^(\\d{2}([ .-]?)?){4}\\d{2}$", message = "Le numéro de telephone est invalide.")
 	private String telephone;
 
 	@NotBlank

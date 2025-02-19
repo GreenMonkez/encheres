@@ -5,14 +5,15 @@
 	<title>Enchères</title>
 	<link rel="stylesheet" th:href="@{/css/enchere-structure.css}" />
 	<link rel="stylesheet" th:href="@{/css/tp-form.css}" />
+	<link rel="stylesheet" th:href="@{/css/responsive.css}" />
 </head>
 <body>
 	<header th:replace="~{fragments/fragment-entete :: entete}"></header>
-	<main>
+	<main class="top-main">
 		<h1>Liste des categories</h1>
 		<section >
 			<div >
-				<a th:href="@{/categories/ajouter}">Ajouter une catégorie</a>
+				<a class="big-button" th:href="@{/categories/ajouter}">Ajouter une catégorie</a>
 			</div>
 			<div th:if="${errorMessages}">
     			<p th:each="err : ${errorMessages}" th:text="${err}"></p>
@@ -31,7 +32,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div>	
 		</section>
 	</main>
 	<footer th:replace="~{fragments/fragment-footer :: footer}"></footer>

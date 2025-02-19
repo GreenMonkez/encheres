@@ -5,10 +5,18 @@ label {
   align-content: center;
 }
 
+.form-inscription{
+	max-width: 1500px;
+    width: 90%; 
+    margin: 0 auto; 
+}
+
+
+
 input[type="text"],
 input[type="password"]
  {
-	
+	max-height: 20px;
     width: 200px;
     padding: 10px;
     margin : 10px;
@@ -16,6 +24,7 @@ input[type="password"]
 }
 
 input[type="datetime-local"]{
+	max-height: 20px;
 	 width: 100px;
     padding: 10px;
     margin : 10px;
@@ -23,7 +32,7 @@ input[type="datetime-local"]{
 }
 
 input[type="number"] {
-	
+	max-height: 20px;
     width: 70px;
     margin : 15px;
     border: 3px solid black;
@@ -39,6 +48,10 @@ input[type="number"] {
     padding-left: 40px;
     padding-right: 40px;
      border: 3px solid black
+}
+
+#button:hover{
+	background-color: rgba(255, 255, 0, .2);
 }
 
 .hidden-input {
@@ -158,8 +171,8 @@ button {
 	flex-wrap:wrap;
 	align-content: center;
 	justify-content: space-between;
-	margin-left: 400px;
-	margin-right: 400px;
+	margin-left: clamp(0px, 10vw, 150px);
+	margin-right: clamp(0px, 10vw, 150px);
 }
 #wrap div{
 	width: 430px;
@@ -208,6 +221,11 @@ button {
 #margin {
 	margin :10px;
 }
+
+#marginL {
+	margin-left :20px;
+}
+
 .center-spaced{
 	
     display: flex;
