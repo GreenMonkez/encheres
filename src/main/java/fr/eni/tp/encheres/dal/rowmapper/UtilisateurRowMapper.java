@@ -14,6 +14,9 @@ public class UtilisateurRowMapper implements RowMapper<Utilisateur> {
 	 */
 	@Override
 	public Utilisateur mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+		// implementation utilisateur
+
 		Utilisateur u = new Utilisateur();
 		u.setNoUtilisateur(rs.getInt("NO_UTILISATEUR"));
 		u.setPseudo(rs.getString("PSEUDO"));

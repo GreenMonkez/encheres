@@ -17,9 +17,9 @@ public class ArticleVenduRowMapper implements RowMapper<ArticleVendu> {
 	 */
 	@Override
 	public ArticleVendu mapRow(ResultSet rs, int rowNum) throws SQLException {
-		
-		//implementation article
-		
+
+		// implementation article
+
 		ArticleVendu a = new ArticleVendu();
 		a.setNoArticle(rs.getInt("NO_ARTICLE"));
 		a.setNomArticle(rs.getString("NOM_ARTICLE"));
@@ -29,14 +29,14 @@ public class ArticleVenduRowMapper implements RowMapper<ArticleVendu> {
 		a.setMiseAPrix(rs.getInt("PRIX_INITIAL"));
 		a.setPrixVente(rs.getInt("PRIX_VENTE"));
 
-		//implementation utilisateur
-		
+		// implementation utilisateur
+
 		Utilisateur u = new Utilisateur();
 		u.setNoUtilisateur(rs.getInt("NO_UTILISATEUR"));
 		a.setVendeur(u);
 
-		//implementation categorie
-		
+		// implementation categorie
+
 		Categorie c = new Categorie();
 		c.setNoCategorie(rs.getInt("NO_CATEGORIE"));
 		a.setCategorieArticle(c);
