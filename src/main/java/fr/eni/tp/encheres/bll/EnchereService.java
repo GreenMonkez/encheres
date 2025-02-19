@@ -5,9 +5,10 @@ import java.util.List;
 
 import fr.eni.tp.encheres.bo.ArticleVendu;
 import fr.eni.tp.encheres.bo.Categorie;
-
+import fr.eni.tp.encheres.bo.Enchère;
 import fr.eni.tp.encheres.bo.Utilisateur;
 import fr.eni.tp.encheres.exception.BusinessException;
+import jakarta.validation.Valid;
 
 public interface EnchereService {
 
@@ -28,7 +29,7 @@ public interface EnchereService {
 	boolean isAcheteur(String PseudoAcheter, String pseudoUser);
 
 	boolean isEnchereEnCours(LocalDateTime dateFin, LocalDateTime dateDebut);
-	
+
 	boolean ismeilleurOffre(Utilisateur pseudoAcheteur, String pseudoUser);
 
 	void creerEnchere(Utilisateur userSession, int montant, int idArticle) throws BusinessException;
@@ -42,5 +43,12 @@ public interface EnchereService {
 
 	void deleteCategorie(int idCategorie) throws BusinessException;
 
+	void deleteArticle(int noUtilisateur, int idArticle) throws BusinessException;
+
+	List<Enchère> getEncheresByIdArticle(int idArticle, Utilisateur userSession) throws BusinessException;
+
+	ArticleVendu getArticleByIdArticle(int idArticle, Utilisateur userSession) throws BusinessException;
+
+	void updateArticle(ArticleVendu article) throws BusinessException;
 
 }

@@ -24,4 +24,8 @@ public interface ArticleVenduDAO {
 
 	int getCountByIdCategorie(int idCategorie);
 
+	void deleteArticle(int idArticle);
+
+	void updateArticle(ArticleVendu article);
+
 }

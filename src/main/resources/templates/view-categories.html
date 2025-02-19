@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Demo Spring Boot Web</title>
+	<title>Enchères</title>
 	<link rel="stylesheet" th:href="@{/css/enchere-structure.css}" />
 </head>
 <body>
@@ -10,11 +10,11 @@
 	<main>
 		<h1>Liste des categories</h1>
 		<section>
-			<div >
-				<a th:href="@{/categories/ajouter}">Ajouter une catégorie</a>
-			</div>
 			<div th:if="${errorMessages}">
     			<p th:each="err : ${errorMessages}" th:text="${err}"></p>
+			</div>
+			<div >
+				<a th:href="@{/categories/ajouter}">Ajouter une catégorie</a>
 			</div>
 			<div th:each="c : ${categories}">
 				<div>

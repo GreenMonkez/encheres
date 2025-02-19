@@ -75,8 +75,8 @@ public class UtilisateurController {
 	 * @param model
 	 * @return la page profil-utilisateur
 	 */
-	@GetMapping("/profil/vendeur")
-	public String afficherProfilVendeur(@RequestParam("id") int id, Model model) {
+	@GetMapping("/profil")
+	public String afficherProfil(@RequestParam("id") int id, Model model) {
 		Utilisateur user = this.loginService.consulterUtilisateur(id);
 		model.addAttribute("utilisateur", user);
 

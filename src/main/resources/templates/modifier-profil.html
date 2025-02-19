@@ -74,6 +74,10 @@
 					<label for="idMotDePasseConfirm">Confirmation : </label>
 					<input id="idMotDePasseConfirm" type="password" name="PasswordConfirm"/>
 				</div>
+				<div>
+					<p th:text="'Crédit ' + ${utilisateur.credit}"></p>
+					<a th:href="@{/monProfil/achatCredit}"><img src="/images/icone-ajouter.png" alt="Bouton ajouter crédit" /></a>
+				</div>
 				<div class="inblockMargin">
 					<button type="submit">Modifier</button>
 				</div>

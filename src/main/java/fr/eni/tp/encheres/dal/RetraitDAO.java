@@ -8,4 +8,8 @@ public interface RetraitDAO {
 	void create(ArticleVendu article);
 
 	Retrait getRetraitById(int noArticle);
+
+	void deleteRetrait(int idArticle);
+
+	void updateRetrait(ArticleVendu article);
 }

@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import fr.eni.tp.encheres.bll.EnchereService;
 import fr.eni.tp.encheres.bo.Categorie;
 import fr.eni.tp.encheres.exception.BusinessException;
+import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -64,7 +65,8 @@ public class CategorieController {
 	 * @return la vue des catégories
 	 */
 	@PostMapping("/categories/ajouter")
-	public String postNouvelleCategorie(@ModelAttribute("categorie") Categorie categorie, BindingResult bindingResult) {
+	public String postNouvelleCategorie(@Valid @ModelAttribute("categorie") Categorie categorie,
+			BindingResult bindingResult) {
 
 		if (bindingResult.hasErrors()) {
 
@@ -99,7 +101,7 @@ public class CategorieController {
 	 * @return la vue des catégories
 	 */
 	@PostMapping("/categories/modifier")
-	public String postModifier(@ModelAttribute("categorie") Categorie categorie, BindingResult bindingResult) {
+	public String postModifier(@Valid @ModelAttribute("categorie") Categorie categorie, BindingResult bindingResult) {
 
 		if (bindingResult.hasErrors()) {
 

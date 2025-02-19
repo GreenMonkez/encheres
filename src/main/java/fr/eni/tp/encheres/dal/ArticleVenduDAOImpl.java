@@ -22,9 +22,10 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 	private static final String SELECT_BY_ID_CATEGORIE = "select no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie from articles_vendus where no_categorie = :idCategorie";
 	private static final String SELECT_BY_STRING_AND_ID_CATEGORIE = "select no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie from articles_vendus where nom_article like :filtreSql and no_categorie = :idCategorie";
 	private static final String CHECK_ARTICLES_VENDUS = "SELECT * FROM ARTICLES_VENDUS a WHERE a.no_utilisateur = :id";
-	private static final String UPDATE = "UPDATE  articles_vendus (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur, no_categorie) values (:nom, :description, :dateDebut, :dateFin, :prixInitial, :idUtilisateur, :idCategorie)";
 	private static final String SELECT_BY_ID = "SELECT  no_categorie, prix_vente, no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur FROM ARTICLES_VENDUS WHERE no_article = :id";
 	private static final String COUNT_BY_ID_CATEGORIE = "select count(*) from articles_vendus where no_categorie = :idCategorie";
+	private static final String DELETE = "delete from articles_vendus where no_article = :idArticle";
+	private static final String UPDATE = "update articles_vendus set nom_article = :nom, description = :description, date_debut_encheres = :dateDebut, date_fin_encheres = :dateFin, prix_initial = :prixInitial, no_categorie = :idCategorie where no_article = :idArticle";
 
 	// ****************** ATTRIBUT INSTANCES ***********************************
 
@@ -152,4 +153,24 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 		return namedParameterJdbcTemplate.queryForObject(COUNT_BY_ID_CATEGORIE, map, Integer.class);
 	}
 
+	@Override
+	public void deleteArticle(int idArticle) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("idArticle", idArticle);
+		namedParameterJdbcTemplate.update(DELETE, map);
+
+	}
+
+	@Override
+	public void updateArticle(ArticleVendu article) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("nom", article.getNomArticle());
+		map.addValue("description", article.getDescription());
+		map.addValue("dateDebut", article.getDateDebutEncheres());
+		map.addValue("dateFin", article.getDateFinEncheres());
+		map.addValue("prixInitial", article.getMiseAPrix());
+		map.addValue("idCategorie", article.getCategorieArticle().getNoCategorie());
+		map.addValue("idArticle", article.getNoArticle());
+		namedParameterJdbcTemplate.update(UPDATE, map);
+	}
 }
