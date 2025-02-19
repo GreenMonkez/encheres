@@ -2,14 +2,14 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Demo Spring Boot Web</title>
+	<title>Enchères</title>
 	<link rel="stylesheet" th:href="@{/css/enchere-structure.css}" />
 </head>
 <body>
 	<header th:replace="~{fragments/fragment-entete :: entete}"></header>
 	<main>
 		<h1>Liste des enchères</h1>
-		<form class="search-bar" th:action="@{/encheres/search}" method="POST">
+		<form class="search-bar" th:action="@{/encheres/search}" method="get">
 			<div> 
 				<h2>Filtres :</h2>
 				<input type="text" placeholder="Le nom de l'article contient" name="filtre" /> 
@@ -56,16 +56,27 @@
 			</div>
 		</form>
 		<section class="encheres">
+			<div th:if="${errorMessages}">
+    			<p th:each="err : ${errorMessages}" th:text="${err}"></p>
+			</div>
 			<div class="enchere" th:each="a : ${articles}">
 				<div >
-					<img th:src="'/images/' + ${a.noArticle} + '.png'" alt="Image">
+					<img th:src="'/images/uploads/' + ${a.noArticle} + '.png'" alt="Image">
 				</div>
 				<div class="detail-enchere">
-					<a th:text="${a.nomArticle}" th:href="@{/encheres/detail(id=${a.noArticle})}"></a>
-					<p th:if="${a.prixVente} != 0" th:text="'Prix : '+${a.prixVente}"></p>
-					<p th:if="${a.prixVente} == 0" th:text="'Prix : '+${a.miseAPrix}"></p>
-					<p th:text="'Fin de l\'enchère : ' + ${#temporals.format(a.dateFinEncheres, 'dd/MM/yyyy HH:mm')}"></p>
-					<a th:href="@{/profil/vendeur(id=${a.vendeur.noUtilisateur})}" th:text="'Vendeur : '+${a.vendeur.pseudo}"></a>
+					<a th:href="@{/encheres/detail(id=${a.noArticle})}" th:text="${a.nomArticle}"></a>
+					<p th:text="'Prix : ' + (${a.prixVente} != 0 ? ${a.prixVente} : ${a.miseAPrix})"></p>
+					<p th:if="${a.etatVente == 'pasCommencee'}" th:text="'Début de l\'enchère : ' + ${#temporals.format(a.dateDebutEncheres, 'dd/MM/yyyy HH:mm')}"></p>
+					<p th:if="${a.etatVente == 'pasCommencee' || a.etatVente == 'enCours'}" th:text="'Fin de l\'enchère : ' + ${#temporals.format(a.dateFinEncheres, 'dd/MM/yyyy HH:mm')}"></p>
+					<p th:if="${a.etatVente == 'finie'}" th:text="'Enchère finie le : ' + ${#temporals.format(a.dateFinEncheres, 'dd/MM/yyyy HH:mm')}"></p>
+					<div th:if="${userSession != null}">
+						<a th:if="${a.vendeur.noUtilisateur != userSession.noUtilisateur}" th:href="@{/profil(id=${a.vendeur.noUtilisateur})}" th:text="'Vendeur : '+${a.vendeur.pseudo}"></a>
+						<a th:if="${(a.etatVente == 'enCours' or a.etatVente == 'finie') and a.vendeur.noUtilisateur == userSession.noUtilisateur}" th:href="@{/encheres/voirEncheres(idArticle=${a.noArticle})}">Voir les enchères</a>
+						<a th:if="${a.etatVente == 'pasCommencee' && a.vendeur.noUtilisateur == userSession.noUtilisateur}" th:href="@{/encheres/modifier(idArticle=${a.noArticle})}">Modifier</a>
+						<form th:if="${a.etatVente == 'pasCommencee' && a.vendeur.noUtilisateur == userSession.noUtilisateur}" th:action="@{/encheres/supprimer(idArticle=${a.noArticle})}" method="post">
+							<button type="submit">Supprimer</button>
+						</form>
+					</div>
 				</div>
 			</div>
 		</section>

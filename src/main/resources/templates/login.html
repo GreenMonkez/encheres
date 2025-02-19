@@ -25,20 +25,18 @@
 	
 	
 			<div class="options">
-				<button type="submit">Connexion</button>	
-				<section>	
+				<button class="button-connexion" type="submit">Connexion</button>	
+				<section id="margin">	
 					<div class="inblockMargin">
+						<input type="checkbox" id="rememberMe" name="remember-me" />
 						<label for="rememberMe">Se souvenir de moi : </label>
-            			<input type="checkbox" id="rememberMe" name="remember-me" /> 
 					</div>
 					<a class="forgot-password" th:href="@{/forgotPassword}">Mot de passe oublié</a>
 				</section>
 			</div>	
-			<table class="center-section">
-				<td>
-					<a class="big-button" th:href="@{/inscription}">Créer un compte</a>
-				</td>
-			</table>		
+			<div class="center">
+					<a class="button-login" th:href="@{/inscription}">Créer un compte</a>
+			</div>		
 		</form>	
 	</main>
 	<footer th:replace="~{fragments/fragment-footer :: footer}"></footer>

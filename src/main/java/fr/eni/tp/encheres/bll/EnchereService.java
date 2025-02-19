@@ -5,7 +5,7 @@ import java.util.List;
 
 import fr.eni.tp.encheres.bo.ArticleVendu;
 import fr.eni.tp.encheres.bo.Categorie;
-
+import fr.eni.tp.encheres.bo.Enchère;
 import fr.eni.tp.encheres.bo.Utilisateur;
 import fr.eni.tp.encheres.exception.BusinessException;
 
@@ -24,7 +24,7 @@ public interface EnchereService {
 	Utilisateur getAcheteur(int prixVente, int idCategorie);
 
 	ArticleVendu articleById(int id);
-
+	
 	void creerEnchere(Utilisateur userSession, int montant, int idArticle) throws BusinessException;
 
 	List<ArticleVendu> getEncheresFiltreesOptions(String filtre, int idCategorie, List<String> options,
@@ -35,8 +35,15 @@ public interface EnchereService {
 	void updateCategorie(Categorie categorie);
 
 	void deleteCategorie(int idCategorie) throws BusinessException;
-	
+
 	ArticleVendu chercherArticleComplet(int id);
 
+	void deleteArticle(int noUtilisateur, int idArticle) throws BusinessException;
+
+	List<Enchère> getEncheresByIdArticle(int idArticle, Utilisateur userSession) throws BusinessException;
+
+	ArticleVendu getArticleByIdArticle(int idArticle, Utilisateur userSession) throws BusinessException;
+
+	void updateArticle(ArticleVendu article) throws BusinessException;
 
 }

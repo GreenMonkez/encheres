@@ -9,21 +9,57 @@ input[type="text"],
 input[type="password"]
  {
 	
-    width: 50%;
+    width: 200px;
     padding: 10px;
     margin : 10px;
-    border: 3px solid black;
-     
-   
+    border: 3px solid black;   
+}
+
+input[type="datetime-local"]{
+	 width: 100px;
+    padding: 10px;
+    margin : 10px;
+    border: 3px solid black
 }
 
 input[type="number"] {
 	
-    width: 20%;
+    width: 70px;
     margin : 15px;
     border: 3px solid black;
 }
 
+#button{
+	margin : 15px;
+     background: white;
+    border: 3px solid black;
+  
+    cursor: pointer;
+    box-shadow: 2px 2px 0px black; 
+    padding-left: 40px;
+    padding-right: 40px;
+     border: 3px solid black
+}
+
+.hidden-input {
+    display: none;
+}
+textarea,select{
+	 margin : 15px;
+    border: 3px solid black;
+}
+
+.retrait-container {
+    border: 3px solid black;
+    width: 100%;
+    padding: 5px;
+}
+
+.retrait-container legend {
+	text-align:left;
+    font-weight: bold;
+    padding: 0 10px; /* Ajoute un peu d'espace autour du texte */
+}
 
 div {
  margin-top: 10px;
@@ -35,6 +71,7 @@ div {
 
 
 button {
+	width: 160px;
     background: white;
     border: 3px solid black;
     padding: 5px 10px;
@@ -43,7 +80,24 @@ button {
     padding: 20px; 
     padding-left: 30px;
     padding-right: 30px;
-    
+    font-size: 1.2em;
+    font-weight: bold;
+    margin :20px;
+}
+
+.button-connexion{
+	width: 160px;
+    background: white;
+    border: 3px solid black;
+    padding: 5px 10px;
+    cursor: pointer;
+    box-shadow: 2px 2px 0px black;
+    padding: 20px; 
+    padding-left: 30px;
+    padding-right: 30px;
+    font-size: 1.2em;
+    font-weight: bold;
+   margin : 0px;
 }
 
 .options {
@@ -64,6 +118,7 @@ button {
 	justify-content: space-between;
 }
 .big-button {
+	width: 360px;
     display: block;
     align-content:center;
     text-decoration:none;
@@ -78,8 +133,12 @@ button {
     padding-left: 95px;
     padding-right: 95px;
     margin-top: 80px;
+     font-size: 1.2em;
+    font-weight: bold;
 }
 #idProposition{
+	margin-top: 40px;
+	margin-bottom : 40px;
 	padding: 0px;
 }
 
@@ -93,4 +152,70 @@ button {
 	flex-direction: column;
 	align-content: center;
 	justify-content: center;
+}
+#wrap{
+	display: flex;
+	flex-wrap:wrap;
+	align-content: center;
+	justify-content: space-between;
+	margin-left: 400px;
+	margin-right: 400px;
+}
+#wrap div{
+	width: 430px;
+	padding-left: 50px;
+	padding-right: 50px;
+}
+.button{
+	width: 100px;
+	display: flex;
+	color : black;
+	text-decoration:none;
+	justify-content: center;
+	align-content: center;
+	 background: white;
+    border: 3px solid black;
+    padding: 5px 10px;
+    cursor: pointer;
+    box-shadow: 2px 2px 0px black;
+    padding: 20px; 
+    padding-left: 30px;
+    padding-right: 30px;
+    margin :20px;
+     font-size: 1.2em;
+    font-weight: bold;
+}
+.button-login{
+	width: 100%;
+	display: flex;
+	color : black;
+	text-decoration:none;
+	justify-content: center;
+	align-content: center;
+	 background: white;
+    border: 3px solid black;
+    padding: 5px 10px;
+    cursor: pointer;
+    box-shadow: 2px 2px 0px black;
+    padding: 20px; 
+    padding-left: 30px;
+    padding-right: 30px;
+    margin :0px;
+     font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 70px;
+}
+#margin {
+	margin :10px;
+}
+.center-spaced{
+	
+    display: flex;
+    flex-direction:row;
+    justify-content: space-between; /* Sépare les boutons */
+    align-content:space-between;
+    align-items:center;
+    width: 100%; /* Assure que l'espace disponible est utilisé */
+    max-width: 400px; /* Ajuste selon la largeur souhaitée */
+
 }

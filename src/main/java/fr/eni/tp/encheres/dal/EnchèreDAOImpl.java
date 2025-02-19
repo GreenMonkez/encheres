@@ -18,7 +18,7 @@ public class EnchèreDAOImpl implements EnchèreDAO {
 
 	private static final String COUNT_BY_ID_ARTICLE = "select count(*) from encheres where no_article = :idArticle";
 	private static final String SELECT_ALL_BY_ID = "select no_utilisateur, no_article, date_enchere, montant_enchere from encheres where no_article = :idArticle";
-
+	private static final String SELECT_ALL_BY_ID_ORDER_DESC = "select no_utilisateur, no_article, date_enchere, montant_enchere from encheres where no_article = :idArticle order by montant_enchere desc";
 	private static final String SELECT_USER_BY_PRIX = "SELECT * FROM ENCHERES WHERE no_article = :id_article AND montant_enchere = :prix_vente";
 	private static final String COUNT_ENCHERE = "SELECT COUNT(*) FROM ENCHERES WHERE no_article = :id_article AND montant_enchere = :prix_vente";
 	private static final String FIND_ALL_BY_ID = "SELECT date_enchere FROM ENCHERES WHERE no_utilisateur = :id";
@@ -54,6 +54,13 @@ public class EnchèreDAOImpl implements EnchèreDAO {
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("idArticle", idArticle);
 		return namedParameterJdbcTemplate.query(SELECT_ALL_BY_ID, map, new EnchèreRowMapper());
+	}
+
+	@Override
+	public List<Enchère> getEncheresByIdArticleOrderDesc(int idArticle) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("idArticle", idArticle);
+		return namedParameterJdbcTemplate.query(SELECT_ALL_BY_ID_ORDER_DESC, map, new EnchèreRowMapper());
 	}
 
 	/**

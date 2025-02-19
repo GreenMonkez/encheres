@@ -30,21 +30,38 @@ public class SecurityConfig {
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		http.authorizeHttpRequests(auth -> {
-			auth.requestMatchers("/*").permitAll().requestMatchers("/").permitAll().requestMatchers("/css/*")
-					.permitAll().requestMatchers("/images/*").permitAll().requestMatchers("/js/*").permitAll()
-					.requestMatchers("/login").permitAll().requestMatchers("/login/session").permitAll()
-					.requestMatchers("/inscription").permitAll().requestMatchers("/encheres").permitAll()
-					.requestMatchers("/encheres/nouvelleVente").hasRole("USER").requestMatchers("/encheres/search")
-					.permitAll().requestMatchers("/encheres/detail").hasRole("USER").requestMatchers("/encheres/creer")
-					.hasRole("USER").requestMatchers("/monProfil").hasRole("USER")
-					.requestMatchers("/monProfil/modifier").hasRole("USER").requestMatchers("/profil").hasRole("USER")
-					.requestMatchers("/monProfil/supprimer").hasRole("USER").requestMatchers("/monProfil/achatCredit")
-					.hasRole("USER").requestMatchers("/profil/vendeur").hasRole("USER").requestMatchers("/categories")
-					.hasRole("ADMIN").requestMatchers("/categories/ajouter").hasRole("ADMIN")
-					.requestMatchers("/categories/modifier").hasRole("ADMIN").requestMatchers("/categories/supprimer")
-					.hasRole("ADMIN")
-					.requestMatchers("/reset/password").permitAll()
-					.anyRequest().denyAll();
+
+			auth.requestMatchers("/*").permitAll()
+			.requestMatchers("/").permitAll()
+			.requestMatchers("/css/*").permitAll()
+			.requestMatchers("/images/*").permitAll()
+			.requestMatchers("/images/uploads/*").permitAll()
+			.requestMatchers("/js/*").permitAll()
+			.requestMatchers("/login").permitAll()
+			.requestMatchers("/login/session").permitAll()
+			.requestMatchers("/inscription").permitAll()
+			.requestMatchers("/encheres").permitAll()
+			.requestMatchers("/encheres/search").permitAll()
+			.requestMatchers("/encheres/nouvelleVente").hasRole("USER")
+			.requestMatchers("/encheres/creer").hasRole("USER")
+			.requestMatchers("/encheres/mesVentes").hasRole("USER")
+			.requestMatchers("/encheres/voirEncheres").hasRole("USER")
+			.requestMatchers("/encheres/detail").hasRole("USER")
+			.requestMatchers("/encheres/modifier").hasRole("USER")
+			.requestMatchers("/encheres/supprimer").hasRole("USER")
+			.requestMatchers("/profil").hasRole("USER")
+			.requestMatchers("/profil/vendeur").hasRole("USER")
+			.requestMatchers("/monProfil").hasRole("USER")
+			.requestMatchers("/monProfil/modifier").hasRole("USER")
+			.requestMatchers("/monProfil/achatCredit").hasRole("USER")
+			.requestMatchers("/monProfil/supprimer").hasRole("USER")
+			.requestMatchers("/categories").hasRole("ADMIN")
+			.requestMatchers("/categories/ajouter").hasRole("ADMIN")
+			.requestMatchers("/categories/modifier").hasRole("ADMIN")
+			.requestMatchers("/categories/supprimer").hasRole("ADMIN")
+			.requestMatchers("/reset/password").permitAll()
+			.anyRequest().denyAll();
+
 		});
 
 		// Customiser le formulaire

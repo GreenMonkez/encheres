@@ -13,7 +13,8 @@ public class MvcConfig {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addResourceHandlers(ResourceHandlerRegistry registry) {
-				registry.addResourceHandler("/images/*").addResourceLocations("file:uploads/");
+				registry.addResourceHandler("/images/uploads/*").addResourceLocations("file:uploads/");
+				registry.addResourceHandler("/images/*").addResourceLocations("classpath:/static/images/");
 			}
 		};
 	}
