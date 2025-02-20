@@ -335,10 +335,7 @@ public class EnchereController {
 
 				Path imagePath = Paths.get("uploads/" + article.getNoArticle() + ".png");
 
-				if (file.isEmpty()) {
-					Path defaultImagePath = Paths.get("src/main/resources/static/images/photo.png");
-					Files.copy(defaultImagePath, imagePath, StandardCopyOption.REPLACE_EXISTING);
-				} else {
+				if (!file.isEmpty()) {
 					byte[] bytes = file.getBytes();
 					Files.write(imagePath, bytes);
 				}
