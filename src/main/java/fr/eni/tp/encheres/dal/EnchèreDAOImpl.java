@@ -25,7 +25,7 @@ public class EnchèreDAOImpl implements EnchèreDAO {
 	private static final String SELECT_MEILLEURE_ENCHERE = "SELECT * FROM ENCHERES WHERE no_article = :id_article AND montant_enchere = :prix_vente";
 	private static final String SELECT_ALL_BY_ID = "select no_utilisateur, no_article, date_enchere, montant_enchere from encheres where no_article = :idArticle";
 	private static final String SELECT_ALL_BY_ID_ORDER_DESC = "select no_utilisateur, no_article, date_enchere, montant_enchere from encheres where no_article = :idArticle order by montant_enchere desc";
-	private static final String FIND_ALL_BY_ID = "SELECT date_enchere FROM ENCHERES WHERE no_utilisateur = :id";
+	private static final String FIND_ALL_BY_ID = "SELECT * FROM ENCHERES WHERE no_utilisateur = :id";
 
 	// ********** UPDATE **********
 

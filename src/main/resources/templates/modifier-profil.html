@@ -99,11 +99,13 @@
 				</div>
 				<div>
 					<div class="inblockMargin">
-						<p th:text="'Crédit :&nbsp;' + ${utilisateur.credit}"></p>
+						<label for="idCredit">Crédit : </label>
+						<input type="text" th:field="*{credit}" disabled/>
 					</div>
 				</div>
 			</div>
-			<div class="center">	
+
+			<div class="center">
 				<button type="submit">Modifier</button>
 				<a class="button" th:href="@{/monProfil}">Annuler</a>
 			</div>	

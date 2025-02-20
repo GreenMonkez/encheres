@@ -44,7 +44,7 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 
 	private static final String FIND_UNIQUE_PSEUDO = "SELECT count(pseudo) FROM UTILISATEURS WHERE pseudo like :pseudo";
 	private static final String FIND_UNIQUE_EMAIL = "SELECT count(email) FROM UTILISATEURS WHERE email like :email";
-	private static final String FIND_UNIQUE_PASSWORD = "SELECT count(mot_de_passe) FROM UTILISATEURS WHERE mot_de_passe like :mot_de_passe";
+	private static final String FIND_UNIQUE_PASSWORD = "SELECT count(mot_de_passe) FROM UTILISATEURS WHERE mot_de_passe like :mot_de_passe AND no_utilisateur = :noUtilisateur";
 
 	// ****************** ATTRIBUT INSTANCES ***********************************
 
@@ -245,9 +245,10 @@ public class UtilisateurDAOImpl implements UtilisateurDAO {
 	 * au mot de passe en base de donnée Return un int
 	 */
 	@Override
-	public int getCountUtilisateurByMdp(String mdp) {
+	public int getCountUtilisateurByMdp(String mdp, int idUser) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("mot_de_passe", mdp);
+		map.addValue("noUtilisateur", idUser);
 		return jdbcTemplate.queryForObject(FIND_UNIQUE_PASSWORD, map, Integer.class);
 	}
 

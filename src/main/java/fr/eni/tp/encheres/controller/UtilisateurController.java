@@ -157,7 +157,7 @@ public class UtilisateurController {
 					userSession.setAdministrateur(false);
 
 				}
-				System.out.println(userSession);
+				
 				return "redirect:/monProfil";
 			} catch (BusinessException e) {
 				e.printStackTrace();
@@ -166,8 +166,10 @@ public class UtilisateurController {
 					bindingResult.addError(error);
 				});
 			}
+			
 			return "modifier-profil";
 		} else {
+			
 			return "modifier-profil";
 		}
 

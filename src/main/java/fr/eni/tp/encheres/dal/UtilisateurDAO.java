@@ -39,6 +39,6 @@ public interface UtilisateurDAO {
 
 	int getCountUtilisateurByEmail(String email);
 
-	int getCountUtilisateurByMdp(String mdp);
+	int getCountUtilisateurByMdp(String mdp, int idUser);
 
 }
