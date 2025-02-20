@@ -17,7 +17,6 @@
 			<span th:if="${article.acheteur.noUtilisateur} != ${userSession.noUtilisateur}" th:text="${article.acheteur.pseudo + ' a remporté l''enchère !'}"></span>
 			<span th:if="${article.prixVente} == 0">Aucune Enchère</span>
 		</h1>
-
 		<h1 th:if="${article.etatVente} == 'EC'">Détail vente</h1>
 		<section  class="encheres">
 			<img  th:src="'/images/uploads/' + ${article.noArticle} + '.png'" alt="Image">
