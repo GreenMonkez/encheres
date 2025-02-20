@@ -1,33 +1,57 @@
 /* Styles généraux */
-
-*{
+* {
 	font-family: cursive;
 }
+
 html, body {
-	
-	
-    height: 100%;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-
-main {
-  
-      flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+	height: 100%;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
 	justify-content: space-between;
 }
 
-.top-main{
-	 justify-content: unset;
-	 justify-content: unset;
+header a {
+	color: black;
+	text-decoration: none;
+}
+
+main {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	justify-content: space-between;
+}
+img{
+	width: auto;
+	height: 250px;
+}
+
+.top-main {
+	justify-content: unset;
+}
+
+a:hover {
+	background-color: rgba(255, 255, 0, .2);
+}
+
+div button:hover {
+	background-color: rgba(255, 255, 0, .2);
+}
+
+.center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.inblockMargin {
+	display: flex;
+	justify-content: space-between;
+	margin: 0px;
 }
 
 /* En-tête */
@@ -38,39 +62,26 @@ header {
 	padding: 10px;
 }
 
-h1 {
-	color: black;
+header nav a {
 	display: flex;
 	justify-content: center;
-}
-
-header a {
-	display: flex;
-	justify-content: center;
-	text-decoration: none;
-	color: blue;
-	margin: 40px;
-}
-
-nav {
-	display: flex;
-	justify-content: center;
-	align-content:center;
+	align-content: center;
 	text-decoration: underline;
 	color: blue;
 	font-size: 1.5em;
-	
-	margin-right: 50px;
+	margin: 40px;
 }
 
-nav ul {
+/* Footer */
+footer {
+	background-color: black;
+	color: white;
+	margin-top: 30px;
 	display: flex;
-	margin: 10px;
+	justify-content: center;
+	align-content: center;
 }
 
-.black {
-	color: black;
-}
 /* Barre de recherche */
 .search-bar {
 	display: flex;
@@ -81,11 +92,8 @@ nav ul {
 }
 
 .search-bar h2 {
+	text-align: left;
 	margin-bottom: 0px;
-}
-
-.search-bar label {
-	margin-right: 30px;
 }
 
 .search-bar input, .search-bar select, .search-bar button {
@@ -103,10 +111,10 @@ nav ul {
 
 .search-bar button {
 	padding-left: clamp(50px, 10vw, 200px);
-	padding-right: clamp(05px, 10vw, 200px);
+	padding-right: clamp(50px, 10vw, 200px);
 	padding-top: 30px;
 	padding-bottom: 30px;
-	margin-left:clamp(0px, 10vw, 150px);
+	margin-left: clamp(0px, 10vw, 150px);
 	margin-right: clamp(0px, 10vw, 300px);
 	display: flex;
 	justify-content: center;
@@ -120,6 +128,10 @@ nav ul {
 /* Filtres*/
 .filtre {
 	display: flex;
+	flex-direction: row;
+	align-content: space-between;
+	justify-content: center;
+	text-align: left;
 }
 
 /* Liste des enchères */
@@ -130,17 +142,6 @@ nav ul {
 	padding-left: 200px;
 	padding-right: 200px;
 }
-.detail{
-display: fles;
-flex-direction: column;	
-}
-.encheres img {
-	margin: 15px;
-	  width: auto;
-  height: 200px;
-	
-	display: block;
-}
 
 .enchere {
 	border: 3px solid black;
@@ -149,16 +150,29 @@ flex-direction: column;
 	padding-right: 140px;
 }
 
-.detail-enchere {
+/*Details enchere*/
+.enchereUser {
+	border: 3px solid black;
+	display: flex;
+	justify-content: center;
 	margin: 20px;
 }
 
 .enchere img {
 	margin: 15px;
-	  width: 150px;
-  height: auto;
+	width: 150px;
+	height: auto;
 	background: lightgray;
 	display: block;
+}
+
+.detail {
+	display: fles;
+	flex-direction: column;
+}
+
+.detail-enchere {
+	margin: 20px;
 }
 
 .detail-enchere a {
@@ -167,30 +181,10 @@ flex-direction: column;
 	color: black;
 }
 
-a:hover {
-	background-color: rgba(255, 255, 0, .2);
-}
-
-button:hover {
-	background-color: rgba(255, 255, 0, .2);
-}
-
-.center {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-.inblockMargin{
-	display: flex;
-	justify-content: space-between;
-	margin:0px;
-}
-
-footer {
-	background-color: black;
-	color: white;
-	margin-top: 30px;
-	display: flex;
-	justify-content: center;
-	align-content: center;
+/*Achat*/
+.icone {
+	margin: 15px;
+	width: auto;
+	height: 20px;
+	display: block;
 }

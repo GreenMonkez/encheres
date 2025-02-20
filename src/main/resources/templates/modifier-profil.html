@@ -21,65 +21,85 @@
   				<li th:each="err : ${#fields.errors('global')}" th:text="#{${err}}">Incorrect</li>
 			</ul>
 			<div id="wrap">
-				<div class="inblockMargin">
-					<label for="idPseudo">Pseudo : </label>
-					<input id="idPseudo" type="text" th:field="*{pseudo}"/>
-					<p class="cards" th:errors="*{pseudo}"></p>
+				<div>
+					<div class="inblockMargin">
+						<label for="idPseudo">Pseudo : </label>
+						<input id="idPseudo" type="text" th:field="*{pseudo}"/>
+					</div>
+						<p class="cards" th:errors="*{pseudo}"></p>
 				</div>
-				<div class="inblockMargin">
-					<label for="idPrenom">Prénom : </label>
-					<input id="idPrenom" type="text" th:field="*{prenom}"/>
-					<p class="cards" th:errors="*{prenom}"></p>
+				<div>
+					<div class="inblockMargin">
+						<label for="idPrenom">Prénom : </label>
+						<input id="idPrenom" type="text" th:field="*{prenom}"/>
+					</div>
+						<p class="cards" th:errors="*{prenom}"></p>
 				</div>
-				<div class="inblockMargin">
-					<label for="idNom">Nom : </label>
-					<input id="idNom" type="text" th:field="*{nom}"/>
-					<p class="cards" th:errors="*{nom}"></p>
+				<div>
+					<div class="inblockMargin">
+						<label for="idNom">Nom : </label>
+						<input id="idNom" type="text" th:field="*{nom}"/>
+					</div>
+						<p class="cards" th:errors="*{nom}"></p>
 				</div>
-				<div class="inblockMargin">
-					<label for="idEmail">Email : </label>
-					<input id="idEmail" type="text" th:field="*{email}"/>
-					<p class="cards" th:errors="*{email}"></p>
+				<div>
+					<div class="inblockMargin">
+						<label for="idEmail">Email : </label>
+						<input id="idEmail" type="text" th:field="*{email}"/>
+					</div>
+						<p class="cards" th:errors="*{email}"></p>
 				</div>
-				<div class="inblockMargin">
-					<label for="idTelephone">Téléphone : </label>
-					<input id="idTelephone" type="text" th:field="*{telephone}"/>
-					<p class="cards" th:errors="*{telephone}"></p>
+				<div>
+					<div class="inblockMargin">
+						<label for="idTelephone">Téléphone : </label>
+						<input id="idTelephone" type="text" th:field="*{telephone}"/>
+					</div>
+						<p class="cards" th:errors="*{telephone}"></p>
 				</div>
-				<div class="inblockMargin">
-					<label for="idRue">Rue : </label>
-					<input id="idRue" type="text" th:field="*{rue}"/>
-					<p class="cards" th:errors="*{rue}"></p>
+				<div>
+					<div class="inblockMargin">
+						<label for="idRue">Rue : </label>
+						<input id="idRue" type="text" th:field="*{rue}"/>
+					</div>
+						<p class="cards" th:errors="*{rue}"></p>
 				</div>
-				<div class="inblockMargin">
-					<label for="idPostal">Code Postal : </label>
-					<input id="idPostal" type="text" th:field="*{codePostal}"/>
-					<p class="cards" th:errors="*{codePostal}"></p>
+				<div>
+					<div class="inblockMargin">
+						<label for="idPostal">Code Postal : </label>
+						<input id="idPostal" type="text" th:field="*{codePostal}"/>
+					</div>
+						<p class="cards" th:errors="*{codePostal}"></p>
 				</div>
-				<div class="inblockMargin">
-					<label for="idVille">Ville : </label>
-					<input id="idVille" type="text" th:field="*{ville}"/>
-					<p class="cards" th:errors="*{ville}"></p>
+				<div>
+					<div class="inblockMargin">
+						<label for="idVille">Ville : </label>
+						<input id="idVille" type="text" th:field="*{ville}"/>
+					</div>
+						<p class="cards" th:errors="*{ville}"></p>
 				</div>
-				<div class="inblockMargin">
-					<label for="idMotDePasse">Mot de passe actuel : </label>
-					<input id="idMotDePasse" type="password" th:field="*{motDePasse}"/>
-					<p class="cards" th:errors="*{motDePasse}"></p>
+				<div>
+					<div class="inblockMargin">
+						<label for="idMotDePasse">Mot de passe actuel : </label>
+						<input id="idMotDePasse" type="password" th:field="*{motDePasse}"/>
+					</div>
+						<p class="cards" th:errors="*{motDePasse}"></p>
 				</div>
-				<div class="inblockMargin">
-					<label for="idMotDePasse">Nouveau mot de passe : </label>
-					<input id="idMotDePasse" type="password" name="NewMotDePasse"/>
-					<p class="cards" th:errors="*{motDePasse}"></p>
+				<div>
+					<div class="inblockMargin">
+						<label for="idMotDePasse">Nouveau mot de passe : </label>
+						<input id="idMotDePasse" type="password" name="NewMotDePasse"/>
+					</div>
+						<p class="cards" th:errors="*{motDePasse}"></p>
 				</div>
 				<div class="inblockMargin">
 					<label for="idMotDePasseConfirm">Confirmation : </label>
 					<input id="idMotDePasseConfirm" type="password" name="PasswordConfirm"/>
 				</div>
-
+				<div class="inblockMargin">
+					<p th:text="'Crédit :&nbsp;' + ${utilisateur.credit}"></p>
+				</div>
 			</div>
-			<div class="center">
-				<p th:text="'Crédit ' + ${utilisateur.credit}"></p>
-				<a th:href="@{/monProfil/achatCredit}"><img src="/images/icone-ajouter.png" alt="Bouton ajouter crédit" /></a>
+			<div class="center">	
 				<button type="submit">Modifier</button>
 				<a class="button" th:href="@{/monProfil}">Annuler</a>
 			</div>	
