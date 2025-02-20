@@ -6,11 +6,15 @@ import fr.eni.tp.encheres.bo.ArticleVendu;
 
 public interface ArticleVenduDAO {
 
+	// ********** CREATE **********
+
+	void createArticle(ArticleVendu article);
+
+	// ********** READ **********
+
+	ArticleVendu getArticleById(int id);
+
 	List<ArticleVendu> getArticles();
-
-	void create(ArticleVendu article);
-
-	ArticleVendu read(int id);
 
 	List<ArticleVendu> getArticlesFiltresByString(String filtreSql);
 
@@ -18,14 +22,18 @@ public interface ArticleVenduDAO {
 
 	List<ArticleVendu> getArticlesFiltresByStringAndId(String filtreSql, int idCategorie);
 
-	List<ArticleVendu> consulterArticlesById(int idUser);
+	List<ArticleVendu> getArticlesByIdUser(int idUser);
 
-	void modifierArticle(ArticleVendu article);
+	// ********** UPDATE **********
 
-	int getCountByIdCategorie(int idCategorie);
+	void updateArticle(ArticleVendu article);
+
+	// ********** DELETE **********
 
 	void deleteArticle(int idArticle);
 
-	void updateArticle(ArticleVendu article);
+	// ********** VALIDATION **********
+
+	int getCountArticleByIdCategorie(int idCategorie);
 
 }

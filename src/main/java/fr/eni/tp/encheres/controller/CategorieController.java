@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
-import fr.eni.tp.encheres.bll.EnchereService;
+import fr.eni.tp.encheres.bll.CategorieService;
 import fr.eni.tp.encheres.bo.Categorie;
 import fr.eni.tp.encheres.exception.BusinessException;
 import jakarta.validation.Valid;
@@ -22,26 +22,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class CategorieController {
 
-	private EnchereService enchereService;
+	private CategorieService categorieService;
 	private MessageSource messageSource;
 
-	public CategorieController(EnchereService enchereService, MessageSource messageSource) {
-		this.enchereService = enchereService;
+	public CategorieController(CategorieService categorieService, MessageSource messageSource) {
+		this.categorieService = categorieService;
 		this.messageSource = messageSource;
 	}
 
-	/**
-	 * Méthode renvoyant la vue des catégories
-	 * 
-	 * @param model avec les catégories
-	 * @return la vue des catégories
-	 */
-	@GetMapping("/categories")
-	public String getCategories(Model model) {
-		List<Categorie> categories = enchereService.getCategories();
-		model.addAttribute("categories", categories);
-		return "view-categories";
-	}
+	// ********** CREATE **********
 
 	/**
 	 * Méthode renvoyant la vue de création d'une nouvelle catégorie
@@ -50,7 +39,7 @@ public class CategorieController {
 	 * @return la vue de création de catégorie
 	 */
 	@GetMapping("/categories/ajouter")
-	public String getNouvelleCategorie(Model model) {
+	public String getAjouter(Model model) {
 		model.addAttribute("categorie", new Categorie());
 
 		return "view-nouvelle-categorie";
@@ -65,18 +54,35 @@ public class CategorieController {
 	 * @return la vue des catégories
 	 */
 	@PostMapping("/categories/ajouter")
-	public String postNouvelleCategorie(@Valid @ModelAttribute("categorie") Categorie categorie,
+	public String postAjouter(@Valid @ModelAttribute("categorie") Categorie categorie,
 			BindingResult bindingResult) {
 
 		if (bindingResult.hasErrors()) {
 
 			return "view-nouvelle-categorie";
 		} else {
-			enchereService.createNouvelleCategorie(categorie);
+			categorieService.createCategorie(categorie);
 
 			return "redirect:/categories";
 		}
 	}
+
+	// ********** READ **********
+
+	/**
+	 * Méthode renvoyant la vue des catégories
+	 * 
+	 * @param model avec les catégories
+	 * @return la vue des catégories
+	 */
+	@GetMapping("/categories")
+	public String getCategories(Model model) {
+		List<Categorie> categories = categorieService.getCategories();
+		model.addAttribute("categories", categories);
+		return "view-categories";
+	}
+
+	// ********** UPDATE **********
 
 	/**
 	 * Méthode renvoyant la vue de modification de la catégorie
@@ -87,7 +93,7 @@ public class CategorieController {
 	 */
 	@GetMapping("/categories/modifier")
 	public String getModifier(@RequestParam("idCategorie") int idCategorie, Model model) {
-		model.addAttribute("categorie", enchereService.getCategorie(idCategorie));
+		model.addAttribute("categorie", categorieService.getCategorie(idCategorie));
 
 		return "view-modifier-categorie";
 	}
@@ -101,17 +107,20 @@ public class CategorieController {
 	 * @return la vue des catégories
 	 */
 	@PostMapping("/categories/modifier")
-	public String postModifier(@Valid @ModelAttribute("categorie") Categorie categorie, BindingResult bindingResult) {
+	public String postModifier(@Valid @ModelAttribute("categorie") Categorie categorie,
+			BindingResult bindingResult) {
 
 		if (bindingResult.hasErrors()) {
 
 			return "view-modifier-categorie";
 		} else {
-			enchereService.updateCategorie(categorie);
+			categorieService.updateCategorie(categorie);
 
 			return "redirect:/categories";
 		}
 	}
+
+	// ********** DELETE **********
 
 	/**
 	 * Méthode permettant de supprimer une catégorie si celle-ci n'est pas utilisée
@@ -125,7 +134,7 @@ public class CategorieController {
 	public String postSupprimer(@RequestParam("idCategorie") int idCategorie, Model model) {
 
 		try {
-			enchereService.deleteCategorie(idCategorie);
+			categorieService.deleteCategorie(idCategorie);
 
 			return "redirect:/categories";
 		} catch (BusinessException e) {
@@ -138,7 +147,7 @@ public class CategorieController {
 			model.addAttribute("errorMessages", errorMessages);
 		}
 
-		List<Categorie> categories = enchereService.getCategories();
+		List<Categorie> categories = categorieService.getCategories();
 		model.addAttribute("categories", categories);
 		return "view-categories";
 	}

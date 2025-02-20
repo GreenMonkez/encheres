@@ -7,22 +7,23 @@ import fr.eni.tp.encheres.bo.Utilisateur;
 import fr.eni.tp.encheres.exception.BusinessException;
 
 public interface ArticleVenduService {
+
 	// ********** CREATE **********
 
-	void createNouvelleVente(ArticleVendu article) throws BusinessException;
+	void createArticle(ArticleVendu article) throws BusinessException;
 
 	// ********** READ **********
-	ArticleVendu articleById(int id);
+	ArticleVendu getArticleById(int id);
 
-	ArticleVendu chercherArticleComplet(int id);
+	ArticleVendu getArticleCompletById(int id);
 
-	ArticleVendu getArticleByIdArticle(int idArticle, Utilisateur userSession) throws BusinessException;
+	ArticleVendu getArticleByIdAndUser(int idArticle, Utilisateur userSession) throws BusinessException;
 
-	List<ArticleVendu> getEncheres();
+	List<ArticleVendu> getArticles();
 
-	List<ArticleVendu> getEncheresFiltrees(String filtre, int idCategorie);
+	List<ArticleVendu> getArticlesFiltres(String filtre, int idCategorie);
 
-	List<ArticleVendu> getEncheresFiltreesOptions(String filtre, int idCategorie, List<String> options,
+	List<ArticleVendu> getArticlesFiltresOptions(String filtre, int idCategorie, List<String> options,
 			Utilisateur userSession);
 
 	// ********** UPDATE **********
@@ -44,10 +45,4 @@ public interface ArticleVenduService {
 
 // ********** VALIDATION **********
 
-// ArticleVenduServiceImpl méthode utilisateur à virer
-
-// Photo de base à afficher
-
-// Ménage controller
-
-// Ménage DAO
+// Méthodes dans enchère service à enlever

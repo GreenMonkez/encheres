@@ -16,87 +16,41 @@ public class EnchèreDAOImpl implements EnchèreDAO {
 
 	// ****************** CONSTANTES ***********************************
 
-	private static final String COUNT_BY_ID_ARTICLE = "select count(*) from encheres where no_article = :idArticle";
+	// ********** CREATE **********
+
+	private static final String INSERT = "INSERT INTO ENCHERES (no_utilisateur, no_article, date_enchere, montant_enchere) VALUES (:userId, :idArticle, GETDATE(), :montant)";
+
+	// ********** READ **********
+
+	private static final String SELECT_MEILLEURE_ENCHERE = "SELECT * FROM ENCHERES WHERE no_article = :id_article AND montant_enchere = :prix_vente";
 	private static final String SELECT_ALL_BY_ID = "select no_utilisateur, no_article, date_enchere, montant_enchere from encheres where no_article = :idArticle";
 	private static final String SELECT_ALL_BY_ID_ORDER_DESC = "select no_utilisateur, no_article, date_enchere, montant_enchere from encheres where no_article = :idArticle order by montant_enchere desc";
-	private static final String SELECT_USER_BY_PRIX = "SELECT * FROM ENCHERES WHERE no_article = :id_article AND montant_enchere = :prix_vente";
-	private static final String COUNT_ENCHERE = "SELECT COUNT(*) FROM ENCHERES WHERE no_article = :id_article AND montant_enchere = :prix_vente";
 	private static final String FIND_ALL_BY_ID = "SELECT date_enchere FROM ENCHERES WHERE no_utilisateur = :id";
-	private static final String INSERT = "INSERT INTO ENCHERES (no_utilisateur, no_article, date_enchere, montant_enchere) VALUES (:userId, :idArticle, GETDATE(), :montant)";
+
+	// ********** UPDATE **********
+
 	private static final String UPDATE_PRIX_VENTE = "UPDATE ARTICLES_VENDUS SET prix_vente = :prixVente WHERE no_article = :idArticle";
-	private static final String UPDATE_CREDIT = "UPDATE UTILISATEURS SET credit = :credit WHERE no_utilisateur = :id";
+
+	// ********** DELETE **********
+
+	// ********** VALIDATION **********
+
+	private static final String COUNT_BY_ID_ARTICLE = "select count(*) from encheres where no_article = :idArticle";
+	private static final String COUNT_ENCHERE = "SELECT COUNT(*) FROM ENCHERES WHERE no_article = :id_article AND montant_enchere = :prix_vente";
 
 	// ****************** ATTRIBUT INSTANCES ***********************************
 
 	private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-	// ****************** METHODES ***********************************
+	// ****************** CONSTRUCTEURS***********************************
 
 	public EnchèreDAOImpl(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
 		this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
 	}
 
-	/**
-	 * Méthode retournant le nombre d'enchère en fonction de l'id de l'article
-	 */
-	@Override
-	public int countByIdArticle(int idArticle) {
-		MapSqlParameterSource map = new MapSqlParameterSource();
-		map.addValue("idArticle", idArticle);
-		return namedParameterJdbcTemplate.queryForObject(COUNT_BY_ID_ARTICLE, map, Integer.class);
-	}
+	// ****************** METHODES ***********************************
 
-	/**
-	 * Méthode retournant la liste des enchères en fonction de l'id de l'article
-	 */
-	@Override
-	public List<Enchère> getEncheres(int idArticle) {
-		MapSqlParameterSource map = new MapSqlParameterSource();
-		map.addValue("idArticle", idArticle);
-		return namedParameterJdbcTemplate.query(SELECT_ALL_BY_ID, map, new EnchèreRowMapper());
-	}
-
-	@Override
-	public List<Enchère> getEncheresByIdArticleOrderDesc(int idArticle) {
-		MapSqlParameterSource map = new MapSqlParameterSource();
-		map.addValue("idArticle", idArticle);
-		return namedParameterJdbcTemplate.query(SELECT_ALL_BY_ID_ORDER_DESC, map, new EnchèreRowMapper());
-	}
-
-	/**
-	 * Méthode permettant de trouver toutes les enchères correspondant à l'id de
-	 * l'utilisateur Return List Enchère
-	 */
-	@Override
-	public List<Enchère> consulterEncheresById(int idUser) {
-		MapSqlParameterSource map = new MapSqlParameterSource();
-		map.addValue("id", idUser);
-		return namedParameterJdbcTemplate.query(FIND_ALL_BY_ID, map, new EnchèreRowMapper());
-	}
-
-	/**
-	 * Méthode permettant de chercher la derniere enchere avec l'idArticle et le
-	 * prixVente Return un Objet Enchère
-	 */
-	@Override
-	public Enchère getUtilisateurParPrix(int prixVente, int idArticle) {
-		MapSqlParameterSource map = new MapSqlParameterSource();
-		map.addValue("id_article", idArticle);
-		map.addValue("prix_vente", prixVente);
-		return namedParameterJdbcTemplate.queryForObject(SELECT_USER_BY_PRIX, map, new EnchèreRowMapper());
-	}
-
-	/**
-	 * Méthode permettant de savoir si une enchère a été faite sur un article Return
-	 * int
-	 */
-	@Override
-	public int getCountEnchere(int prixVente, int idArticle) {
-		MapSqlParameterSource map = new MapSqlParameterSource();
-		map.addValue("id_article", idArticle);
-		map.addValue("prix_vente", prixVente);
-		return namedParameterJdbcTemplate.queryForObject(COUNT_ENCHERE, map, Integer.class);
-	}
+	// ********** CREATE **********
 
 	/**
 	 * Méthode permettant de créer une nouvelle enchère dans la base de données
@@ -121,19 +75,74 @@ public class EnchèreDAOImpl implements EnchèreDAO {
 		namedParameterJdbcTemplate.update(UPDATE_PRIX_VENTE, map2);
 	}
 
+	// ********** READ **********
+
 	/**
-	 * Méthode permettant d'update les crédit d'un utilisateur dans la base de donée
-	 * 
-	 * @param Utilisateur
+	 * Méthode permettant de chercher la derniere enchere avec l'idArticle et le
+	 * prixVente Return un Objet Enchère
 	 */
-	public void updateCredit(Utilisateur user) {
+	@Override
+	public Enchère getMeilleureEnchereByIdArticle(int prixVente, int idArticle) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("id_article", idArticle);
+		map.addValue("prix_vente", prixVente);
+		return namedParameterJdbcTemplate.queryForObject(SELECT_MEILLEURE_ENCHERE, map, new EnchèreRowMapper());
+	}
 
-		MapSqlParameterSource map3 = new MapSqlParameterSource();
-		map3.addValue("credit", user.getCredit());
-		map3.addValue("id", user.getNoUtilisateur());
+	/**
+	 * Méthode retournant la liste des enchères en fonction de l'id de l'article
+	 */
+	@Override
+	public List<Enchère> getEncheres(int idArticle) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("idArticle", idArticle);
+		return namedParameterJdbcTemplate.query(SELECT_ALL_BY_ID, map, new EnchèreRowMapper());
+	}
 
-		namedParameterJdbcTemplate.update(UPDATE_CREDIT, map3);
+	@Override
+	public List<Enchère> getEncheresByIdArticleOrderDesc(int idArticle) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("idArticle", idArticle);
+		return namedParameterJdbcTemplate.query(SELECT_ALL_BY_ID_ORDER_DESC, map, new EnchèreRowMapper());
+	}
 
+	/**
+	 * Méthode permettant de trouver toutes les enchères correspondant à l'id de
+	 * l'utilisateur Return List Enchère
+	 */
+	@Override
+	public List<Enchère> getEncheresByIdUser(int idUser) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("id", idUser);
+		return namedParameterJdbcTemplate.query(FIND_ALL_BY_ID, map, new EnchèreRowMapper());
+	}
+
+	// ********** UPDATE **********
+
+	// ********** DELETE **********
+
+	// ********** VALIDATION **********
+
+	/**
+	 * Méthode retournant le nombre d'enchère en fonction de l'id de l'article
+	 */
+	@Override
+	public int getCountEnchereByIdArticle(int idArticle) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("idArticle", idArticle);
+		return namedParameterJdbcTemplate.queryForObject(COUNT_BY_ID_ARTICLE, map, Integer.class);
+	}
+
+	/**
+	 * Méthode permettant de savoir si une enchère a été faite sur un article Return
+	 * int
+	 */
+	@Override
+	public int getCountEnchereByIdArticlePrixVente(int prixVente, int idArticle) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("id_article", idArticle);
+		map.addValue("prix_vente", prixVente);
+		return namedParameterJdbcTemplate.queryForObject(COUNT_ENCHERE, map, Integer.class);
 	}
 
 }

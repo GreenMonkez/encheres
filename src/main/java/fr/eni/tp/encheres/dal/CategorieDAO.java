@@ -6,14 +6,24 @@ import fr.eni.tp.encheres.bo.Categorie;
 
 public interface CategorieDAO {
 
+	// ********** CREATE **********
+
+	void createCategorie(Categorie categorie);
+
+	// ********** READ **********
+
 	Categorie getCategorie(int noCategorie);
 
 	List<Categorie> getCategories();
 
-	void createNouvelleCategorie(Categorie categorie);
+	// ********** UPDATE **********
 
 	void updateCategorie(Categorie categorie);
 
+	// ********** DELETE **********
+
 	void deleteCategorie(int idCategorie);
+
+	// ********** VALIDATION **********
 
 }

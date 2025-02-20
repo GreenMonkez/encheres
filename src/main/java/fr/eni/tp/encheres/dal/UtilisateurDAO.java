@@ -4,20 +4,32 @@ import fr.eni.tp.encheres.bo.Utilisateur;
 
 public interface UtilisateurDAO {
 
-	void creerUtilisateur(Utilisateur user);
+	// ********** CREATE **********
 
-	int validerPseudo(String pseudo);
+	void createUtilisateur(Utilisateur user);
 
-	int validerEmail(String email);
+	// ********** READ **********
 
-	Utilisateur getUtilisateur(int noUtilisateur);
+	Utilisateur getUtilisateurById(int noUtilisateur);
 
 	Utilisateur getUtilisateurByPseudo(String pseudo);
 
-	int validerMdp(String mdp);
+	// ********** UPDATE **********
 
-	void modifierUtilisateur(Utilisateur user);
+	void updateUtilisateur(Utilisateur user);
 
 	void updateCredit(int noUtilisateur, int nouveauSoldeCredit);
+
+	void updateCredit(Utilisateur user);
+
+	// ********** DELETE **********
+
+	// ********** VALIDATION **********
+
+	int getCountUtilisateurByPseudo(String pseudo);
+
+	int getCountUtilisateurByEmail(String email);
+
+	int getCountUtilisateurByMdp(String mdp);
 
 }

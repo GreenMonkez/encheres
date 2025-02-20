@@ -10,6 +10,7 @@ import fr.eni.tp.encheres.bo.Utilisateur;
 import fr.eni.tp.encheres.exception.BusinessException;
 
 public interface EnchereService {
+
 	// ********** CREATE **********
 
 	void creerEnchere(Utilisateur userSession, int montant, int idArticle) throws BusinessException;

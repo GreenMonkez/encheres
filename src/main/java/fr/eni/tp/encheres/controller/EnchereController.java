@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -24,6 +25,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import fr.eni.tp.encheres.bll.ArticleVenduService;
+import fr.eni.tp.encheres.bll.CategorieService;
 import fr.eni.tp.encheres.bll.EnchereService;
 import fr.eni.tp.encheres.bo.ArticleVendu;
 import fr.eni.tp.encheres.bo.Categorie;
@@ -38,10 +41,15 @@ import jakarta.validation.Valid;
 @SessionAttributes("userSession")
 public class EnchereController {
 
+	private ArticleVenduService articleVenduService;
+	private CategorieService categorieService;
 	private EnchereService enchereService;
 	private MessageSource messageSource;
 
-	public EnchereController(EnchereService enchereService, MessageSource messageSource) {
+	public EnchereController(ArticleVenduService articleVenduService, CategorieService categorieService,
+			EnchereService enchereService, MessageSource messageSource) {
+		this.articleVenduService = articleVenduService;
+		this.categorieService = categorieService;
 		this.enchereService = enchereService;
 		this.messageSource = messageSource;
 	}
@@ -57,6 +65,122 @@ public class EnchereController {
 		return "redirect:/encheres";
 	}
 
+	// ********** CREATE **********
+
+	/**
+	 * Méthode retournant la vue de création d'un nouvel article
+	 * 
+	 * @param model       avec un article vide et la liste des catégories
+	 * @param userSession avec les données de l'utilisateur en session
+	 * @return la vue de création d'un article
+	 */
+	@GetMapping("/encheres/nouvelleVente")
+	public String getNouvelleVenteArticle(Model model, @ModelAttribute("userSession") Utilisateur userSession) {
+		ArticleVendu article = new ArticleVendu();
+		Retrait retrait = new Retrait();
+
+		article.setLieuRetrait(retrait);
+		article.getLieuRetrait().setRue(userSession.getRue());
+		article.getLieuRetrait().setCode_postal(userSession.getCodePostal());
+		article.getLieuRetrait().setVille(userSession.getVille());
+		model.addAttribute("article", article);
+
+		List<Categorie> categories = categorieService.getCategories();
+		model.addAttribute("categories", categories);
+
+		return "view-nouvelle-vente";
+	}
+
+	/**
+	 * Méthode permettant d'insérer en BDD un nouvel article
+	 * 
+	 * @param article       comprenant les données du formulaire
+	 * @param bindingResult comprenant les erreurs du formulaire
+	 * @param model         avec la liste des catégories
+	 * @param userSession   avec les données de l'utilisateur en session
+	 * @return la vue de création d'un article si erreur, la vue des enchères sinon
+	 */
+	@PostMapping("/encheres/nouvelleVente")
+	public String postNouvelleVenteArticle(@Valid @ModelAttribute("article") ArticleVendu article,
+			BindingResult bindingResult, Model model, @ModelAttribute("userSession") Utilisateur userSession,
+			@RequestParam("image") MultipartFile file) {
+
+		if (bindingResult.hasErrors()) {
+			List<Categorie> categories = categorieService.getCategories();
+			model.addAttribute("categories", categories);
+			return "view-nouvelle-vente";
+		} else {
+			try {
+				article.setVendeur(userSession);
+				articleVenduService.createArticle(article);
+
+				Path uploadDir = Paths.get("uploads/");
+				if (!Files.exists(uploadDir)) {
+					Files.createDirectories(uploadDir);
+				}
+
+				Path imagePath = Paths.get("uploads/" + article.getNoArticle() + ".png");
+
+				if (file.isEmpty()) {
+					Path defaultImagePath = Paths.get("src/main/resources/static/images/photo.png");
+					Files.copy(defaultImagePath, imagePath, StandardCopyOption.REPLACE_EXISTING);
+				} else {
+					byte[] bytes = file.getBytes();
+					Files.write(imagePath, bytes);
+				}
+
+				return "redirect:/encheres";
+			} catch (BusinessException e) {
+				e.printStackTrace();
+				e.getClesErreurs().forEach(cle -> {
+					ObjectError error = new ObjectError("globalError", cle);
+					bindingResult.addError(error);
+				});
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		List<Categorie> categories = categorieService.getCategories();
+		model.addAttribute("categories", categories);
+		return "view-nouvelle-vente";
+	}
+
+	/**
+	 * 
+	 * Méthode permettant de faire une nouvelle enchère
+	 * 
+	 * @param montant
+	 * @param idArticle
+	 * @param userSession
+	 * @param redirectAttributes
+	 * @param locale
+	 * @return
+	 * @throws BusinessException
+	 */
+	@PostMapping("/encheres/creer")
+	public String postCreerEnchere(@RequestParam(name = "proposition") int montant, @RequestParam("id") int idArticle,
+			@ModelAttribute("userSession") Utilisateur userSession, RedirectAttributes redirectAttributes,
+			Locale locale) {
+		try {
+
+			this.enchereService.creerEnchere(userSession, montant, idArticle);
+			return "redirect:/encheres/detail?id=" + idArticle;
+
+		} catch (BusinessException e) {
+			e.printStackTrace();
+			e.getClesErreurs().forEach(cle -> {
+				String message = messageSource.getMessage(cle, null, locale);
+				redirectAttributes.addFlashAttribute("erreurs", message);
+			});
+
+			return "redirect:/encheres/detail?id=" + idArticle;
+
+		}
+
+	}
+
+	// ********** READ **********
+
 	/**
 	 * Méthode retournant la vue des enchères
 	 * 
@@ -64,11 +188,11 @@ public class EnchereController {
 	 * @return la vue des enchères
 	 */
 	@GetMapping("/encheres")
-	public String getEncheres(Model model, HttpSession session) {
-		List<ArticleVendu> articles = enchereService.getEncheres();
+	public String getArticles(Model model, HttpSession session) {
+		List<ArticleVendu> articles = articleVenduService.getArticles();
 		model.addAttribute("articles", articles);
 
-		List<Categorie> categories = enchereService.getCategories();
+		List<Categorie> categories = categorieService.getCategories();
 		model.addAttribute("categories", categories);
 
 		Utilisateur userSession = (Utilisateur) session.getAttribute("userSession");
@@ -91,23 +215,23 @@ public class EnchereController {
 	 * @return la vue des enchères
 	 */
 	@GetMapping("/encheres/search")
-	public String postSearch(@RequestParam(name = "filtre") String filtre,
+	public String getSearchArticles(@RequestParam(name = "filtre") String filtre,
 			@RequestParam(name = "categorie") int idCategorie,
 			@RequestParam(name = "option", required = false) List<String> options, Model model, HttpSession session) {
 		List<ArticleVendu> articles = new ArrayList<ArticleVendu>();
 
 		if (options == null) {
-			articles = enchereService.getEncheresFiltrees(filtre, idCategorie);
+			articles = articleVenduService.getArticlesFiltres(filtre, idCategorie);
 		}
 
 		if (options != null) {
-			articles = enchereService.getEncheresFiltreesOptions(filtre, idCategorie, options,
+			articles = articleVenduService.getArticlesFiltresOptions(filtre, idCategorie, options,
 					(Utilisateur) session.getAttribute("userSession"));
 		}
 
 		model.addAttribute("articles", articles);
 
-		List<Categorie> categories = enchereService.getCategories();
+		List<Categorie> categories = categorieService.getCategories();
 		model.addAttribute("categories", categories);
 
 		Utilisateur userSession = (Utilisateur) session.getAttribute("userSession");
@@ -118,136 +242,39 @@ public class EnchereController {
 	}
 
 	/**
-	 * Méthode retournant la vue de création d'un nouvel article
+	 * Méthode permettant d'envoyer la vue détail des ventes Avec vérification
+	 * auprès de enchèreService pour : Savoir si l'enchère est en cours ; si
+	 * l'userSession est l'enchère la plus haute Si oui affichage du pseudo de la
+	 * personne qui a remporté l'enchère Si non affichage d'aucune enchère
 	 * 
-	 * @param model       avec un article vide et la liste des catégories
-	 * @param userSession avec les données de l'utilisateur en session
-	 * @return la vue de création d'un article
+	 * @param id
+	 * @param model
+	 * @param userSession
+	 * @return view detail-vente
 	 */
-	@GetMapping("/encheres/nouvelleVente")
-	public String getNouvelleVente(Model model, @ModelAttribute("userSession") Utilisateur userSession) {
-		ArticleVendu article = new ArticleVendu();
-		Retrait retrait = new Retrait();
+	@GetMapping("/encheres/detail")
+	public String getDetailArticle(@RequestParam("id") int id, Model model,
+			@ModelAttribute("userSession") Utilisateur userSession) {
 
-		article.setLieuRetrait(retrait);
-		article.getLieuRetrait().setRue(userSession.getRue());
-		article.getLieuRetrait().setCode_postal(userSession.getCodePostal());
-		article.getLieuRetrait().setVille(userSession.getVille());
+		ArticleVendu article = articleVenduService.getArticleCompletById(id);
+
 		model.addAttribute("article", article);
 
-		List<Categorie> categories = enchereService.getCategories();
-		model.addAttribute("categories", categories);
+		boolean echereEncours = enchereService.isEnchereEnCours(article.getDateFinEncheres(),
+				article.getDateDebutEncheres());
+		model.addAttribute("enchereEnCours", echereEncours);
+		boolean isAcheteur = enchereService.isAcheteur(article.getAcheteur().getPseudo(), userSession.getPseudo());
+		model.addAttribute("isAcheteur", isAcheteur);
+		boolean NotmeilleurOffre = enchereService.ismeilleurOffre(article.getAcheteur(), userSession.getPseudo());
+		model.addAttribute("NotmeilleurOffre", NotmeilleurOffre);
+		int affichage = enchereService.definirAffichage(article, isAcheteur);
+		model.addAttribute("affichage", affichage);
 
-		return "view-nouvelle-vente";
-	}
-
-	/**
-	 * Méthode permettant d'insérer en BDD un nouvel article
-	 * 
-	 * @param article       comprenant les données du formulaire
-	 * @param bindingResult comprenant les erreurs du formulaire
-	 * @param model         avec la liste des catégories
-	 * @param userSession   avec les données de l'utilisateur en session
-	 * @return la vue de création d'un article si erreur, la vue des enchères sinon
-	 */
-	@PostMapping("/encheres/nouvelleVente")
-	public String postNouvelleVente(@Valid @ModelAttribute("article") ArticleVendu article, BindingResult bindingResult,
-			Model model, @ModelAttribute("userSession") Utilisateur userSession,
-			@RequestParam("image") MultipartFile file) {
-
-		if (bindingResult.hasErrors()) {
-			List<Categorie> categories = enchereService.getCategories();
-			model.addAttribute("categories", categories);
-			return "view-nouvelle-vente";
-		} else {
-			try {
-				article.setVendeur(userSession);
-				enchereService.createNouvelleVente(article);
-
-				if (!Files.exists(Paths.get("uploads/"))) {
-					Files.createDirectories(Paths.get("uploads/"));
-				}
-
-				byte[] bytes = file.getBytes();
-				Path path = Paths.get("uploads/" + article.getNoArticle() + ".png");
-				Files.write(path, bytes);
-
-				return "redirect:/encheres";
-			} catch (BusinessException e) {
-				e.printStackTrace();
-				e.getClesErreurs().forEach(cle -> {
-					ObjectError error = new ObjectError("globalError", cle);
-					bindingResult.addError(error);
-				});
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		List<Categorie> categories = enchereService.getCategories();
-		model.addAttribute("categories", categories);
-		return "view-nouvelle-vente";
-	}
-
-	@GetMapping("/encheres/modifier")
-	public String getModifier(@ModelAttribute("userSession") Utilisateur userSession,
-			@RequestParam("idArticle") int idArticle, Model model) {
-		try {
-			ArticleVendu article = enchereService.getArticleByIdArticle(idArticle, userSession);
-			model.addAttribute("article", article);
-
-			List<Categorie> categories = enchereService.getCategories();
-			model.addAttribute("categories", categories);
-
-			return "view-modifier-article";
-		} catch (BusinessException e) {
-			e.printStackTrace();
-			List<String> errorMessages = new ArrayList<String>();
-			e.getClesErreurs().forEach(cle -> {
-				String errorMessage = messageSource.getMessage(cle, null, LocaleContextHolder.getLocale());
-				errorMessages.add(errorMessage);
-			});
-			model.addAttribute("errorMessages", errorMessages);
-		}
-		return "view-encheres";
-	}
-
-	@PostMapping("/encheres/modifier")
-	public String postModifier(@Valid @ModelAttribute("article") ArticleVendu article, BindingResult bindingResult,
-			Model model, @RequestParam("image") MultipartFile file) {
-		if (bindingResult.hasErrors()) {
-			List<Categorie> categories = enchereService.getCategories();
-			model.addAttribute("categories", categories);
-			return "view-modifier-article";
-		} else {
-			try {
-				enchereService.updateArticle(article);
-
-				if (!Files.exists(Paths.get("uploads/"))) {
-					Files.createDirectories(Paths.get("uploads/"));
-				}
-
-				byte[] bytes = file.getBytes();
-				Path path = Paths.get("uploads/" + article.getNoArticle() + ".png");
-				Files.write(path, bytes);
-
-				return "redirect:/encheres";
-			} catch (BusinessException e) {
-				e.printStackTrace();
-				e.getClesErreurs().forEach(cle -> {
-					ObjectError error = new ObjectError("globalError", cle);
-					bindingResult.addError(error);
-				});
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		List<Categorie> categories = enchereService.getCategories();
-		model.addAttribute("categories", categories);
-		return "view-modifier-article";
+		return "detail_vente";
 	}
 
 	@GetMapping("/encheres/voirEncheres")
-	public String getVoirEncheres(@ModelAttribute("userSession") Utilisateur userSession,
+	public String getVoirEncheresArticle(@ModelAttribute("userSession") Utilisateur userSession,
 			@RequestParam("idArticle") int idArticle, Model model) {
 		try {
 			List<Enchère> encheres = enchereService.getEncheresByIdArticle(idArticle, userSession);
@@ -265,13 +292,19 @@ public class EnchereController {
 		return "view-encheres";
 	}
 
-	@PostMapping("/encheres/supprimer")
-	public String postSupprimer(@ModelAttribute("userSession") Utilisateur userSession,
+	// ********** UPDATE **********
+
+	@GetMapping("/encheres/modifier")
+	public String getModifierArticle(@ModelAttribute("userSession") Utilisateur userSession,
 			@RequestParam("idArticle") int idArticle, Model model) {
 		try {
-			enchereService.deleteArticle(userSession.getNoUtilisateur(), idArticle);
+			ArticleVendu article = articleVenduService.getArticleByIdAndUser(idArticle, userSession);
+			model.addAttribute("article", article);
 
-			return "redirect:/encheres";
+			List<Categorie> categories = categorieService.getCategories();
+			model.addAttribute("categories", categories);
+
+			return "view-modifier-article";
 		} catch (BusinessException e) {
 			e.printStackTrace();
 			List<String> errorMessages = new ArrayList<String>();
@@ -284,70 +317,67 @@ public class EnchereController {
 		return "view-encheres";
 	}
 
-	/**
-	 * Méthode permettant d'envoyer la vue détail des ventes Avec vérification
-	 * auprès de enchèreService pour : Savoir si l'enchère est en cours ; si
-	 * l'userSession est l'enchère la plus haute Si oui affichage du pseudo de la
-	 * personne qui a remporté l'enchère Si non affichage d'aucune enchère
-	 * 
-	 * @param id
-	 * @param model
-	 * @param userSession
-	 * @return view detail-vente
-	 */
-	@GetMapping("/encheres/detail")
-	public String detailArticle(@RequestParam("id") int id, Model model,
-			@ModelAttribute("userSession") Utilisateur userSession) {
+	@PostMapping("/encheres/modifier")
+	public String postModifierArticle(@Valid @ModelAttribute("article") ArticleVendu article,
+			BindingResult bindingResult, Model model, @RequestParam("image") MultipartFile file) {
+		if (bindingResult.hasErrors()) {
+			List<Categorie> categories = categorieService.getCategories();
+			model.addAttribute("categories", categories);
+			return "view-modifier-article";
+		} else {
+			try {
+				articleVenduService.updateArticle(article);
 
-		ArticleVendu article = enchereService.chercherArticleComplet(id);
+				Path uploadDir = Paths.get("uploads/");
+				if (!Files.exists(uploadDir)) {
+					Files.createDirectories(uploadDir);
+				}
 
-		model.addAttribute("article", article);
+				Path imagePath = Paths.get("uploads/" + article.getNoArticle() + ".png");
 
-		boolean echereEncours = enchereService.isEnchereEnCours(article.getDateFinEncheres(),
-				article.getDateDebutEncheres());
-		model.addAttribute("enchereEnCours", echereEncours);
-		boolean isAcheteur = enchereService.isAcheteur(article.getAcheteur().getPseudo(), userSession.getPseudo());
-		model.addAttribute("isAcheteur", isAcheteur);
-		boolean NotmeilleurOffre = enchereService.ismeilleurOffre(article.getAcheteur(), userSession.getPseudo());
-		model.addAttribute("NotmeilleurOffre", NotmeilleurOffre);
-		int affichage = enchereService.definirAffichage(article, isAcheteur);
-		model.addAttribute("affichage", affichage);
+				if (file.isEmpty()) {
+					Path defaultImagePath = Paths.get("src/main/resources/static/images/photo.png");
+					Files.copy(defaultImagePath, imagePath, StandardCopyOption.REPLACE_EXISTING);
+				} else {
+					byte[] bytes = file.getBytes();
+					Files.write(imagePath, bytes);
+				}
 
-		return "detail_vente";
+				return "redirect:/encheres";
+			} catch (BusinessException e) {
+				e.printStackTrace();
+				e.getClesErreurs().forEach(cle -> {
+					ObjectError error = new ObjectError("globalError", cle);
+					bindingResult.addError(error);
+				});
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		List<Categorie> categories = categorieService.getCategories();
+		model.addAttribute("categories", categories);
+		return "view-modifier-article";
 	}
 
-	/**
-	 * 
-	 * Méthode permettant de faire une nouvelle enchère
-	 * 
-	 * @param montant
-	 * @param idArticle
-	 * @param userSession
-	 * @param redirectAttributes
-	 * @param locale
-	 * @return
-	 * @throws BusinessException
-	 */
-	@PostMapping("/encheres/creer")
-	public String creerEnchere(@RequestParam(name = "proposition") int montant, @RequestParam("id") int idArticle,
-			@ModelAttribute("userSession") Utilisateur userSession, RedirectAttributes redirectAttributes,
-			Locale locale) {
+	// ********** DELETE **********
+
+	@PostMapping("/encheres/supprimer")
+	public String postSupprimerArticle(@ModelAttribute("userSession") Utilisateur userSession,
+			@RequestParam("idArticle") int idArticle, Model model) {
 		try {
+			articleVenduService.deleteArticle(userSession.getNoUtilisateur(), idArticle);
 
-			this.enchereService.creerEnchere(userSession, montant, idArticle);
-			return "redirect:/encheres/detail?id=" + idArticle;
-
+			return "redirect:/encheres";
 		} catch (BusinessException e) {
 			e.printStackTrace();
+			List<String> errorMessages = new ArrayList<String>();
 			e.getClesErreurs().forEach(cle -> {
-				String message = messageSource.getMessage(cle, null, locale);
-				redirectAttributes.addFlashAttribute("erreurs", message);
+				String errorMessage = messageSource.getMessage(cle, null, LocaleContextHolder.getLocale());
+				errorMessages.add(errorMessage);
 			});
-
-			return "redirect:/encheres/detail?id=" + idArticle;
-
+			model.addAttribute("errorMessages", errorMessages);
 		}
-
+		return "view-encheres";
 	}
 
 }

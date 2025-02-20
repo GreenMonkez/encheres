@@ -48,28 +48,28 @@ public class EnchereServiceImpl implements EnchereService {
 	@Transactional(rollbackFor = BusinessException.class)
 	public void creerEnchere(Utilisateur userSession, int montant, int idArticle) throws BusinessException {
 		BusinessException be = new BusinessException();
-		ArticleVendu article = articleVenduDAO.read(idArticle);
+		ArticleVendu article = articleVenduDAO.getArticleById(idArticle);
 
 		boolean valide = validerMontant(montant, article, userSession, be);
 
 		try {
 			if (valide) {
 
-				int countEnchere = enchèreDAO.getCountEnchere(article.getPrixVente(), idArticle);
+				int countEnchere = enchèreDAO.getCountEnchereByIdArticlePrixVente(article.getPrixVente(), idArticle);
 				if (countEnchere != 0) {
-					Enchère ancienneEnchere = this.enchèreDAO.getUtilisateurParPrix(article.getPrixVente(), idArticle);
+					Enchère ancienneEnchere = this.enchèreDAO.getMeilleureEnchereByIdArticle(article.getPrixVente(),
+							idArticle);
 
 					Utilisateur ancienAcheteur = this.utilisateurDAO
-							.getUtilisateur(ancienneEnchere.getUtilisateur().getNoUtilisateur());
+							.getUtilisateurById(ancienneEnchere.getUtilisateur().getNoUtilisateur());
 					int creditRajout = ancienAcheteur.getCredit() + ancienneEnchere.getMontant_enchere();
 
 					ancienAcheteur.setCredit(creditRajout);
-					// TODOO A METTRE DANS UTILISATEURDAO?
-					enchèreDAO.updateCredit(ancienAcheteur);
+					utilisateurDAO.updateCredit(ancienAcheteur);
 				}
 				int creditRetrait = userSession.getCredit() - montant;
 				userSession.setCredit(creditRetrait);
-				enchèreDAO.updateCredit(userSession);
+				utilisateurDAO.updateCredit(userSession);
 
 				article.setPrixVente(montant);
 				enchèreDAO.creerEnchere(montant, article, userSession);
@@ -95,7 +95,7 @@ public class EnchereServiceImpl implements EnchereService {
 		if (valide) {
 			List<Enchère> encheres = enchèreDAO.getEncheresByIdArticleOrderDesc(idArticle);
 			for (Enchère enchere : encheres) {
-				enchere.setUtilisateur(utilisateurDAO.getUtilisateur(enchere.getUtilisateur().getNoUtilisateur()));
+				enchere.setUtilisateur(utilisateurDAO.getUtilisateurById(enchere.getUtilisateur().getNoUtilisateur()));
 			}
 			return encheres;
 		} else {
@@ -132,7 +132,7 @@ public class EnchereServiceImpl implements EnchereService {
 	}
 
 	private boolean validerUtilisateurArticle(int noUtilisateur, int idArticle, BusinessException be) {
-		if (articleVenduDAO.read(idArticle).getVendeur().getNoUtilisateur() != noUtilisateur) {
+		if (articleVenduDAO.getArticleById(idArticle).getVendeur().getNoUtilisateur() != noUtilisateur) {
 			be.addErreur("erreur.supprimer.article.utilisateur");
 			return false;
 		}

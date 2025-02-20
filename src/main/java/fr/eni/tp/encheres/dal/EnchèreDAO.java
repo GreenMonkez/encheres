@@ -8,20 +8,28 @@ import fr.eni.tp.encheres.bo.Utilisateur;
 
 public interface EnchèreDAO {
 
-	int countByIdArticle(int idArticle);
-
-	List<Enchère> getEncheres(int idArticle);
-
-	List<Enchère> consulterEncheresById(int idUser);
-
-	Enchère getUtilisateurParPrix(int prixVente, int idArticle);
-
-	int getCountEnchere(int prixVente, int idArticle);
+	// ********** CREATE **********
 
 	void creerEnchere(int montant, ArticleVendu article, Utilisateur userSession);
 
-	void updateCredit(Utilisateur user);
+	// ********** READ **********
+
+	Enchère getMeilleureEnchereByIdArticle(int prixVente, int idArticle);
+
+	List<Enchère> getEncheres(int idArticle);
 
 	List<Enchère> getEncheresByIdArticleOrderDesc(int idArticle);
+
+	List<Enchère> getEncheresByIdUser(int idUser);
+
+	// ********** UPDATE **********
+
+	// ********** DELETE **********
+
+	// ********** VALIDATION **********
+
+	int getCountEnchereByIdArticle(int idArticle);
+
+	int getCountEnchereByIdArticlePrixVente(int prixVente, int idArticle);
 
 }

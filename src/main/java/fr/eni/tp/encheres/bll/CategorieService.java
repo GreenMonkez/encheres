@@ -6,9 +6,10 @@ import fr.eni.tp.encheres.bo.Categorie;
 import fr.eni.tp.encheres.exception.BusinessException;
 
 public interface CategorieService {
+
 	// ********** CREATE **********
 
-	void createNouvelleCategorie(Categorie categorie);
+	void createCategorie(Categorie categorie);
 
 	// ********** READ **********
 

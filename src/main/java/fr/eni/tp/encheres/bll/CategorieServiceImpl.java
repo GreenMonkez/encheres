@@ -2,11 +2,14 @@ package fr.eni.tp.encheres.bll;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import fr.eni.tp.encheres.bo.Categorie;
 import fr.eni.tp.encheres.dal.ArticleVenduDAO;
 import fr.eni.tp.encheres.dal.CategorieDAO;
 import fr.eni.tp.encheres.exception.BusinessException;
 
+@Service
 public class CategorieServiceImpl implements CategorieService {
 
 	private ArticleVenduDAO articleVenduDAO;
@@ -23,8 +26,8 @@ public class CategorieServiceImpl implements CategorieService {
 	 * Méthode permettant de créer une nouvelle catégorie
 	 */
 	@Override
-	public void createNouvelleCategorie(Categorie categorie) {
-		categorieDAO.createNouvelleCategorie(categorie);
+	public void createCategorie(Categorie categorie) {
+		categorieDAO.createCategorie(categorie);
 	}
 
 	// ********** READ **********
@@ -65,7 +68,7 @@ public class CategorieServiceImpl implements CategorieService {
 	@Override
 	public void deleteCategorie(int idCategorie) throws BusinessException {
 		BusinessException be = new BusinessException();
-		boolean valide = categorieNotUsed(idCategorie, be);
+		boolean valide = validerCategoriePasUtilisee(idCategorie, be);
 
 		if (valide) {
 			categorieDAO.deleteCategorie(idCategorie);
@@ -83,8 +86,8 @@ public class CategorieServiceImpl implements CategorieService {
 	 * @param be
 	 * @return true si conforme, false sinon
 	 */
-	private boolean categorieNotUsed(int idCategorie, BusinessException be) {
-		if (articleVenduDAO.getCountByIdCategorie(idCategorie) != 0) {
+	private boolean validerCategoriePasUtilisee(int idCategorie, BusinessException be) {
+		if (articleVenduDAO.getCountArticleByIdCategorie(idCategorie) != 0) {
 			be.addErreur("erreur.categorie.utilisee");
 			return false;
 		}

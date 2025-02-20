@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.stereotype.Service;
 
 import fr.eni.tp.encheres.bo.ArticleVendu;
 import fr.eni.tp.encheres.bo.Enchère;
@@ -14,6 +15,7 @@ import fr.eni.tp.encheres.dal.EnchèreDAO;
 import fr.eni.tp.encheres.dal.UtilisateurDAO;
 import fr.eni.tp.encheres.exception.BusinessException;
 
+@Service
 public class UtilisateurServiceImpl implements UtilisateurService {
 
 	private UtilisateurDAO utilisateurDAO;
@@ -49,7 +51,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 				String mdpEncode = PasswordEncoderFactories.createDelegatingPasswordEncoder()
 						.encode(user.getMotDePasse());
 				user.setMotDePasse(mdpEncode);
-				utilisateurDAO.creerUtilisateur(user);
+				utilisateurDAO.createUtilisateur(user);
 			} else {
 				throw be;
 			}
@@ -70,8 +72,8 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 	 * @return Utilisateur
 	 */
 	@Override
-	public Utilisateur consulterUtilisateur(int id) {
-		Utilisateur user = utilisateurDAO.getUtilisateur(id);
+	public Utilisateur getUtilisateurById(int id) {
+		Utilisateur user = utilisateurDAO.getUtilisateurById(id);
 		return user;
 	}
 
@@ -85,7 +87,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 	 * le mot de passe
 	 */
 	@Override
-	public void modifierUtilisateur(Utilisateur user, String mdpConfirm, String newMdp) throws BusinessException {
+	public void updateUtilisateur(Utilisateur user, String mdpConfirm, String newMdp) throws BusinessException {
 		BusinessException be = new BusinessException();
 		String mdpActuel = user.getMotDePasse();
 
@@ -96,7 +98,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 			if (valide) {
 				String mdpEncode = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(newMdp);
 				user.setMotDePasse(mdpEncode);
-				utilisateurDAO.modifierUtilisateur(user);
+				utilisateurDAO.updateUtilisateur(user);
 
 			} else {
 				throw be;
@@ -128,11 +130,11 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 	 * Implémentation d'info vide puis envoie vers DAO pour save en base de donnée
 	 */
 	@Override
-	public void supprimerUtilisateur(Utilisateur userSupp) throws BusinessException {
+	public void deleteUtilisateur(Utilisateur userSupp) throws BusinessException {
 
 		BusinessException be = new BusinessException();
-		List<ArticleVendu> listArticles = articleDAO.consulterArticlesById(userSupp.getNoUtilisateur());
-		List<Enchère> listEncheres = enchereDAO.consulterEncheresById(userSupp.getNoUtilisateur());
+		List<ArticleVendu> listArticles = articleDAO.getArticlesByIdUser(userSupp.getNoUtilisateur());
+		List<Enchère> listEncheres = enchereDAO.getEncheresByIdUser(userSupp.getNoUtilisateur());
 		String newMdp = "G7#xL9vP!mQ2zW@dT5yF";
 		boolean valide = validerVenteEnCours(userSupp.getNoUtilisateur(), be, listArticles);
 		valide &= validerEnchereEnCours(userSupp.getNoUtilisateur(), be, listEncheres);
@@ -142,7 +144,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 				if (listArticles != null) {
 					for (ArticleVendu article : listArticles) {
 						article.setDescription("Inconnu");
-						articleDAO.modifierArticle(article);
+						articleDAO.updateArticle(article);
 					}
 				}
 				userSupp.setPseudo("UserSupp");
@@ -156,7 +158,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 				userSupp.setCredit(0);
 				String mdpEncode = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(newMdp);
 				userSupp.setMotDePasse(mdpEncode);
-				utilisateurDAO.modifierUtilisateur(userSupp);
+				utilisateurDAO.updateUtilisateur(userSupp);
 
 			} else {
 				throw be;
@@ -181,7 +183,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 	private boolean validerUtilisateurPseudo(String pseudo, BusinessException be) {
 
 		boolean valide = true;
-		int nbPseudo = utilisateurDAO.validerPseudo(pseudo);
+		int nbPseudo = utilisateurDAO.getCountUtilisateurByPseudo(pseudo);
 		if (nbPseudo == 1) {
 			valide = false;
 			be.addErreur("erreur.utilisateur.pseudo.exist");
@@ -202,7 +204,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 	private boolean validerUtilisateurEmail(String email, BusinessException be) {
 
 		boolean valide = true;
-		int nbEmail = utilisateurDAO.validerEmail(email);
+		int nbEmail = utilisateurDAO.getCountUtilisateurByEmail(email);
 		if (nbEmail == 1) {
 			valide = false;
 			be.addErreur("erreur.utilisateur.email.exist");
@@ -243,7 +245,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 	private boolean validerMdpActuel(String mdp, BusinessException be) {
 		boolean valide = true;
 		String mdpEncode = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(mdp);
-		int nbMdp = utilisateurDAO.validerMdp(mdpEncode);
+		int nbMdp = utilisateurDAO.getCountUtilisateurByMdp(mdpEncode);
 		if (nbMdp == 1) {
 			valide = false;
 			be.addErreur("erreur.password.actuel");

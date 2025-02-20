@@ -10,7 +10,7 @@ import org.springframework.validation.ObjectError;
 
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import fr.eni.tp.encheres.bll.LoginService;
+import fr.eni.tp.encheres.bll.UtilisateurService;
 import fr.eni.tp.encheres.bo.Utilisateur;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,14 +27,17 @@ import jakarta.validation.Valid;
 @SessionAttributes("userSession")
 public class UtilisateurController {
 
-	private LoginService loginService;
+	private UtilisateurService utilisateurService;
 	private MessageSource messageSource;
 
-	public UtilisateurController(LoginService loginService, MessageSource messageSource) {
-		this.loginService = loginService;
+	public UtilisateurController(UtilisateurService utilisateurService, MessageSource messageSource) {
+		this.utilisateurService = utilisateurService;
 		this.messageSource = messageSource;
-
 	}
+
+	// ********** CREATE **********
+
+	// ********** READ **********
 
 	/**
 	 * Méthode permettant d'afficher la page du profil avec les infos de
@@ -45,8 +48,8 @@ public class UtilisateurController {
 	 * @return la page mon profil
 	 */
 	@GetMapping("/monProfil")
-	public String afficherProfil(Model model, @ModelAttribute("userSession") Utilisateur userSession) {
-		Utilisateur user = this.loginService.consulterUtilisateur(userSession.getNoUtilisateur());
+	public String getMonProfil(Model model, @ModelAttribute("userSession") Utilisateur userSession) {
+		Utilisateur user = this.utilisateurService.getUtilisateurById(userSession.getNoUtilisateur());
 		model.addAttribute("utilisateur", user);
 
 		return "mon-profil";
@@ -60,9 +63,9 @@ public class UtilisateurController {
 	 * @return la page formulaire modifier-profil
 	 */
 	@PostMapping("/monProfil")
-	public String allerModifierProfil(Model model, @ModelAttribute("userSession") Utilisateur userSession) {
+	public String postMonProfil(Model model, @ModelAttribute("userSession") Utilisateur userSession) {
 
-		Utilisateur user = this.loginService.consulterUtilisateur(userSession.getNoUtilisateur());
+		Utilisateur user = this.utilisateurService.getUtilisateurById(userSession.getNoUtilisateur());
 		model.addAttribute("utilisateur", user);
 
 		return "modifier-profil";
@@ -76,13 +79,15 @@ public class UtilisateurController {
 	 * @return la page profil-utilisateur
 	 */
 	@GetMapping("/profil")
-	public String afficherProfil(@RequestParam("id") int id, Model model) {
-		Utilisateur user = this.loginService.consulterUtilisateur(id);
+	public String getProfil(@RequestParam("id") int id, Model model) {
+		Utilisateur user = this.utilisateurService.getUtilisateurById(id);
 		model.addAttribute("utilisateur", user);
 
 		return "profil-vendeur";
 
 	}
+
+	// ********** UPDATE **********
 
 	/**
 	 * Méthode permettant d'afficher la page de formulaire pour modifier le profil
@@ -92,9 +97,9 @@ public class UtilisateurController {
 	 * @return page modifier le profil
 	 */
 	@GetMapping("/monProfil/modifier")
-	public String afficherModifierProfil(Model model, @ModelAttribute("userSession") Utilisateur userSession) {
+	public String getModifierMonProfil(Model model, @ModelAttribute("userSession") Utilisateur userSession) {
 
-		Utilisateur user = this.loginService.consulterUtilisateur(userSession.getNoUtilisateur());
+		Utilisateur user = this.utilisateurService.getUtilisateurById(userSession.getNoUtilisateur());
 		model.addAttribute("utilisateur", user);
 
 		return "modifier-profil";
@@ -112,7 +117,7 @@ public class UtilisateurController {
 	 * @return la page mon-profil; Si erreur : @Return le formulaire de modification
 	 */
 	@PostMapping("/monProfil/modifier")
-	public String modifierProfil(@RequestParam("NewMotDePasse") String newMdp,
+	public String postModifierMonProfil(@RequestParam("NewMotDePasse") String newMdp,
 			@RequestParam("PasswordConfirm") String mdpConfirm, @ModelAttribute("userSession") Utilisateur userSession,
 			@Valid @ModelAttribute("utilisateur") Utilisateur user, BindingResult bindingResult) {
 
@@ -120,9 +125,9 @@ public class UtilisateurController {
 		if (!bindingResult.hasErrors()) {
 
 			try {
-				this.loginService.modifierUtilisateur(user, mdpConfirm, newMdp);
+				this.utilisateurService.updateUtilisateur(user, mdpConfirm, newMdp);
 
-				Utilisateur utilisateur = this.loginService.consulterUtilisateur(user.getNoUtilisateur());
+				Utilisateur utilisateur = this.utilisateurService.getUtilisateurById(user.getNoUtilisateur());
 
 				if (utilisateur != null) {
 					userSession.setNoUtilisateur(utilisateur.getNoUtilisateur());
@@ -168,7 +173,6 @@ public class UtilisateurController {
 
 	}
 
-
 	/**
 	 * Méthode renvoyant la vue permettant l'achat de crédit par l'utilisateur
 	 * 
@@ -178,7 +182,7 @@ public class UtilisateurController {
 	 */
 	@GetMapping("/monProfil/achatCredit")
 	public String getAchatCredit(@ModelAttribute("userSession") Utilisateur userSession, Model model) {
-		Utilisateur user = loginService.consulterUtilisateur(userSession.getNoUtilisateur());
+		Utilisateur user = utilisateurService.getUtilisateurById(userSession.getNoUtilisateur());
 		model.addAttribute("user", user);
 		return "view-achat-credit";
 	}
@@ -194,13 +198,16 @@ public class UtilisateurController {
 	@PostMapping("/monProfil/achatCredit")
 	public String postAchatCredit(@RequestParam("achat") int achatCredit,
 			@ModelAttribute("userSession") Utilisateur userSession) {
-		loginService.updateCredit(userSession, achatCredit);
+		utilisateurService.updateCredit(userSession, achatCredit);
 		return "redirect:/encheres";
 
 	}
 
+	// ********** DELETE **********
+
 	/**
 	 * Méthode permettant d'appeller loginservice pour supprimer Utilisateur
+	 * 
 	 * @param userSession
 	 * @param redirectAttributes
 	 * @param locale
@@ -209,12 +216,12 @@ public class UtilisateurController {
 	 * @throws BusinessException
 	 */
 	@PostMapping("/monProfil/supprimer")
-	public String supprimerProfil(@ModelAttribute("userSession") Utilisateur userSession,
+	public String postSupprimerMonProfil(@ModelAttribute("userSession") Utilisateur userSession,
 			RedirectAttributes redirectAttributes, Locale locale) throws BusinessException {
 
 		try {
 
-			loginService.supprimerUtilisateur(userSession);
+			utilisateurService.deleteUtilisateur(userSession);
 			return "redirect:/logout";
 		} catch (BusinessException e) {
 			e.printStackTrace();
