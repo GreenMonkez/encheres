@@ -14,46 +14,54 @@
 			<div> 
 				<h2>Filtres :</h2>
 				<input type="text" placeholder="Le nom de l'article contient" name="filtre" /> 
-				<br />
-				<label for="categorie">Catégorie : </label>
-				<select name="categorie" id="categorie">
-					<option value="0">Toutes</option>
-					<option th:each="c : ${categories}" th:text="${c.libelle}" th:value="${c.noCategorie}"></option>
-				</select>
-				<br />
-				<div class="filtre" sec:authorize="isAuthenticated()">
-					<div>
-						<input type="radio" name="radio" id="achats" />
-						<label for="">Achats</label>  
-						<br /> 
-						<input type="checkbox" name="option" value="achats1" class="achats-checkbox" disabled /> 
-						<label for="">enchères ouvertes</label>
-						<br /> 
-						<input type="checkbox" name="option"value="achats2" class="achats-checkbox" disabled />
-						<label for="">mes enchères en cours</label>
-						<br />
-						<input type="checkbox" name="option" value="achats3" class="achats-checkbox" disabled /> 
-						<label for="">mes enchères remportées</label>
-						<br />
-					</div>
-					<div>
-						<input type="radio" name="radio" id="ventes" /> 
-						<label for="">Mes ventes</label>
-						<br /> 
-						<input type="checkbox" name="option" value="ventes1" class="ventes-checkbox" disabled /> 
-						<label for="">mes ventes en cours</label>
-						<br /> 
-						<input type="checkbox" name="option" value="ventes2" class="ventes-checkbox" disabled /> 
-						<label for="">ventes non débutées</label>
-						<br /> 
-						<input type="checkbox" name="option" value="ventes3" class="ventes-checkbox" disabled /> 
-						<label for="">ventes terminées</label>
-					</div>
+				<div>
+					<label for="categorie">Catégorie : </label>
+					<select name="categorie" id="categorie">
+						<option value="0">Toutes</option>
+						<option th:each="c : ${categories}" th:text="${c.libelle}" th:value="${c.noCategorie}"></option>
+					</select>
 				</div>
-				<br />
+				<section class="filtre" sec:authorize="isAuthenticated()">
+					<div>
+						<div>
+							<input type="radio" name="radio" id="achats" />
+							<label for="">Achats</label>
+						</div> 
+						<div > 
+							<input type="checkbox" name="option" value="achats1" class="achats-checkbox" disabled /> 
+							<label for="">enchères ouvertes</label>
+						</div>
+						<div >
+							<input type="checkbox" name="option"value="achats2" class="achats-checkbox" disabled />
+							<label for="">mes enchères en cours</label>
+						</div>
+						<div >
+							<input type="checkbox" name="option" value="achats3" class="achats-checkbox" disabled /> 
+							<label for="">mes enchères remportées</label>
+						</div>
+					</div>
+					<div>
+						<div>
+							<input type="radio" name="radio" id="ventes" /> 
+							<label for="">Mes ventes</label>
+						</div>
+						<div>
+							<input type="checkbox" name="option" value="ventes1" class="ventes-checkbox" disabled /> 
+							<label for="">mes ventes en cours</label>
+						</div>
+						<div>
+							<input type="checkbox" name="option" value="ventes2" class="ventes-checkbox" disabled /> 
+							<label for="">ventes non débutées</label>
+						</div>
+						<div>
+							<input type="checkbox" name="option" value="ventes3" class="ventes-checkbox" disabled /> 
+							<label for="">ventes terminées</label>
+						</div>
+					</div>
+				</section>
 			</div>
 			<div class="center">
-				<button type="submit">Rechercher</button>
+				<button class="button" type="submit">Rechercher</button>
 			</div>
 		</form>
 		<section class="encheres">
@@ -73,9 +81,9 @@
 					<div th:if="${userSession != null}">
 						<a th:if="${a.vendeur.noUtilisateur != userSession.noUtilisateur}" th:href="@{/profil(id=${a.vendeur.noUtilisateur})}" th:text="'Vendeur : '+${a.vendeur.pseudo}"></a>
 						<a th:if="${(a.etatVente == 'enCours' or a.etatVente == 'finie') and a.vendeur.noUtilisateur == userSession.noUtilisateur}" th:href="@{/encheres/voirEncheres(idArticle=${a.noArticle})}">Voir les enchères</a>
-						<a th:if="${a.etatVente == 'pasCommencee' && a.vendeur.noUtilisateur == userSession.noUtilisateur}" th:href="@{/encheres/modifier(idArticle=${a.noArticle})}">Modifier</a>
+						<a  th:if="${a.etatVente == 'pasCommencee' && a.vendeur.noUtilisateur == userSession.noUtilisateur}" th:href="@{/encheres/modifier(idArticle=${a.noArticle})}">Modifier</a>
 						<form th:if="${a.etatVente == 'pasCommencee' && a.vendeur.noUtilisateur == userSession.noUtilisateur}" th:action="@{/encheres/supprimer(idArticle=${a.noArticle})}" method="post">
-							<button type="submit">Supprimer</button>
+							<button type="submit">Supprimer </button>
 						</form>
 					</div>
 				</div>

@@ -86,8 +86,8 @@
 				</div>
 				<div>
 					<div class ="inblockMargin">
-					<label for="idVille">Ville : </label>
-					<input id="idVille" type="text" name="ville"/>
+						<label for="idVille">Ville : </label>
+						<input id="idVille" type="text" name="ville"/>
 					</div>
 					<div>
 						<p class="cards" th:errors="*{ville}"></p>
@@ -95,8 +95,8 @@
 				</div>
 				<div>
 					<div class ="inblockMargin">
-					<label for="idMotDePasse">Mot de passe : </label>
-					<input id="idMotDePasse" type="password" name="motDePasse"/>
+						<label for="idMotDePasse">Mot de passe : </label>
+						<input id="idMotDePasse" type="password" name="motDePasse"/>
 					</div>
 					<div>
 						<p class="cards" th:errors="*{motDePasse}"></p>
@@ -104,17 +104,15 @@
 				</div>
 				<div>
 					<div class ="inblockMargin">
-					<label for="idMotDePasseConfirm">Confirmation : </label>
-					<input id="idMotDePasseConfirm" type="password" name="PasswordConfirm"/>
+						<label for="idMotDePasseConfirm">Confirmation : </label>
+						<input id="idMotDePasseConfirm" type="password" name="PasswordConfirm"/>
 					</div>
 				</div>
 			</div>
 			<div class="center">
 				<button type="submit">Créer</button>
-			
 				<button type="reset">Annuler</button>
 			</div>
-		
 		</form>
 	</main>
 	<footer th:replace="~{fragments/fragment-footer :: footer}"></footer>
