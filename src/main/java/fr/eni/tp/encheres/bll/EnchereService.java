@@ -4,26 +4,26 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import fr.eni.tp.encheres.bo.ArticleVendu;
-import fr.eni.tp.encheres.bo.Categorie;
+
 import fr.eni.tp.encheres.bo.Enchère;
 import fr.eni.tp.encheres.bo.Utilisateur;
 import fr.eni.tp.encheres.exception.BusinessException;
 
 public interface EnchereService {
 
-	List<ArticleVendu> getEncheres();
+	// ********** CREATE **********
 
-	List<Categorie> getCategories();
+	void creerEnchere(Utilisateur userSession, int montant, int idArticle) throws BusinessException;
 
-	Categorie getCategorie(int idCategorie);
+	// ********** READ **********
 
-	void createNouvelleVente(ArticleVendu article) throws BusinessException;
+	List<Enchère> getEncheresByIdArticle(int idArticle, Utilisateur userSession) throws BusinessException;
 
-	List<ArticleVendu> getEncheresFiltrees(String filtre, int idCategorie);
+	// ********** UPDATE **********
 
-	Utilisateur getAcheteur(int prixVente, int idCategorie);
+	// ********** DELETE **********
 
-	ArticleVendu articleById(int id);
+	// ********** ??? **********
 
 	boolean isAcheteur(String PseudoAcheter, String pseudoUser);
 
@@ -31,27 +31,6 @@ public interface EnchereService {
 
 	boolean ismeilleurOffre(Utilisateur pseudoAcheteur, String pseudoUser);
 
-	void creerEnchere(Utilisateur userSession, int montant, int idArticle) throws BusinessException;
-
-	List<ArticleVendu> getEncheresFiltreesOptions(String filtre, int idCategorie, List<String> options,
-			Utilisateur userSession);
-
-	void createNouvelleCategorie(Categorie categorie);
-
-	void updateCategorie(Categorie categorie);
-
-	void deleteCategorie(int idCategorie) throws BusinessException;
-
 	int definirAffichage(ArticleVendu article, boolean isAcheteur);
-
-	ArticleVendu chercherArticleComplet(int id);
-
-	void deleteArticle(int noUtilisateur, int idArticle) throws BusinessException;
-
-	List<Enchère> getEncheresByIdArticle(int idArticle, Utilisateur userSession) throws BusinessException;
-
-	ArticleVendu getArticleByIdArticle(int idArticle, Utilisateur userSession) throws BusinessException;
-
-	void updateArticle(ArticleVendu article) throws BusinessException;
 
 }

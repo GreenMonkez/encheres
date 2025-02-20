@@ -1,10 +1,11 @@
-package fr.eni.tp.encheres.dal;
+package fr.eni.tp.encheres.bll;
 
 import java.util.List;
 
 import fr.eni.tp.encheres.bo.Categorie;
+import fr.eni.tp.encheres.exception.BusinessException;
 
-public interface CategorieDAO {
+public interface CategorieService {
 
 	// ********** CREATE **********
 
@@ -12,7 +13,7 @@ public interface CategorieDAO {
 
 	// ********** READ **********
 
-	Categorie getCategorie(int noCategorie);
+	Categorie getCategorie(int idCategorie);
 
 	List<Categorie> getCategories();
 
@@ -22,8 +23,5 @@ public interface CategorieDAO {
 
 	// ********** DELETE **********
 
-	void deleteCategorie(int idCategorie);
-
-	// ********** VALIDATION **********
-
+	void deleteCategorie(int idCategorie) throws BusinessException;
 }

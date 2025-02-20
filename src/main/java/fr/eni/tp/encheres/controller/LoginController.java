@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import fr.eni.tp.encheres.bll.LoginService;
+import fr.eni.tp.encheres.bll.UtilisateurService;
 import fr.eni.tp.encheres.bo.Utilisateur;
 import fr.eni.tp.encheres.exception.BusinessException;
-import jakarta.servlet.http.Cookie;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
@@ -24,10 +25,14 @@ import jakarta.validation.Valid;
 public class LoginController {
 
 	private LoginService loginService;
+	private UtilisateurService utilisateurService;
 
-	public LoginController(LoginService loginService) {
+	public LoginController(LoginService loginService, UtilisateurService utilisateurService) {
 		this.loginService = loginService;
+		this.utilisateurService = utilisateurService;
 	}
+
+	// ********** CREATE **********
 
 	/**
 	 * Méthode permettant d'afficher la vue d'inscription
@@ -36,7 +41,7 @@ public class LoginController {
 	 * @return le formulaire d'inscription
 	 */
 	@GetMapping("/inscription")
-	public String afficherInscription(Model model) {
+	public String getInscription(Model model) {
 
 		model.addAttribute("utilisateur", new Utilisateur());
 
@@ -54,12 +59,12 @@ public class LoginController {
 	 * 
 	 */
 	@PostMapping("/inscription")
-	public String creerUtilisateur(@RequestParam("PasswordConfirm") String mdpConfirm,
+	public String postInscription(@RequestParam("PasswordConfirm") String mdpConfirm,
 			@Valid @ModelAttribute("utilisateur") Utilisateur user, BindingResult bindingResult) {
 
 		if (!bindingResult.hasErrors()) {
 			try {
-				this.loginService.creerUtilisateur(user, mdpConfirm);
+				this.utilisateurService.creerUtilisateur(user, mdpConfirm);
 				return "redirect:/encheres";
 			} catch (BusinessException e) {
 				e.printStackTrace();
@@ -75,25 +80,22 @@ public class LoginController {
 		}
 	}
 
+	// ********** READ **********
+
+	// ********** UPDATE **********
+
+	// ********** DELETE **********
+
+	// ********** SESSION **********
+
 	/**
 	 * Méthode permettant d'afficher la page login
 	 * 
 	 * @return view login
 	 */
 	@GetMapping("/login")
-	public String login() {
+	public String getLogin() {
 		return "login";
-	}
-
-	/**
-	 * Méthode permettant d'instancier un Utilisateur pour par la suite créer un
-	 * userSession
-	 * 
-	 * @return new Utilisateur
-	 */
-	@ModelAttribute("userSession")
-	public Utilisateur addUserSession() {
-		return new Utilisateur();
 	}
 
 	/***
@@ -106,7 +108,7 @@ public class LoginController {
 	 * @return page view encheres
 	 */
 	@GetMapping("/login/session")
-	public String connexion(@ModelAttribute("userSession") Utilisateur userSession, Principal principal,
+	public String getSession(@ModelAttribute("userSession") Utilisateur userSession, Principal principal,
 			HttpServletRequest request) {
 		Utilisateur utilisateur = this.loginService.charger(principal.getName());
 
@@ -141,6 +143,17 @@ public class LoginController {
 
 		return "redirect:/encheres";
 
+	}
+
+	/**
+	 * Méthode permettant d'instancier un Utilisateur pour par la suite créer un
+	 * userSession
+	 * 
+	 * @return new Utilisateur
+	 */
+	@ModelAttribute("userSession")
+	public Utilisateur addUserSession() {
+		return new Utilisateur();
 	}
 
 }

@@ -16,16 +16,30 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 
 	// ****************** CONSTANTES ***********************************
 
-	private static final String SELECT_ALL = "select no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie from articles_vendus";
+	// ********** CREATE **********
+
 	private static final String INSERT = "insert into articles_vendus (nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur, no_categorie) values (:nom, :description, :dateDebut, :dateFin, :prixInitial, :idUtilisateur, :idCategorie)";
+
+	// ********** READ **********
+
+	private static final String SELECT_BY_ID = "SELECT  no_categorie, prix_vente, no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur FROM ARTICLES_VENDUS WHERE no_article = :id";
+	private static final String SELECT_ALL = "select no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie from articles_vendus";
 	private static final String SELECT_BY_STRING = "select no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie from articles_vendus where nom_article like :filtreSql";
 	private static final String SELECT_BY_ID_CATEGORIE = "select no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie from articles_vendus where no_categorie = :idCategorie";
 	private static final String SELECT_BY_STRING_AND_ID_CATEGORIE = "select no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, prix_vente, no_utilisateur, no_categorie from articles_vendus where nom_article like :filtreSql and no_categorie = :idCategorie";
 	private static final String CHECK_ARTICLES_VENDUS = "SELECT * FROM ARTICLES_VENDUS a WHERE a.no_utilisateur = :id";
-	private static final String SELECT_BY_ID = "SELECT  no_categorie, prix_vente, no_article, nom_article, description, date_debut_encheres, date_fin_encheres, prix_initial, no_utilisateur FROM ARTICLES_VENDUS WHERE no_article = :id";
-	private static final String COUNT_BY_ID_CATEGORIE = "select count(*) from articles_vendus where no_categorie = :idCategorie";
-	private static final String DELETE = "delete from articles_vendus where no_article = :idArticle";
+
+	// ********** UPDATE **********
+
 	private static final String UPDATE = "update articles_vendus set nom_article = :nom, description = :description, date_debut_encheres = :dateDebut, date_fin_encheres = :dateFin, prix_initial = :prixInitial, no_categorie = :idCategorie where no_article = :idArticle";
+
+	// ********** DELETE **********
+
+	private static final String DELETE = "delete from articles_vendus where no_article = :idArticle";
+
+	// ********** VALIDATION **********
+
+	private static final String COUNT_BY_ID_CATEGORIE = "select count(*) from articles_vendus where no_categorie = :idCategorie";
 
 	// ****************** ATTRIBUT INSTANCES ***********************************
 
@@ -39,18 +53,14 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 
 	// ****************** METHODES ***********************************
 
-	@Override
-	public List<ArticleVendu> getArticles() {
-		return namedParameterJdbcTemplate.query(SELECT_ALL, new ArticleVenduRowMapper());
-
-	}
+	// ********** CREATE **********
 
 	/**
 	 * Méthode insérant en BDD un nouvel article tout en changeant l'id de cet
 	 * article avec l'id en BDD
 	 */
 	@Override
-	public void create(ArticleVendu article) {
+	public void createArticle(ArticleVendu article) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("nom", article.getNomArticle());
 		map.addValue("description", article.getDescription());
@@ -67,6 +77,21 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 
 			article.setNoArticle(keyHolder.getKey().intValue());
 		}
+	}
+
+	// ********** READ **********
+
+	@Override
+	public ArticleVendu getArticleById(int id) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("id", id);
+		return namedParameterJdbcTemplate.queryForObject(SELECT_BY_ID, map, new ArticleVenduRowMapper());
+	}
+
+	@Override
+	public List<ArticleVendu> getArticles() {
+		return namedParameterJdbcTemplate.query(SELECT_ALL, new ArticleVenduRowMapper());
+
 	}
 
 	/**
@@ -106,7 +131,7 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 	 * l'utilisateur Return List ArticleVendu
 	 */
 	@Override
-	public List<ArticleVendu> consulterArticlesById(int idUser) {
+	public List<ArticleVendu> getArticlesByIdUser(int idUser) {
 		MapSqlParameterSource map = new MapSqlParameterSource();
 		map.addValue("id", idUser);
 
@@ -114,52 +139,7 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 
 	}
 
-	/**
-	 * Méthode permettant de modifier un utilisateur en base de donnée
-	 */
-	@Override
-	public void modifierArticle(ArticleVendu article) {
-		try {
-			MapSqlParameterSource map = new MapSqlParameterSource();
-			map.addValue("nom", article.getNomArticle());
-			map.addValue("description", article.getDescription());
-			map.addValue("dateDebut", article.getDateDebutEncheres());
-			map.addValue("dateFin", article.getDateFinEncheres());
-			map.addValue("prixInitial", article.getMiseAPrix());
-			map.addValue("idUtilisateur", article.getVendeur().getNoUtilisateur());
-			map.addValue("idCategorie", article.getCategorieArticle().getNoCategorie());
-
-			int rowsAffected = namedParameterJdbcTemplate.update(UPDATE, map);
-			if (rowsAffected == 0) {
-				throw new RuntimeException("Aucune mise à jour effectuée, article introuvable.");
-			}
-		} catch (Exception e) {
-			throw new RuntimeException("Erreur lors de la mise à jour de l'article : " + e.getMessage(), e);
-		}
-
-	}
-
-	@Override
-	public ArticleVendu read(int id) {
-		MapSqlParameterSource map = new MapSqlParameterSource();
-		map.addValue("id", id);
-		return namedParameterJdbcTemplate.queryForObject(SELECT_BY_ID, map, new ArticleVenduRowMapper());
-	}
-
-	@Override
-	public int getCountByIdCategorie(int idCategorie) {
-		MapSqlParameterSource map = new MapSqlParameterSource();
-		map.addValue("idCategorie", idCategorie);
-		return namedParameterJdbcTemplate.queryForObject(COUNT_BY_ID_CATEGORIE, map, Integer.class);
-	}
-
-	@Override
-	public void deleteArticle(int idArticle) {
-		MapSqlParameterSource map = new MapSqlParameterSource();
-		map.addValue("idArticle", idArticle);
-		namedParameterJdbcTemplate.update(DELETE, map);
-
-	}
+	// ********** UPDATE **********
 
 	@Override
 	public void updateArticle(ArticleVendu article) {
@@ -173,4 +153,24 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 		map.addValue("idArticle", article.getNoArticle());
 		namedParameterJdbcTemplate.update(UPDATE, map);
 	}
+
+	// ********** DELETE **********
+
+	@Override
+	public void deleteArticle(int idArticle) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("idArticle", idArticle);
+		namedParameterJdbcTemplate.update(DELETE, map);
+
+	}
+
+	// ********** VALIDATION **********
+
+	@Override
+	public int getCountArticleByIdCategorie(int idCategorie) {
+		MapSqlParameterSource map = new MapSqlParameterSource();
+		map.addValue("idCategorie", idCategorie);
+		return namedParameterJdbcTemplate.queryForObject(COUNT_BY_ID_CATEGORIE, map, Integer.class);
+	}
+
 }

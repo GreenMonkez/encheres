@@ -5,11 +5,22 @@ import fr.eni.tp.encheres.bo.Retrait;
 
 public interface RetraitDAO {
 
-	void create(ArticleVendu article);
+	// ********** CREATE **********
 
-	Retrait getRetraitById(int noArticle);
+	void createRetrait(ArticleVendu article);
+
+	// ********** READ **********
+
+	Retrait getRetraitByIdArticle(int noArticle);
+
+	// ********** UPDATE **********
+
+	void updateRetrait(ArticleVendu article);
+
+	// ********** DELETE **********
 
 	void deleteRetrait(int idArticle);
 
-	void updateRetrait(ArticleVendu article);
+	// ********** VALIDATION **********
+
 }

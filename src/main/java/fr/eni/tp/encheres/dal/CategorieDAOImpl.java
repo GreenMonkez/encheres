@@ -15,11 +15,24 @@ public class CategorieDAOImpl implements CategorieDAO {
 
 	// ****************** CONSTANTES ***********************************
 
+	// ********** CREATE **********
+
+	private static final String INSERT = "insert into categories (libelle) values (:libelle)";
+
+	// ********** READ **********
+
 	private static final String SELECT_BY_ID = "select no_categorie, libelle from categories where no_categorie = :idCategorie";
 	private static final String SELECT_ALL = "select no_categorie, libelle from categories";
-	private static final String INSERT = "insert into categories (libelle) values (:libelle)";
+
+	// ********** UPDATE **********
+
 	private static final String UPDATE = "update categories set libelle = :libelle where no_categorie = :idCategorie";
+
+	// ********** DELETE **********
+
 	private static final String DELETE = "delete from categories where no_categorie = :idCategorie";
+
+	// ********** VALIDATION **********
 
 	// ****************** ATTRIBUT INSTANCES ***********************************
 
@@ -32,6 +45,17 @@ public class CategorieDAOImpl implements CategorieDAO {
 	}
 
 	// ****************** METHODES ***********************************
+
+	// ********** CREATE **********
+
+	@Override
+	public void createCategorie(Categorie categorie) {
+		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+		namedParameters.addValue("libelle", categorie.getLibelle());
+		namedParameterJdbcTemplate.update(INSERT, namedParameters);
+	}
+
+	// ********** READ **********
 
 	/**
 	 * Méthode retournant une catégorie en fonction de son id
@@ -53,12 +77,7 @@ public class CategorieDAOImpl implements CategorieDAO {
 
 	}
 
-	@Override
-	public void createNouvelleCategorie(Categorie categorie) {
-		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
-		namedParameters.addValue("libelle", categorie.getLibelle());
-		namedParameterJdbcTemplate.update(INSERT, namedParameters);
-	}
+	// ********** UPDATE **********
 
 	@Override
 	public void updateCategorie(Categorie categorie) {
@@ -68,11 +87,15 @@ public class CategorieDAOImpl implements CategorieDAO {
 		namedParameterJdbcTemplate.update(UPDATE, namedParameters);
 	}
 
+	// ********** DELETE **********
+
 	@Override
 	public void deleteCategorie(int idCategorie) {
 		MapSqlParameterSource namedParameters = new MapSqlParameterSource();
 		namedParameters.addValue("idCategorie", idCategorie);
 		namedParameterJdbcTemplate.update(DELETE, namedParameters);
 	}
+
+	// ********** VALIDATION **********
 
 }

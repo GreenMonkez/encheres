@@ -10,13 +10,20 @@ import fr.eni.tp.encheres.bo.Retrait;
 
 public class RetraitRowMapper implements RowMapper<Retrait> {
 
+	/**
+	 * Méthode rowmapper de retrait, ajoutant un article avec un id
+	 */
 	@Override
 	public Retrait mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+		// implementation retrait
 
 		Retrait r = new Retrait();
 		r.setRue(rs.getString("rue"));
 		r.setVille(rs.getString("ville"));
 		r.setCode_postal(rs.getString("code_postal"));
+
+		// implementation article
 
 		ArticleVendu a = new ArticleVendu();
 		a.setNoArticle(rs.getInt("no_article"));
