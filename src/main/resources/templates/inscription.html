@@ -21,82 +21,51 @@
   				<li th:each="err : ${#fields.errors('global')}" th:text="#{${err}}">Incorrect</li>
 			</ul>
 			<div id="wrap">
-				<div>
-					<div class ="inblockMargin">
-						<label for="idPseudo">Pseudo : </label>
-						<input id="idPseudo" type="text" name="pseudo"/>
-					</div>
-					<div>
-						<p class="cards" th:errors="*{pseudo}"></p>
-					</div>
+				<div class ="inblockMargin">
+					<label for="idPseudo">Pseudo : </label>
+					<input id="idPseudo" type="text" th:field="*{pseudo}"/>
+					<p class="cards" th:errors="*{pseudo}"></p>
 				</div>
-				<div>
-					<div class ="inblockMargin">
-						<label for="idPrenom">Prénom : </label>
-						<input id="idPrenom" type="text" name="prenom"/>
-					</div>
-					<div>
-						<p class="cards" th:errors="*{prenom}"></p>
-					</div>
+				<div class ="inblockMargin">
+					<label for="idPrenom">Prénom : </label>
+					<input id="idPrenom" type="text" th:field="*{prenom}"/>
+					<p class="cards" th:errors="*{prenom}"></p>
 				</div>
-				<div>
-					<div class ="inblockMargin">
-						<label for="idNom">Nom : </label>
-						<input id="idNom" type="text" name="nom"/>
-					</div>
-					<div>
-						<p class="cards" th:errors="*{nom}"></p>
-					</div>
+				<div class ="inblockMargin">
+					<label for="idNom">Nom : </label>
+					<input id="idNom" type="text" name="nom" th:field="*{nom}"/>
+					<p class="cards" th:errors="*{nom}"></p>
 				</div>
-				<div>
-					<div class ="inblockMargin">
-						<label for="idEmail">Email : </label>
-						<input id="idEmail" type="text" name="email"/>
-					</div>
-					<div>
-						<p class="cards" th:errors="*{email}"></p>
-					</div>
+				<div class ="inblockMargin">
+					<label for="idEmail">Email : </label>
+					<input id="idEmail" type="text" th:field="*{email}"/>
+					<p class="cards" th:errors="*{email}"></p>
 				</div>
-				<div>
-					<div class ="inblockMargin">
-						<label for="idTelephone">Téléphone : </label>
-						<input id="idTelephone" type="text" name="telephone"/>
-					</div>
-					<div>
-						<p class="cards" th:errors="*{telephone}"></p>
-					</div>
+				<div class ="inblockMargin">
+					<label for="idTelephone">Téléphone : </label>
+					<input id="idTelephone" type="text" th:field="*{telephone}"/>
+					<p class="cards" th:errors="*{telephone}"></p>
 				</div>
-				<div>
-					<div class ="inblockMargin">
-						<label for="idRue">Rue : </label>
-						<input id="idRue" type="text" name="rue"/>
-					</div>
-					<div>
-						<p class="cards" th:errors="*{rue}"></p>
-					</div>
+				<div class ="inblockMargin">
+					<label for="idRue">Rue : </label>
+					<input id="idRue" type="text" th:field="*{rue}"/>
+					<p class="cards" th:errors="*{rue}"></p>
 				</div>
-				<div>
-					<div class ="inblockMargin">
-						<label for="idPostal">Code Postal : </label>
-						<input id="idPostal" type="text" name="codePostal"/>
-					</div>
-					<div>
-						<p class="cards" th:errors="*{codePostal}"></p>
-					</div>
+				<div class ="inblockMargin">
+					<label for="idPostal">Code Postal : </label>
+					<input id="idPostal" type="text" th:field="*{codePostal}"/>
+					<p class="cards" th:errors="*{codePostal}"></p>
 				</div>
 				<div>
 					<div class ="inblockMargin">
 					<label for="idVille">Ville : </label>
-					<input id="idVille" type="text" name="ville"/>
-					</div>
-					<div>
-						<p class="cards" th:errors="*{ville}"></p>
-					</div>
+					<input id="idVille" type="text" th:field="*{ville}"/>
+					<p class="cards" th:errors="*{ville}"></p>
 				</div>
 				<div>
 					<div class ="inblockMargin">
 					<label for="idMotDePasse">Mot de passe : </label>
-					<input id="idMotDePasse" type="password" name="motDePasse"/>
+					<input id="idMotDePasse" type="password" th:field="motDePasse"/>
 					</div>
 					<div>
 						<p class="cards" th:errors="*{motDePasse}"></p>
@@ -112,11 +81,10 @@
 			<div class="center">
 				<button type="submit">Créer</button>
 			
-				<button type="reset">Annuler</button>
+				<a class="button" th:href="@{/login}">Annuler</a>
 			</div>
-		
 		</form>
 	</main>
-	<footer th:replace="~{fragments/fragment-footer :: footer}"></footer>
+	<footer th:replace="~{fragments/fragment-footer :: footer}"> </footer>
 </body>
 </html>

@@ -253,22 +253,15 @@ public class EnchereController {
 	 * @return view detail-vente
 	 */
 	@GetMapping("/encheres/detail")
-	public String getDetailArticle(@RequestParam("id") int id, Model model,
+	public String detailArticle(@RequestParam("id") int id, Model model,
 			@ModelAttribute("userSession") Utilisateur userSession) {
 
 		ArticleVendu article = articleVenduService.getArticleCompletById(id);
 
 		model.addAttribute("article", article);
+		model.addAttribute("userSession", userSession);
 
-		boolean echereEncours = enchereService.isEnchereEnCours(article.getDateFinEncheres(),
-				article.getDateDebutEncheres());
-		model.addAttribute("enchereEnCours", echereEncours);
-		boolean isAcheteur = enchereService.isAcheteur(article.getAcheteur().getPseudo(), userSession.getPseudo());
-		model.addAttribute("isAcheteur", isAcheteur);
-		boolean NotmeilleurOffre = enchereService.ismeilleurOffre(article.getAcheteur(), userSession.getPseudo());
-		model.addAttribute("NotmeilleurOffre", NotmeilleurOffre);
-		int affichage = enchereService.definirAffichage(article, isAcheteur);
-		model.addAttribute("affichage", affichage);
+		model.addAttribute("article", article);
 
 		return "detail_vente";
 	}
