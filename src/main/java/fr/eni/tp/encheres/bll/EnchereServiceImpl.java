@@ -350,7 +350,8 @@ public class EnchereServiceImpl implements EnchereService {
 		ArticleVendu article = articleById(id);
 		Utilisateur acheteur = getAcheteur(article.getPrixVente(), id);
 
-		 if (article.getDateDebutEncheres().isBefore(LocalDateTime.now()) && article.getDateFinEncheres().isAfter(LocalDateTime.now())) {
+		if (article.getDateDebutEncheres().isBefore(LocalDateTime.now())
+				&& article.getDateFinEncheres().isAfter(LocalDateTime.now())) {
 			article.setEtatVente("EC");
 		}
 
@@ -564,23 +565,6 @@ public class EnchereServiceImpl implements EnchereService {
 
 
 	/**
-	 * Vérifie si l'enchere est en cours, si non le bouton enchérir est désactiver
-	 * 
-	 * @Return boolean valide
-	 */
-	private boolean isEnchereEnCours(LocalDateTime dateFin, LocalDateTime dateDebut) {
-
-		boolean valide = true;
-		if (dateFin.isBefore(LocalDateTime.now()) || dateDebut.isAfter(dateDebut)) {
-
-			valide = false;
-		}
-		return valide;
-	}
-
-	
-
-	/**
 	 * Vérifie que le montant de l'enchère entrée par l'utilisateur est supérieur au
 	 * prix de vente actuelle Vérifie aussi que l'utilisateur a assez de crédit sur
 	 * son compte pour payer le montant
@@ -631,6 +615,5 @@ public class EnchereServiceImpl implements EnchereService {
 		}
 		return true;
 	}
-
 
 }

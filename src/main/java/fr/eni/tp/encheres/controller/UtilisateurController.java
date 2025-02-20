@@ -168,7 +168,6 @@ public class UtilisateurController {
 
 	}
 
-
 	/**
 	 * Méthode renvoyant la vue permettant l'achat de crédit par l'utilisateur
 	 * 
@@ -201,6 +200,7 @@ public class UtilisateurController {
 
 	/**
 	 * Méthode permettant d'appeller loginservice pour supprimer Utilisateur
+	 * 
 	 * @param userSession
 	 * @param redirectAttributes
 	 * @param locale

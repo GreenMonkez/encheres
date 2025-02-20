@@ -1,7 +1,6 @@
 package fr.eni.tp.encheres.dal;
 
-import java.sql.Timestamp;
-
+import fr.eni.tp.encheres.bo.PasswordToken;
 import fr.eni.tp.encheres.bo.Utilisateur;
 
 public interface UtilisateurDAO {
@@ -21,17 +20,13 @@ public interface UtilisateurDAO {
 	void modifierUtilisateur(Utilisateur user);
 
 	void updateCredit(int noUtilisateur, int nouveauSoldeCredit);
-	
-	Utilisateur getUtilisateurByEmail(String email);
-	
-	void sauvegarderPasswordResetToken(int idUser, String token);
-	
-	boolean validerPasswordResetToken(String idUser);
-	
-	Utilisateur readByToken (String Token);
 
-	Timestamp findDateToken(String token);
-	
-	void resetPassword(int idUser, String password);
+	Utilisateur getUtilisateurByEmail(String email);
+
+	void sauvegarderPasswordResetToken(PasswordToken passwordToken);
+
+	PasswordToken findToken(String token);
+
+	void resetPassword(PasswordToken passwordToken, String password);
 
 }

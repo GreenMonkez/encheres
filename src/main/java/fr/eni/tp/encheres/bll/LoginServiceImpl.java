@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import fr.eni.tp.encheres.bo.ArticleVendu;
 import fr.eni.tp.encheres.bo.Enchère;
+import fr.eni.tp.encheres.bo.PasswordToken;
 import fr.eni.tp.encheres.bo.Utilisateur;
 import fr.eni.tp.encheres.dal.ArticleVenduDAO;
 import fr.eni.tp.encheres.dal.EnchèreDAO;
@@ -26,7 +27,8 @@ public class LoginServiceImpl implements LoginService {
 	private EnchèreDAO enchereDAO;
 	private RetraitDAO retraitDAO;
 
-	public LoginServiceImpl(UtilisateurDAO utilisateurDAO, ArticleVenduDAO articleDAO, EnchèreDAO enchereDAO, RetraitDAO retraitDAO) {
+	public LoginServiceImpl(UtilisateurDAO utilisateurDAO, ArticleVenduDAO articleDAO, EnchèreDAO enchereDAO,
+			RetraitDAO retraitDAO) {
 
 		this.utilisateurDAO = utilisateurDAO;
 		this.articleDAO = articleDAO;
@@ -88,58 +90,74 @@ public class LoginServiceImpl implements LoginService {
 		return this.utilisateurDAO.getUtilisateurByPseudo(pseudo);
 
 	}
-	
-	
+
 	/**
-	 *Créer le lien de pour reset le mdp
-	 *Vérifie si l'email est bien existant dans la base de donnée
-	 *Création d'un token
-	 *@Return String
+	 * Créer le lien de pour reset le mdp Vérifie si l'email est bien existant dans
+	 * la base de donnée Création d'un token : génère un id universel aléatoire de
+	 * nombre + convertit en String
+	 * 
+	 * @Return String
 	 */
 	@Override
 	public String creerResetPasswordLink(String email) throws BusinessException {
 		BusinessException be = new BusinessException();
 		Utilisateur user = new Utilisateur();
+		PasswordToken passwordToken = new PasswordToken();
 		boolean valide = validerUtilisateurEmail(email, be);
-		String token = UUID.randomUUID().toString();// génère un id universel aléatoire de nombre + convertit en String					
-		//Timestamp dateExpiration = new Timestamp(System.currentTimeMillis() + 3600000);
-		 
 		try {
 			if (!valide) {
-					user = utilisateurDAO.getUtilisateurByEmail(email);
-			        utilisateurDAO.sauvegarderPasswordResetToken(user.getNoUtilisateur(), token);
+				user = utilisateurDAO.getUtilisateurByEmail(email);
+
+				String token = UUID.randomUUID().toString();
+				Timestamp dateExpiration = new Timestamp(System.currentTimeMillis() + 3600000);
+				LocalDateTime dateTime = dateExpiration.toLocalDateTime();
+				passwordToken.setDateExpiration(dateTime);
+				passwordToken.setToken(token);
+				passwordToken.setNoUtilisateur(user.getNoUtilisateur());
+
+				utilisateurDAO.sauvegarderPasswordResetToken(passwordToken);
 
 			}
-			
+
 		} catch (DataAccessException e) {
 			e.printStackTrace();
-			be.addErreur("erreur.user.notfound");
+			// be.addErreur("erreur.user.notfound");
 			throw be;
 		}
 
-		return "http://localhost:8080/reset-password?token=" + token;
-		
+		return passwordToken.getToken();
+
 	}
-	
+
+	/**
+	 * Validation des mots de passe entrer par l'User, verifie le token si valable +
+	 * encodage mdp avant envoie en base de donnée
+	 * 
+	 * @param String
+	 * @param String
+	 * @param String
+	 */
 	@Override
 	public void resetPassword(String token, String password, String passwordConfirm) throws BusinessException {
 		BusinessException be = new BusinessException();
-		Utilisateur utilisateur = utilisateurDAO.readByToken(token);
+
+		// Utilisateur utilisateur = utilisateurDAO.readByToken(token);
+		PasswordToken passwordToken = utilisateurDAO.findToken(token);
+		Utilisateur user = utilisateurDAO.getUtilisateur(passwordToken.getNoUtilisateur());
 		boolean valide = validerConfirmMdp(passwordConfirm, password, be);
-		valide &= validerDateToken(token, be);
+		valide &= validerDateToken(passwordToken, be);
 		try {
 			if (valide) {
-				utilisateurDAO.resetPassword(utilisateur.getNoUtilisateur(), password);
+				String mdpEncode = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(password);
+				utilisateurDAO.resetPassword(passwordToken, mdpEncode);
 			}
 		} catch (DataAccessException e) {
-			 e.printStackTrace();
-		        be.addErreur("erreur.password.save");
-		        throw be;
+			e.printStackTrace();
+			// be.addErreur("erreur.password.save");
+			throw be;
 		}
 	}
 
-	
-	
 	/**
 	 * Méthode permettant de modifier les infos d'un Utilisateur Fais appel aux
 	 * méthodes de validation : Vérifier si mots de passe confirmation == mot de
@@ -166,7 +184,7 @@ public class LoginServiceImpl implements LoginService {
 			}
 		} catch (DataAccessException e) {
 			e.printStackTrace();
-			be.addErreur("erreur.utilisateur.modification");
+			// be.addErreur("erreur.utilisateur.modification");
 			throw be;
 		}
 
@@ -202,15 +220,15 @@ public class LoginServiceImpl implements LoginService {
 			if (valide) {
 				if (listArticles != null) {
 					for (ArticleVendu article : listArticles) {
-						//supprimer le retrait et l'article que si la date est pas commencé
+
 						if (article.getDateDebutEncheres().isAfter(LocalDateTime.now())) {
 							retraitDAO.getRetraitById(article.getNoArticle());
-							//articleDAO supprimer
+							articleDAO.deleteArticle(article.getNoArticle());
 						}
 						if (article.getDateDebutEncheres().isBefore(LocalDateTime.now())) {
-							article.setDescription("Inconnu");// si la date est avant la date du jour
-							articleDAO.modifierArticle(article);
-						}	
+							article.setDescription("Inconnu");//
+							articleDAO.updateArticle(article);
+						}
 					}
 				}
 				userSupp.setPseudo("UserSupp");
@@ -235,8 +253,7 @@ public class LoginServiceImpl implements LoginService {
 			throw be;
 		}
 	}
-	
-	
+
 	// ************** VALIDATION ***********************************************
 
 	/**
@@ -378,37 +395,39 @@ public class LoginServiceImpl implements LoginService {
 
 	}
 
+	/**
+	 * Fais appel à la base de donnée pour vérifier que le token existe et que la
+	 * date d'expiration n'est pas dépasser
+	 * 
+	 * @param String
+	 */
 	@Override
-	public boolean validerResetToken(String token) throws BusinessException{
+	public boolean validerResetToken(String token) throws BusinessException {
 		BusinessException be = new BusinessException();
 		Boolean valide = true;
-	    boolean valid = utilisateurDAO.validerPasswordResetToken(token);
-	    valide &= this.validerDateToken(token, be);
-	    	if (!valid) {
-				valide = false;
-				be.addErreur("erreur.token.invalid");
-			}
-	    	
-	        return valide;
-	 
-	}
-	
-	private boolean validerDateToken(String token,BusinessException be) {
-		boolean valide = true;
-		Timestamp dateExpiration = utilisateurDAO.findDateToken(token);
-		LocalDateTime expirationDateTime = dateExpiration.toLocalDateTime();
+		PasswordToken passwordToken = utilisateurDAO.findToken(token);
+		if (passwordToken == null) { // Vérifie si le token existe
+			// be.addErreur("erreur.token.invalid");
+			return false;
+		}
+		boolean valid = this.validerDateToken(passwordToken, be);
 
-		if (expirationDateTime.isBefore(LocalDateTime.now())) {
+		if (!valid) {
+			// be.addErreur("erreur.token.invalid");
+		}
+
+		return valide;
+
+	}
+
+	private boolean validerDateToken(PasswordToken passwordToken, BusinessException be) {
+		boolean valide = true;
+
+		if (passwordToken.getDateExpiration().isBefore(LocalDateTime.now())) {
 			valide = false;
-			be.addErreur("erreur.token.date.invalid");
+			// be.addErreur("erreur.token.date.invalid");
 		}
 		return valide;
 	}
-
-	
-
-	
-
-	
 
 }

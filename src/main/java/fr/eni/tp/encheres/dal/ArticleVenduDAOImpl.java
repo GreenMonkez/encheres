@@ -114,31 +114,6 @@ public class ArticleVenduDAOImpl implements ArticleVenduDAO {
 
 	}
 
-	/**
-	 * Méthode permettant de modifier un utilisateur en base de donnée
-	 */
-	@Override
-	public void modifierArticle(ArticleVendu article) {
-		try {
-			MapSqlParameterSource map = new MapSqlParameterSource();
-			map.addValue("nom", article.getNomArticle());
-			map.addValue("description", article.getDescription());
-			map.addValue("dateDebut", article.getDateDebutEncheres());
-			map.addValue("dateFin", article.getDateFinEncheres());
-			map.addValue("prixInitial", article.getMiseAPrix());
-			map.addValue("idUtilisateur", article.getVendeur().getNoUtilisateur());
-			map.addValue("idCategorie", article.getCategorieArticle().getNoCategorie());
-
-			int rowsAffected = namedParameterJdbcTemplate.update(UPDATE, map);
-			if (rowsAffected == 0) {
-				throw new RuntimeException("Aucune mise à jour effectuée, article introuvable.");
-			}
-		} catch (Exception e) {
-			throw new RuntimeException("Erreur lors de la mise à jour de l'article : " + e.getMessage(), e);
-		}
-
-	}
-
 	@Override
 	public ArticleVendu read(int id) {
 		MapSqlParameterSource map = new MapSqlParameterSource();

@@ -59,7 +59,10 @@ public class SecurityConfig {
 			.requestMatchers("/categories/ajouter").hasRole("ADMIN")
 			.requestMatchers("/categories/modifier").hasRole("ADMIN")
 			.requestMatchers("/categories/supprimer").hasRole("ADMIN")
-			.requestMatchers("/reset/password").permitAll()
+			.requestMatchers("/forgotPassword").permitAll()
+			.requestMatchers("/resetPassword").permitAll()
+			.requestMatchers("/resetPassword/token").permitAll()
+			.requestMatchers("/resetPassword/formulaire").permitAll()
 			.anyRequest().denyAll();
 
 		});

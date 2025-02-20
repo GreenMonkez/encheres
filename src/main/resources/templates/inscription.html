@@ -73,11 +73,11 @@
 			<div class="center">
 				<button type="submit">Créer</button>
 			
-				<button type="reset">Annuler</button>
+				<a class="button" th:href="@{/login}">Annuler</a>
 			</div>
 		
 		</form>
 	</main>
-	<header th:replace="~{fragments/fragment-entete :: entete}"></header>
+	<footer th:replace="~{fragments/fragment-footer :: footer}"> </footer>
 </body>
 </html>

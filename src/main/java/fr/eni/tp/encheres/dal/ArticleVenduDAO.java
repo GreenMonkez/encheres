@@ -20,8 +20,6 @@ public interface ArticleVenduDAO {
 
 	List<ArticleVendu> consulterArticlesById(int idUser);
 
-	void modifierArticle(ArticleVendu article);
-
 	int getCountByIdCategorie(int idCategorie);
 
 	void deleteArticle(int idArticle);

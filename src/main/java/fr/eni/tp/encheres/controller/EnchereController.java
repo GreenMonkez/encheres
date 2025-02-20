@@ -302,12 +302,9 @@ public class EnchereController {
 		ArticleVendu article = enchereService.chercherArticleComplet(id);
 
 		model.addAttribute("article", article);
-		model.addAttribute("userSession", userSession );
-
+		model.addAttribute("userSession", userSession);
 
 		model.addAttribute("article", article);
-
-
 
 		return "detail_vente";
 	}
@@ -328,9 +325,9 @@ public class EnchereController {
 	public String creerEnchere(@RequestParam(name = "proposition") int montant, @RequestParam("id") int idArticle,
 			@ModelAttribute("userSession") Utilisateur userSession, RedirectAttributes redirectAttributes,
 			Locale locale) {
-		
+
 		try {
-			
+
 			this.enchereService.creerEnchere(userSession, montant, idArticle);
 			return "redirect:/encheres/detail?id=" + idArticle;
 
