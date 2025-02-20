@@ -12,7 +12,7 @@
 <body>
 	<header th:replace="~{fragments/fragment-entete :: entete}"> </header>
 	<main class="top-main" id="sectionLeft">
-		<h1 th:if="${article.etatVente} == 'EC'">
+		<h1 th:if="${article.etatVente} == PC'">
 				<span th:if="${article.acheteur.noUtilisateur} == ${userSession.noUtilisateur}" th:text="${article.acheteur.pseudo + ' a remporté l''enchère !'}"></span>
 				<span th:if="${article.acheteur.noUtilisateur} != ${userSession.noUtilisateur}" th:text="${article.acheteur.pseudo + ' a remporté l''enchère !'}"></span>
 				<span th:if="${article.prixVente} == 0">Aucune Enchère</span>
