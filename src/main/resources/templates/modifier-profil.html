@@ -91,12 +91,16 @@
 					</div>
 						<p class="cards" th:errors="*{motDePasse}"></p>
 				</div>
-				<div class="inblockMargin">
-					<label for="idMotDePasseConfirm">Confirmation : </label>
-					<input id="idMotDePasseConfirm" type="password" name="PasswordConfirm"/>
+				<div>
+					<div class="inblockMargin">
+						<label for="idMotDePasseConfirm">Confirmation : </label>
+						<input id="idMotDePasseConfirm" type="password" name="PasswordConfirm"/>
+					</div>
 				</div>
-				<div class="inblockMargin">
-					<p th:text="'Crédit :&nbsp;' + ${utilisateur.credit}"></p>
+				<div>
+					<div class="inblockMargin">
+						<p th:text="'Crédit :&nbsp;' + ${utilisateur.credit}"></p>
+					</div>
 				</div>
 			</div>
 			<div class="center">	
