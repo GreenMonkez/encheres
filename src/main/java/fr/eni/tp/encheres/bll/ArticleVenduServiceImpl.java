@@ -83,7 +83,8 @@ public class ArticleVenduServiceImpl implements ArticleVenduService {
 	 * @return ArticleVendu
 	 */
 	public ArticleVendu getArticleCompletById(int id) {
-
+		BusinessException be = new BusinessException();
+				
 		ArticleVendu article = getArticleById(id);
 
 		Utilisateur acheteur = new Utilisateur();
@@ -94,6 +95,11 @@ public class ArticleVenduServiceImpl implements ArticleVenduService {
 		}
 
 		article.setAcheteur(acheteur);
+		boolean pasEnCours = validerEncherePasEnCours(article.getNoArticle(), be);
+		if (pasEnCours) {
+			article.setEtatVente("PC");
+		}
+		article.setEtatVente("EC");
 		return article;
 
 	}

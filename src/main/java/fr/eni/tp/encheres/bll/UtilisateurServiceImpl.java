@@ -92,7 +92,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 		String mdpActuel = user.getMotDePasse();
 
 		boolean valide = validerConfirmMdp(mdpConfirm, newMdp, be);
-		valide &= validerMdpActuel(mdpActuel, be);
+		valide &= validerMdpActuel(mdpActuel,user.getNoUtilisateur(), be);
 
 		try {
 			if (valide) {
@@ -242,12 +242,12 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 	 * @param be
 	 * @return boolean
 	 */
-	private boolean validerMdpActuel(String mdp, BusinessException be) {
-		boolean valide = true;
+	private boolean validerMdpActuel(String mdp, int idUser, BusinessException be) {
+		boolean valide = false;
 		String mdpEncode = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(mdp);
-		int nbMdp = utilisateurDAO.getCountUtilisateurByMdp(mdpEncode);
+		int nbMdp = utilisateurDAO.getCountUtilisateurByMdp(mdpEncode, idUser);
 		if (nbMdp == 1) {
-			valide = false;
+			valide = true;
 			be.addErreur("erreur.password.actuel");
 		}
 
@@ -299,7 +299,6 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 		if (listEncheres != null) {
 
 			for (Enchère enchère : listEncheres) {
-
 				if (enchère.getDateEnchère().isBefore(LocalDateTime.now())) {
 					valide = false;
 					be.addErreur("erreur.supprimer.profil.enchere.encours");

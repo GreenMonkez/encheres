@@ -255,13 +255,11 @@ public class EnchereController {
 	@GetMapping("/encheres/detail")
 	public String detailArticle(@RequestParam("id") int id, Model model,
 			@ModelAttribute("userSession") Utilisateur userSession) {
-
+		
+		
 		ArticleVendu article = articleVenduService.getArticleCompletById(id);
-
 		model.addAttribute("article", article);
 		model.addAttribute("userSession", userSession);
-
-		model.addAttribute("article", article);
 
 		return "detail_vente";
 	}

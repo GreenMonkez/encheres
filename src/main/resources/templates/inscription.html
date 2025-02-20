@@ -65,7 +65,7 @@
 				<div>
 					<div class ="inblockMargin">
 					<label for="idMotDePasse">Mot de passe : </label>
-					<input id="idMotDePasse" type="password" th:field="motDePasse"/>
+					<input id="idMotDePasse" type="password" th:field="*{motDePasse}"/>
 					</div>
 					<div>
 						<p class="cards" th:errors="*{motDePasse}"></p>

@@ -78,7 +78,8 @@
 
 			</div>
 			<div class="center">
-				<p th:text="'Crédit ' + ${utilisateur.credit}"></p>
+				<label for="idCredit">Crédit : </label>
+				<input type="text" th:field="*{credit}" disabled/>
 				<a th:href="@{/monProfil/achatCredit}"><img src="/images/icone-ajouter.png" alt="Bouton ajouter crédit" /></a>
 				<button type="submit">Modifier</button>
 				<a class="button" th:href="@{/monProfil}">Annuler</a>
